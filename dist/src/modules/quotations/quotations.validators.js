@@ -1,0 +1,271 @@
+import { z } from "zod";
+import { integerQueryParamSchema } from "../../utils/query-schemas.js";
+import { QUOTATION_APPROVAL_STATUSES, QUOTATION_APPROVAL_TYPES, QUOTATION_ITEM_MATERIAL_RULE_TYPES, QUOTATION_ITEM_MATERIAL_SOURCES, QUOTATION_ITEM_TYPES, QUOTATION_STATUSES, QUOTATION_VERSION_STATUSES, } from "./quotations.constants.js";
+const trimOrNull = (value) => {
+    if (typeof value !== "string") {
+        return null;
+    }
+    const trimmedValue = value.trim();
+    return trimmedValue.length > 0 ? trimmedValue : null;
+};
+const nullableStringSchema = (maxLength, label) => z
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((value) => trimOrNull(value))
+    .refine((value) => value === null || value.length <= maxLength, {
+    message: `${label} must be ${maxLength} characters or fewer.`,
+});
+const nullableNumberSchema = ({ integer = false, label, max, min, }) => z
+    .union([z.number(), z.string(), z.null(), z.undefined()])
+    .transform((value) => {
+    if (value === null || value === undefined) {
+        return null;
+    }
+    if (typeof value === "string") {
+        const trimmedValue = value.trim();
+        if (trimmedValue.length === 0) {
+            return null;
+        }
+        return Number(trimmedValue);
+    }
+    return value;
+})
+    .refine((value) => value === null || Number.isFinite(value), {
+    message: `${label} must be a valid number.`,
+})
+    .refine((value) => value === null || !integer || Number.isInteger(value), {
+    message: `${label} must be a whole number.`,
+})
+    .refine((value) => value === null || min === undefined || value >= min, {
+    message: `${label} must be at least ${min}.`,
+})
+    .refine((value) => value === null || max === undefined || value <= max, {
+    message: `${label} must be at most ${max}.`,
+});
+const positiveNumberSchema = (label) => z
+    .union([z.number(), z.string()])
+    .transform((value) => {
+    if (typeof value === "string") {
+        return Number(value.trim());
+    }
+    return value;
+})
+    .refine((value) => Number.isFinite(value), {
+    message: `${label} must be a valid number.`,
+})
+    .refine((value) => value > 0, {
+    message: `${label} must be greater than zero.`,
+});
+const dateFilterSchema = z
+    .union([z.string(), z.undefined()])
+    .transform((value) => value?.trim() || undefined)
+    .refine((value) => value === undefined || /^\d{4}-\d{2}-\d{2}$/.test(value), {
+    message: "Dates must use YYYY-MM-DD format.",
+});
+const nullableDateSchema = (label) => z
+    .union([z.string(), z.date(), z.null(), z.undefined()])
+    .transform((value) => {
+    if (value === null || value === undefined) {
+        return null;
+    }
+    if (value instanceof Date) {
+        return Number.isNaN(value.getTime()) ? null : value;
+    }
+    const trimmedValue = value.trim();
+    if (trimmedValue.length === 0) {
+        return null;
+    }
+    const normalizedValue = /^\d{4}-\d{2}-\d{2}$/.test(trimmedValue)
+        ? `${trimmedValue}T00:00:00.000Z`
+        : trimmedValue;
+    const parsedDate = new Date(normalizedValue);
+    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+})
+    .refine((value) => value === null || value instanceof Date, {
+    message: `${label} must be a valid date.`,
+});
+const jsonLikeSchema = z.lazy(() => z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.null(),
+    z.array(jsonLikeSchema),
+    z.record(z.string(), jsonLikeSchema),
+]));
+const nullableJsonObjectSchema = z
+    .union([z.record(z.string(), jsonLikeSchema), z.null(), z.undefined()])
+    .transform((value) => value ?? null);
+const nullableUuidSchema = z
+    .union([z.uuid(), z.null(), z.undefined()])
+    .transform((value) => value ?? null);
+export const quotationStatusSchema = z.enum(QUOTATION_STATUSES);
+export const quotationVersionStatusSchema = z.enum(QUOTATION_VERSION_STATUSES);
+export const quotationItemTypeSchema = z.enum(QUOTATION_ITEM_TYPES);
+export const quotationItemMaterialRuleTypeSchema = z.enum(QUOTATION_ITEM_MATERIAL_RULE_TYPES);
+export const quotationItemMaterialSourceSchema = z.enum(QUOTATION_ITEM_MATERIAL_SOURCES);
+export const quotationApprovalTypeSchema = z.enum(QUOTATION_APPROVAL_TYPES);
+export const quotationApprovalStatusSchema = z.enum(QUOTATION_APPROVAL_STATUSES);
+export const quotationIdParamSchema = z.object({
+    id: z.uuid(),
+});
+export const quotationItemIdParamSchema = z.object({
+    itemId: z.uuid(),
+});
+export const quotationMutationSchema = z.object({
+    clientId: z.uuid({
+        message: "Client is required.",
+    }),
+    currency: z.string().trim().min(1, "Currency is required.").max(16).default("BOB"),
+    discountAmount: nullableNumberSchema({
+        label: "Discount amount",
+        min: 0,
+    }).transform((value) => value ?? 0),
+    exchangeRate: nullableNumberSchema({
+        label: "Exchange rate",
+        min: 0,
+    }),
+    internalNotes: nullableStringSchema(4000, "Internal notes"),
+    notes: nullableStringSchema(4000, "Notes"),
+    projectId: nullableUuidSchema,
+    taxAmount: nullableNumberSchema({
+        label: "Tax amount",
+        min: 0,
+    }).transform((value) => value ?? 0),
+    validUntil: nullableDateSchema("Validity date"),
+});
+export const listQuotationsQuerySchema = z.object({
+    clientId: z.union([z.uuid(), z.undefined()]).optional(),
+    dateFrom: dateFilterSchema,
+    dateTo: dateFilterSchema,
+    page: z.coerce.number().int().min(1).default(1),
+    perPage: integerQueryParamSchema({ defaultValue: 10, min: 1, max: 100 }),
+    projectId: z.union([z.uuid(), z.undefined()]).optional(),
+    search: z.string().trim().default(""),
+    sortBy: z.enum(["createdAt", "totalSale", "updatedAt", "validUntil"]).default("updatedAt"),
+    sortDirection: z.enum(["asc", "desc"]).default("desc"),
+    status: quotationStatusSchema.optional(),
+});
+export const addTemplateQuotationItemSchema = z.object({
+    inputValues: z.record(z.string(), jsonLikeSchema).default({}),
+    name: z.string().trim().min(1, "Item name is required.").max(191),
+    productTemplateVersionId: z.uuid({
+        message: "Template version is required.",
+    }),
+    quantity: positiveNumberSchema("Quantity"),
+});
+const salePricingSchema = z
+    .object({
+    marginPercent: nullableNumberSchema({
+        label: "Margin percent",
+        max: 99.99,
+        min: 0,
+    }),
+    unitSalePrice: nullableNumberSchema({
+        label: "Unit sale price",
+        min: 0,
+    }),
+})
+    .superRefine((value, context) => {
+    if (value.marginPercent === null && value.unitSalePrice === null) {
+        context.addIssue({
+            code: "custom",
+            message: "Provide a unit sale price or a margin percent.",
+            path: ["unitSalePrice"],
+        });
+    }
+});
+export const addManualMaterialItemSchema = z
+    .object({
+    description: nullableStringSchema(4000, "Description"),
+    marginPercent: salePricingSchema.shape.marginPercent,
+    materialId: z.uuid({
+        message: "Material is required.",
+    }),
+    name: nullableStringSchema(191, "Item name"),
+    quantity: positiveNumberSchema("Quantity"),
+    supplierId: nullableUuidSchema,
+    unit: z.string().trim().min(1, "Unit is required.").max(50),
+    unitCost: positiveNumberSchema("Unit cost"),
+    unitSalePrice: salePricingSchema.shape.unitSalePrice,
+})
+    .superRefine((value, context) => {
+    if (value.marginPercent === null && value.unitSalePrice === null) {
+        context.addIssue({
+            code: "custom",
+            message: "Provide a unit sale price or a margin percent.",
+            path: ["unitSalePrice"],
+        });
+    }
+});
+export const addManualServiceItemSchema = z
+    .object({
+    description: nullableStringSchema(4000, "Description"),
+    marginPercent: salePricingSchema.shape.marginPercent,
+    name: z.string().trim().min(1, "Service name is required.").max(191),
+    quantity: positiveNumberSchema("Quantity"),
+    unit: z.string().trim().min(1, "Unit is required.").max(50).default("service"),
+    unitCost: positiveNumberSchema("Unit cost"),
+    unitSalePrice: salePricingSchema.shape.unitSalePrice,
+})
+    .superRefine((value, context) => {
+    if (value.marginPercent === null && value.unitSalePrice === null) {
+        context.addIssue({
+            code: "custom",
+            message: "Provide a unit sale price or a margin percent.",
+            path: ["unitSalePrice"],
+        });
+    }
+});
+export const updateQuotationItemSchema = z
+    .object({
+    clearManualOverride: z.boolean().optional(),
+    description: nullableStringSchema(4000, "Description").optional(),
+    inputValues: nullableJsonObjectSchema.optional(),
+    marginPercent: nullableNumberSchema({
+        label: "Margin percent",
+        max: 99.99,
+        min: 0,
+    }).optional(),
+    materialId: nullableUuidSchema.optional(),
+    name: nullableStringSchema(191, "Item name").optional(),
+    quantity: positiveNumberSchema("Quantity").optional(),
+    sortOrder: nullableNumberSchema({
+        integer: true,
+        label: "Sort order",
+        min: 0,
+    }).optional(),
+    supplierId: nullableUuidSchema.optional(),
+    unit: nullableStringSchema(50, "Unit").optional(),
+    unitCost: nullableNumberSchema({
+        label: "Unit cost",
+        min: 0,
+    }).optional(),
+    unitSalePrice: nullableNumberSchema({
+        label: "Unit sale price",
+        min: 0,
+    }).optional(),
+})
+    .superRefine((value, context) => {
+    const hasPricingOverride = value.marginPercent !== undefined ||
+        value.unitCost !== undefined ||
+        value.unitSalePrice !== undefined;
+    if (hasPricingOverride &&
+        value.clearManualOverride) {
+        context.addIssue({
+            code: "custom",
+            message: "Choose either updated pricing values or clearManualOverride, not both.",
+            path: ["clearManualOverride"],
+        });
+    }
+});
+export const quotationDecisionSchema = z.object({
+    decisionNotes: nullableStringSchema(4000, "Decision notes"),
+});
+export const submitQuotationApprovalSchema = z.object({
+    forceManualReview: z.boolean().default(false),
+    reason: nullableStringSchema(4000, "Reason"),
+});
+export const changeQuotationStatusSchema = z.object({
+    notes: nullableStringSchema(4000, "Notes"),
+    toStatus: quotationStatusSchema,
+});
+//# sourceMappingURL=quotations.validators.js.map

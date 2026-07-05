@@ -1,0 +1,86 @@
+import { Router } from "express";
+
+import { asyncHandler } from "../../middleware/async-handler.js";
+import { requirePermission } from "../../middleware/authorization-middleware.js";
+import { CLIENTS_API_PATH, CLIENTS_PERMISSIONS } from "./clients.constants.js";
+import { clientsController } from "./clients.controller.js";
+
+export const clientsRouter = Router();
+
+clientsRouter.get(
+  CLIENTS_API_PATH,
+  requirePermission(CLIENTS_PERMISSIONS.read),
+  asyncHandler(clientsController.listClients),
+);
+
+clientsRouter.get(
+  `${CLIENTS_API_PATH}/:id`,
+  requirePermission(CLIENTS_PERMISSIONS.read),
+  asyncHandler(clientsController.getClientById),
+);
+
+clientsRouter.post(
+  CLIENTS_API_PATH,
+  requirePermission(CLIENTS_PERMISSIONS.create),
+  asyncHandler(clientsController.createClient),
+);
+
+clientsRouter.put(
+  `${CLIENTS_API_PATH}/:id`,
+  requirePermission(CLIENTS_PERMISSIONS.update),
+  asyncHandler(clientsController.updateClient),
+);
+
+clientsRouter.delete(
+  `${CLIENTS_API_PATH}/:id`,
+  requirePermission(CLIENTS_PERMISSIONS.delete),
+  asyncHandler(clientsController.deleteClient),
+);
+
+clientsRouter.get(
+  `${CLIENTS_API_PATH}/:id/contacts`,
+  requirePermission(CLIENTS_PERMISSIONS.read),
+  asyncHandler(clientsController.listClientContacts),
+);
+
+clientsRouter.post(
+  `${CLIENTS_API_PATH}/:id/contacts`,
+  requirePermission(CLIENTS_PERMISSIONS.update),
+  asyncHandler(clientsController.createClientContact),
+);
+
+clientsRouter.put(
+  `${CLIENTS_API_PATH}/:id/contacts/:contactId`,
+  requirePermission(CLIENTS_PERMISSIONS.update),
+  asyncHandler(clientsController.updateClientContact),
+);
+
+clientsRouter.delete(
+  `${CLIENTS_API_PATH}/:id/contacts/:contactId`,
+  requirePermission(CLIENTS_PERMISSIONS.update),
+  asyncHandler(clientsController.deleteClientContact),
+);
+
+clientsRouter.get(
+  `${CLIENTS_API_PATH}/:id/addresses`,
+  requirePermission(CLIENTS_PERMISSIONS.read),
+  asyncHandler(clientsController.listClientAddresses),
+);
+
+clientsRouter.post(
+  `${CLIENTS_API_PATH}/:id/addresses`,
+  requirePermission(CLIENTS_PERMISSIONS.update),
+  asyncHandler(clientsController.createClientAddress),
+);
+
+clientsRouter.put(
+  `${CLIENTS_API_PATH}/:id/addresses/:addressId`,
+  requirePermission(CLIENTS_PERMISSIONS.update),
+  asyncHandler(clientsController.updateClientAddress),
+);
+
+clientsRouter.delete(
+  `${CLIENTS_API_PATH}/:id/addresses/:addressId`,
+  requirePermission(CLIENTS_PERMISSIONS.update),
+  asyncHandler(clientsController.deleteClientAddress),
+);

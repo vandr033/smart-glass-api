@@ -1,0 +1,183 @@
+import { Router } from "express";
+
+import { asyncHandler } from "../../middleware/async-handler.js";
+import { requirePermission } from "../../middleware/authorization-middleware.js";
+import { purchasingController } from "./purchasing.controller.js";
+import {
+  PURCHASE_ORDERS_API_PATH,
+  PURCHASE_RECEIPTS_API_PATH,
+  PURCHASE_REQUESTS_API_PATH,
+  PURCHASING_DASHBOARD_API_PATH,
+  PURCHASING_PERMISSIONS,
+  SUPPLIER_COMPARISONS_API_PATH,
+} from "./purchasing.constants.js";
+
+export const purchasingRouter = Router();
+
+purchasingRouter.get(
+  PURCHASING_DASHBOARD_API_PATH,
+  requirePermission(PURCHASING_PERMISSIONS.read),
+  asyncHandler(purchasingController.getDashboard),
+);
+
+purchasingRouter.get(
+  PURCHASE_REQUESTS_API_PATH,
+  requirePermission(PURCHASING_PERMISSIONS.read),
+  asyncHandler(purchasingController.listPurchaseRequests),
+);
+
+purchasingRouter.post(
+  PURCHASE_REQUESTS_API_PATH,
+  requirePermission(PURCHASING_PERMISSIONS.create),
+  asyncHandler(purchasingController.createPurchaseRequest),
+);
+
+purchasingRouter.get(
+  `${PURCHASE_REQUESTS_API_PATH}/:id`,
+  requirePermission(PURCHASING_PERMISSIONS.read),
+  asyncHandler(purchasingController.getPurchaseRequestById),
+);
+
+purchasingRouter.put(
+  `${PURCHASE_REQUESTS_API_PATH}/:id`,
+  requirePermission(PURCHASING_PERMISSIONS.update),
+  asyncHandler(purchasingController.updatePurchaseRequest),
+);
+
+purchasingRouter.delete(
+  `${PURCHASE_REQUESTS_API_PATH}/:id`,
+  requirePermission(PURCHASING_PERMISSIONS.delete),
+  asyncHandler(purchasingController.deletePurchaseRequest),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_REQUESTS_API_PATH}/from-quotation/:quotationId`,
+  requirePermission(PURCHASING_PERMISSIONS.create),
+  asyncHandler(purchasingController.createPurchaseRequestFromQuotation),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_REQUESTS_API_PATH}/from-cutting-plan/:cuttingPlanId`,
+  requirePermission(PURCHASING_PERMISSIONS.create),
+  asyncHandler(purchasingController.createPurchaseRequestFromCuttingPlan),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_REQUESTS_API_PATH}/from-profile-cutting-plan/:profileCuttingPlanId`,
+  requirePermission(PURCHASING_PERMISSIONS.create),
+  asyncHandler(purchasingController.createPurchaseRequestFromProfileCuttingPlan),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_REQUESTS_API_PATH}/from-inventory-shortage`,
+  requirePermission(PURCHASING_PERMISSIONS.create),
+  asyncHandler(purchasingController.createPurchaseRequestFromInventoryShortage),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_REQUESTS_API_PATH}/:id/approve`,
+  requirePermission(PURCHASING_PERMISSIONS.approve),
+  asyncHandler(purchasingController.approvePurchaseRequest),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_REQUESTS_API_PATH}/:id/reject`,
+  requirePermission(PURCHASING_PERMISSIONS.approve),
+  asyncHandler(purchasingController.rejectPurchaseRequest),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_REQUESTS_API_PATH}/:id/compare-suppliers`,
+  requirePermission(PURCHASING_PERMISSIONS.compareSuppliers),
+  asyncHandler(purchasingController.compareSuppliersForPurchaseRequest),
+);
+
+purchasingRouter.get(
+  SUPPLIER_COMPARISONS_API_PATH,
+  requirePermission(PURCHASING_PERMISSIONS.read),
+  asyncHandler(purchasingController.listSupplierComparisons),
+);
+
+purchasingRouter.get(
+  `${SUPPLIER_COMPARISONS_API_PATH}/:id`,
+  requirePermission(PURCHASING_PERMISSIONS.read),
+  asyncHandler(purchasingController.getSupplierComparisonById),
+);
+
+purchasingRouter.post(
+  `${SUPPLIER_COMPARISONS_API_PATH}/:id/approve`,
+  requirePermission(PURCHASING_PERMISSIONS.approve),
+  asyncHandler(purchasingController.approveSupplierComparison),
+);
+
+purchasingRouter.post(
+  `${SUPPLIER_COMPARISONS_API_PATH}/:id/create-purchase-orders`,
+  requirePermission(PURCHASING_PERMISSIONS.createPo),
+  asyncHandler(purchasingController.createPurchaseOrdersFromComparison),
+);
+
+purchasingRouter.get(
+  PURCHASE_ORDERS_API_PATH,
+  requirePermission(PURCHASING_PERMISSIONS.read),
+  asyncHandler(purchasingController.listPurchaseOrders),
+);
+
+purchasingRouter.post(
+  PURCHASE_ORDERS_API_PATH,
+  requirePermission(PURCHASING_PERMISSIONS.createPo),
+  asyncHandler(purchasingController.createPurchaseOrder),
+);
+
+purchasingRouter.get(
+  `${PURCHASE_ORDERS_API_PATH}/:id`,
+  requirePermission(PURCHASING_PERMISSIONS.read),
+  asyncHandler(purchasingController.getPurchaseOrderById),
+);
+
+purchasingRouter.put(
+  `${PURCHASE_ORDERS_API_PATH}/:id`,
+  requirePermission(PURCHASING_PERMISSIONS.update),
+  asyncHandler(purchasingController.updatePurchaseOrder),
+);
+
+purchasingRouter.delete(
+  `${PURCHASE_ORDERS_API_PATH}/:id`,
+  requirePermission(PURCHASING_PERMISSIONS.delete),
+  asyncHandler(purchasingController.deletePurchaseOrder),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_ORDERS_API_PATH}/:id/send`,
+  requirePermission(PURCHASING_PERMISSIONS.sendPo),
+  asyncHandler(purchasingController.sendPurchaseOrder),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_ORDERS_API_PATH}/:id/confirm`,
+  requirePermission(PURCHASING_PERMISSIONS.update),
+  asyncHandler(purchasingController.confirmPurchaseOrder),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_ORDERS_API_PATH}/:id/cancel`,
+  requirePermission(PURCHASING_PERMISSIONS.delete),
+  asyncHandler(purchasingController.cancelPurchaseOrder),
+);
+
+purchasingRouter.post(
+  `${PURCHASE_ORDERS_API_PATH}/:id/receive`,
+  requirePermission(PURCHASING_PERMISSIONS.receive),
+  asyncHandler(purchasingController.receivePurchaseOrder),
+);
+
+purchasingRouter.get(
+  PURCHASE_RECEIPTS_API_PATH,
+  requirePermission(PURCHASING_PERMISSIONS.read),
+  asyncHandler(purchasingController.listPurchaseReceipts),
+);
+
+purchasingRouter.get(
+  `${PURCHASE_RECEIPTS_API_PATH}/:id`,
+  requirePermission(PURCHASING_PERMISSIONS.read),
+  asyncHandler(purchasingController.getPurchaseReceiptById),
+);

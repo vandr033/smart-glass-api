@@ -1,0 +1,20 @@
+import { Router } from "express";
+import { asyncHandler } from "../../middleware/async-handler.js";
+import { requirePermission } from "../../middleware/authorization-middleware.js";
+import { QUOTATION_PERMISSIONS, QUOTATIONS_API_PATH } from "../quotations/quotations.constants.js";
+import { CUTTING_OPTIMIZATIONS_API_PATH, CUTTING_PERMISSIONS, CUTTING_PLANS_API_PATH, } from "./cutting.constants.js";
+import { cuttingController } from "./cutting.controller.js";
+export const cuttingRouter = Router();
+cuttingRouter.get(CUTTING_OPTIMIZATIONS_API_PATH, requirePermission(CUTTING_PERMISSIONS.read), asyncHandler(cuttingController.listCuttingOptimizations));
+cuttingRouter.post(`${CUTTING_OPTIMIZATIONS_API_PATH}/run`, requirePermission(CUTTING_PERMISSIONS.run), asyncHandler(cuttingController.runGlassOptimization));
+cuttingRouter.get(`${CUTTING_OPTIMIZATIONS_API_PATH}/:id`, requirePermission(CUTTING_PERMISSIONS.read), asyncHandler(cuttingController.getCuttingOptimizationById));
+cuttingRouter.post(`${CUTTING_OPTIMIZATIONS_API_PATH}/:id/generate-plan`, requirePermission(CUTTING_PERMISSIONS.run), asyncHandler(cuttingController.generateCuttingPlanFromRun));
+cuttingRouter.post(`${CUTTING_OPTIMIZATIONS_API_PATH}/:id/cancel`, requirePermission(CUTTING_PERMISSIONS.run), asyncHandler(cuttingController.cancelCuttingOptimizationRun));
+cuttingRouter.get(`${QUOTATIONS_API_PATH}/:id/glass-requirements`, requirePermission(QUOTATION_PERMISSIONS.read), asyncHandler(cuttingController.getQuotationGlassRequirements));
+cuttingRouter.post(`${QUOTATIONS_API_PATH}/:id/glass-optimization`, requirePermission(CUTTING_PERMISSIONS.run), asyncHandler(cuttingController.runQuotationGlassOptimization));
+cuttingRouter.get(CUTTING_PLANS_API_PATH, requirePermission(CUTTING_PERMISSIONS.read), asyncHandler(cuttingController.listCuttingPlans));
+cuttingRouter.get(`${CUTTING_PLANS_API_PATH}/:id`, requirePermission(CUTTING_PERMISSIONS.read), asyncHandler(cuttingController.getCuttingPlanById));
+cuttingRouter.post(`${CUTTING_PLANS_API_PATH}/:id/approve`, requirePermission(CUTTING_PERMISSIONS.approve), asyncHandler(cuttingController.approveCuttingPlan));
+cuttingRouter.post(`${CUTTING_PLANS_API_PATH}/:id/create-remnants`, requirePermission(CUTTING_PERMISSIONS.createRemnants), asyncHandler(cuttingController.createRemnantsFromCuttingPlan));
+cuttingRouter.get(`${CUTTING_PLANS_API_PATH}/:id/print`, requirePermission(CUTTING_PERMISSIONS.print), asyncHandler(cuttingController.getPrintableCuttingPlan));
+//# sourceMappingURL=cutting.routes.js.map

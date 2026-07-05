@@ -1,0 +1,20 @@
+import { Router } from "express";
+import { asyncHandler } from "../../middleware/async-handler.js";
+import { requireAnyPermission, requirePermission, } from "../../middleware/authorization-middleware.js";
+import { PRODUCT_TEMPLATE_MANAGE_PERMISSION, PRODUCT_TEMPLATE_READ_PERMISSIONS, PRODUCT_TEMPLATE_SIMULATION_HISTORY_PERMISSION, PRODUCT_TEMPLATES_API_PATH, PRODUCT_TEMPLATE_VERSIONS_API_PATH, } from "./product-templates.constants.js";
+import { productTemplatesController } from "./product-templates.controller.js";
+export const productTemplatesRouter = Router();
+productTemplatesRouter.get(PRODUCT_TEMPLATES_API_PATH, requireAnyPermission([...PRODUCT_TEMPLATE_READ_PERMISSIONS]), asyncHandler(productTemplatesController.listTemplates));
+productTemplatesRouter.get(`${PRODUCT_TEMPLATES_API_PATH}/:id`, requireAnyPermission([...PRODUCT_TEMPLATE_READ_PERMISSIONS]), asyncHandler(productTemplatesController.getTemplateById));
+productTemplatesRouter.post(PRODUCT_TEMPLATES_API_PATH, requirePermission(PRODUCT_TEMPLATE_MANAGE_PERMISSION), asyncHandler(productTemplatesController.createTemplate));
+productTemplatesRouter.put(`${PRODUCT_TEMPLATES_API_PATH}/:id`, requirePermission(PRODUCT_TEMPLATE_MANAGE_PERMISSION), asyncHandler(productTemplatesController.updateTemplate));
+productTemplatesRouter.delete(`${PRODUCT_TEMPLATES_API_PATH}/:id`, requirePermission(PRODUCT_TEMPLATE_MANAGE_PERMISSION), asyncHandler(productTemplatesController.deleteTemplate));
+productTemplatesRouter.get(`${PRODUCT_TEMPLATES_API_PATH}/:id/versions`, requireAnyPermission([...PRODUCT_TEMPLATE_READ_PERMISSIONS]), asyncHandler(productTemplatesController.listTemplateVersions));
+productTemplatesRouter.post(`${PRODUCT_TEMPLATES_API_PATH}/:id/versions`, requirePermission(PRODUCT_TEMPLATE_MANAGE_PERMISSION), asyncHandler(productTemplatesController.createTemplateVersion));
+productTemplatesRouter.get(`${PRODUCT_TEMPLATE_VERSIONS_API_PATH}/:versionId`, requireAnyPermission([...PRODUCT_TEMPLATE_READ_PERMISSIONS]), asyncHandler(productTemplatesController.getTemplateVersionById));
+productTemplatesRouter.put(`${PRODUCT_TEMPLATE_VERSIONS_API_PATH}/:versionId`, requirePermission(PRODUCT_TEMPLATE_MANAGE_PERMISSION), asyncHandler(productTemplatesController.updateTemplateVersion));
+productTemplatesRouter.put(`${PRODUCT_TEMPLATE_VERSIONS_API_PATH}/:versionId/rules`, requirePermission(PRODUCT_TEMPLATE_MANAGE_PERMISSION), asyncHandler(productTemplatesController.updateTemplateVersionRules));
+productTemplatesRouter.post(`${PRODUCT_TEMPLATE_VERSIONS_API_PATH}/:versionId/activate`, requirePermission(PRODUCT_TEMPLATE_MANAGE_PERMISSION), asyncHandler(productTemplatesController.activateTemplateVersion));
+productTemplatesRouter.post(`${PRODUCT_TEMPLATE_VERSIONS_API_PATH}/:versionId/simulate`, requireAnyPermission([...PRODUCT_TEMPLATE_READ_PERMISSIONS]), asyncHandler(productTemplatesController.simulateTemplateVersion));
+productTemplatesRouter.get(`${PRODUCT_TEMPLATE_VERSIONS_API_PATH}/:versionId/simulations`, requirePermission(PRODUCT_TEMPLATE_SIMULATION_HISTORY_PERMISSION), asyncHandler(productTemplatesController.listTemplateVersionSimulations));
+//# sourceMappingURL=product-templates.routes.js.map
