@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { PRICE_LIST_IMPORT_STATUSES, PRICE_LIST_ROW_MAPPING_STATUSES, PRICE_LIST_ROW_VALIDATION_STATUSES, } from "./price-lists.constants.js";
 import { SUPPLIER_MATERIAL_EQUIVALENCE_CONFIDENCE_LEVELS } from "../materials/materials.behavior.js";
-import { integerQueryParamSchema } from "@/utils/query-schemas.js";
+import { integerQueryParamSchema } from "../../utils/query-schemas.js";
 const trimOrNull = (value) => {
     if (typeof value !== "string") {
         return null;

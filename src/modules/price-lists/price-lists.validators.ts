@@ -6,7 +6,7 @@ import {
   PRICE_LIST_ROW_VALIDATION_STATUSES,
 } from "./price-lists.constants.js";
 import { SUPPLIER_MATERIAL_EQUIVALENCE_CONFIDENCE_LEVELS } from "../materials/materials.behavior.js";
-import { integerQueryParamSchema } from "@/utils/query-schemas.js";
+import { integerQueryParamSchema } from "../../utils/query-schemas.js";
 
 const trimOrNull = (value: unknown): string | null => {
   if (typeof value !== "string") {
