@@ -12,6 +12,25 @@ import { env } from "../../utils/env.js";
 import { logger } from "../../utils/logger.js";
 import { prisma } from "../../utils/prisma.js";
 
+const getErrorMessage = (error: unknown): string => {
+  return error instanceof Error ? error.message : String(error);
+};
+
+const runBestEffortAuthSideEffect = async (
+  label: string,
+  effect: () => Promise<void>,
+  meta?: Record<string, unknown>,
+): Promise<void> => {
+  try {
+    await effect();
+  } catch (error) {
+    logger.error(`Auth side effect failed: ${label}.`, {
+      ...meta,
+      error: getErrorMessage(error),
+    });
+  }
+};
+
 const syncCredentialPassword = async (
   userId: string,
   password: string | null | undefined,
@@ -65,14 +84,32 @@ export const auth = betterAuth({
       create: {
         after: async (account) => {
           if (account.providerId === "credential") {
-            await syncCredentialPassword(account.userId, account.password);
+            await runBestEffortAuthSideEffect(
+              "sync credential password after account create",
+              async () => {
+                await syncCredentialPassword(account.userId, account.password);
+              },
+              {
+                providerId: account.providerId,
+                userId: account.userId,
+              },
+            );
           }
         },
       },
       update: {
         after: async (account) => {
           if (account.providerId === "credential") {
-            await syncCredentialPassword(account.userId, account.password);
+            await runBestEffortAuthSideEffect(
+              "sync credential password after account update",
+              async () => {
+                await syncCredentialPassword(account.userId, account.password);
+              },
+              {
+                providerId: account.providerId,
+                userId: account.userId,
+              },
+            );
           }
         },
       },
@@ -80,13 +117,17 @@ export const auth = betterAuth({
     session: {
       create: {
         after: async (session) => {
-          await prisma.user.update({
-            data: {
-              lastLoginAt: new Date(),
-            },
-            where: {
-              id: session.userId,
-            },
+          await runBestEffortAuthSideEffect("update last login timestamp", async () => {
+            await prisma.user.update({
+              data: {
+                lastLoginAt: new Date(),
+              },
+              where: {
+                id: session.userId,
+              },
+            });
+          }, {
+            userId: session.userId,
           });
         },
       },
@@ -150,72 +191,93 @@ export const auth = betterAuth({
     after: createAuthMiddleware(async (ctx) => {
       const ipAddress = getRequestIpAddress(ctx.request);
       const email = getRequestEmail(ctx.body);
+      const newSession = ctx.context.newSession;
       const response = ctx.context.returned;
 
       if (ctx.path === "/sign-in/email") {
         if (response instanceof APIError) {
-          await activityLogService.logSystemEvent({
-            action: "Login failure",
-            entityType: "authentication",
-            ipAddress,
-            metadata: {
-              email,
-              reason: response.message,
-              summary: email
-                ? `A login attempt failed for ${email}.`
-                : "A login attempt failed.",
-            },
+          await runBestEffortAuthSideEffect("record login failure activity log", async () => {
+            await activityLogService.logSystemEvent({
+              action: "Login failure",
+              entityType: "authentication",
+              ipAddress,
+              metadata: {
+                email,
+                reason: response.message,
+                summary: email
+                  ? `A login attempt failed for ${email}.`
+                  : "A login attempt failed.",
+              },
+            });
+          }, {
+            email,
+            path: ctx.path,
           });
 
           return;
         }
 
-        if (ctx.context.newSession) {
-          await activityLogService.logUserAction({
-            action: "Login success",
-            entityId: ctx.context.newSession.user.id,
-            entityType: "authentication",
-            ipAddress:
-              ctx.context.newSession.session.ipAddress ?? ipAddress ?? null,
-            metadata: {
-              email: ctx.context.newSession.user.email,
-              summary: `${ctx.context.newSession.user.email} signed in successfully.`,
-            },
-            userId: ctx.context.newSession.user.id,
+        if (newSession) {
+          await runBestEffortAuthSideEffect("record login success activity log", async () => {
+            await activityLogService.logUserAction({
+              action: "Login success",
+              entityId: newSession.user.id,
+              entityType: "authentication",
+              ipAddress: newSession.session.ipAddress ?? ipAddress ?? null,
+              metadata: {
+                email: newSession.user.email,
+                summary: `${newSession.user.email} signed in successfully.`,
+              },
+              userId: newSession.user.id,
+            });
+          }, {
+            path: ctx.path,
+            userId: newSession.user.id,
           });
         }
 
         return;
       }
 
-      if (ctx.path === "/sign-out" && !(response instanceof APIError) && ctx.context.session) {
-        await activityLogService.logUserAction({
-          action: "Logout success",
-          entityId: ctx.context.session.user.id,
-          entityType: "authentication",
-          ipAddress: ctx.context.session.session.ipAddress ?? ipAddress ?? null,
-          metadata: {
-            email: ctx.context.session.user.email,
-            summary: `${ctx.context.session.user.email} signed out successfully.`,
-          },
-          userId: ctx.context.session.user.id,
+      const currentSession = ctx.context.session;
+
+      if (ctx.path === "/sign-out" && !(response instanceof APIError) && currentSession) {
+        await runBestEffortAuthSideEffect("record logout activity log", async () => {
+          await activityLogService.logUserAction({
+            action: "Logout success",
+            entityId: currentSession.user.id,
+            entityType: "authentication",
+            ipAddress: currentSession.session.ipAddress ?? ipAddress ?? null,
+            metadata: {
+              email: currentSession.user.email,
+              summary: `${currentSession.user.email} signed out successfully.`,
+            },
+            userId: currentSession.user.id,
+          });
+        }, {
+          path: ctx.path,
+          userId: currentSession.user.id,
         });
 
         return;
       }
 
-      if (ctx.path === "/sign-up/email" && !(response instanceof APIError) && ctx.context.newSession) {
-        await activityLogService.logUserAction({
-          action: "User created",
-          entityId: ctx.context.newSession.user.id,
-          entityType: "user",
-          ipAddress:
-            ctx.context.newSession.session.ipAddress ?? ipAddress ?? null,
-          metadata: {
-            email: ctx.context.newSession.user.email,
-            summary: `${ctx.context.newSession.user.email} registered a new account.`,
-          },
-          userId: ctx.context.newSession.user.id,
+      if (ctx.path === "/sign-up/email" && !(response instanceof APIError) && newSession) {
+        await runBestEffortAuthSideEffect("record sign-up activity log", async () => {
+          await activityLogService.logUserAction({
+            action: "User created",
+            entityId: newSession.user.id,
+            entityType: "user",
+            ipAddress: newSession.session.ipAddress ?? ipAddress ?? null,
+            metadata: {
+              email: newSession.user.email,
+              summary: `${newSession.user.email} registered a new account.`,
+            },
+            userId: newSession.user.id,
+          });
+        }, {
+          path: ctx.path,
+          userId: newSession.user.id,
         });
       }
     }),
