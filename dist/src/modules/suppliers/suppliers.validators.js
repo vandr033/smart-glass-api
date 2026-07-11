@@ -138,7 +138,7 @@ export const supplierMutationSchema = z.object({
     }),
     defaultLeadTimeDays: nullableNumberSchema({
         integer: true,
-        label: "Default lead time",
+        label: "Plazo de entrega predeterminado",
         min: 0,
     }),
     email: nullableEmailSchema("Supplier email"),
@@ -190,7 +190,7 @@ export const updateSupplierContactSchema = supplierContactInputSchema.omit({
     id: true,
 });
 export const createSupplierCategorySchema = z.object({
-    description: nullableStringSchema(255, "Description"),
+    description: nullableStringSchema(255, "Descripción"),
     name: z.string().trim().min(1, "Category name is required.").max(191),
 });
 export const updateSupplierCategorySchema = createSupplierCategorySchema;

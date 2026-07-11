@@ -77,31 +77,31 @@ export const listProductTemplatesQuerySchema = z.object({
 });
 const versionCoreSchema = z.object({
     defaultMarginPercent: nullableNumberSchema({
-        label: "Default margin percent",
+        label: "Porcentaje de margen predeterminado",
         max: 100,
         min: 0,
     }),
     defaultWastePercent: nullableNumberSchema({
-        label: "Default waste percent",
+        label: "Porcentaje de desperdicio predeterminado",
         max: 100,
         min: 0,
     }),
-    description: nullableStringSchema(4000, "Description"),
-    name: z.string().trim().min(1, "Version name is required.").max(191),
-    notes: nullableStringSchema(4000, "Notes"),
+    description: nullableStringSchema(4000, "Descripción"),
+    name: z.string().trim().min(1, "El nombre de la versión es obligatorio.").max(191),
+    notes: nullableStringSchema(4000, "Notas"),
     status: productTemplateVersionStatusSchema.default("DRAFT"),
 });
 export const createProductTemplateSchema = z.object({
-    code: z.string().trim().min(1, "Code is required.").max(100),
-    description: nullableStringSchema(4000, "Description"),
+    code: z.string().trim().min(1, "El código es obligatorio.").max(100),
+    description: nullableStringSchema(4000, "Descripción"),
     initialVersion: versionCoreSchema.optional(),
-    name: z.string().trim().min(1, "Template name is required.").max(191),
+    name: z.string().trim().min(1, "El nombre de la plantilla es obligatorio.").max(191),
     productType: productTemplateTypeSchema,
     status: productTemplateStatusSchema.default("DRAFT"),
 });
 export const updateProductTemplateSchema = z.object({
-    code: z.string().trim().min(1, "Code is required.").max(100),
-    description: nullableStringSchema(4000, "Description"),
+    code: z.string().trim().min(1, "El código es obligatorio.").max(100),
+    description: nullableStringSchema(4000, "Descripción"),
     name: z.string().trim().min(1, "Template name is required.").max(191),
     productType: productTemplateTypeSchema,
     status: productTemplateStatusSchema,
@@ -170,11 +170,11 @@ const productTemplateAccessoryRuleMutationSchema = z.object({
 const productTemplateLaborRuleMutationSchema = z.object({
     formulaJson: jsonLikeSchema,
     isActive: z.boolean().default(true),
-    label: z.string().trim().min(1, "Labor label is required.").max(191),
+    label: z.string().trim().min(1, "La etiqueta de mano de obra es obligatoria.").max(191),
     laborType: productTemplateLaborTypeSchema,
     sortOrder: z.coerce.number().int().min(0).default(0),
     unitCost: nullableNumberSchema({
-        label: "Unit cost",
+        label: "Costo unitario",
         min: 0,
     }),
 });

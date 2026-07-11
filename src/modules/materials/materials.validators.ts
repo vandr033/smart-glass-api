@@ -128,9 +128,9 @@ export const supplierMaterialEquivalenceIdParamSchema = z.object({
 });
 
 export const materialCategoryMutationSchema = z.object({
-  description: nullableStringSchema(255, "Description"),
+  description: nullableStringSchema(255, "Descripción"),
   isActive: z.boolean().default(true),
-  name: z.string().trim().min(1, "Category name is required.").max(191),
+  name: z.string().trim().min(1, "El nombre de la categoría es obligatorio.").max(191),
   parentId: z
     .union([z.uuid(), z.null(), z.undefined()])
     .transform((value) => (typeof value === "string" ? value : null)),
@@ -148,20 +148,20 @@ export const materialMutationSchema = z
   .object({
     allowsRotation: z.boolean().default(false),
     baseUnit: materialUnitSchema,
-    brand: nullableStringSchema(191, "Brand"),
+    brand: nullableStringSchema(191, "Marca"),
     categoryId: z.uuid({
-      message: "Category is required.",
+      message: "La categoría es obligatoria.",
     }),
-    code: z.string().trim().min(1, "Code is required.").max(100),
+    code: z.string().trim().min(1, "El código es obligatorio.").max(100),
     color: nullableStringSchema(191, "Color"),
     consumptionUnit: materialUnitSchema,
     defaultWastePercent: nullableNumberSchema({
-      label: "Default waste percent",
+      label: "Porcentaje de desperdicio predeterminado",
       max: 100,
       min: 0,
     }),
-    description: nullableStringSchema(4000, "Description"),
-    finish: nullableStringSchema(191, "Finish"),
+    description: nullableStringSchema(4000, "Descripción"),
+    finish: nullableStringSchema(191, "Acabado"),
     isCuttable: z.boolean().default(false),
     isPurchasable: z.boolean().default(true),
     isRemnantEligible: z.boolean().default(false),

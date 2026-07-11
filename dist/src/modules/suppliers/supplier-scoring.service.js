@@ -357,7 +357,7 @@ export const supplierScoringService = {
                 name: "supplier scoring config name",
             });
         }
-        throw new Error("Unexpected supplier scoring config creation state.");
+        throw new Error("Estado inesperado al crear la configuración de puntuación de proveedores.");
     },
     async updateConfig(id, input) {
         return prisma.$transaction(async (db) => {

@@ -135,35 +135,35 @@ const DEFAULT_SUPPLIER_CATEGORIES: Array<{
   name: string;
 }> = [
   {
-    description: "Primary glass suppliers and related sourcing partners.",
+    description: "Proveedores principales de vidrio y socios de abastecimiento relacionados.",
     name: "Vidrio",
   },
   {
-    description: "Extrusion, profile, and aluminum sourcing partners.",
+    description: "Socios de abastecimiento de extrusión, perfiles y aluminio.",
     name: "Aluminio",
   },
   {
-    description: "Hardware suppliers such as locks, hinges, and fasteners.",
+    description: "Proveedores de herrajes como cerraduras, bisagras y sujetadores.",
     name: "Herrajes",
   },
   {
-    description: "Supporting accessories used in fabrication and installation.",
+    description: "Accesorios de apoyo utilizados en fabricación e instalación.",
     name: "Accesorios",
   },
   {
-    description: "Consumable materials used during production and assembly.",
+    description: "Materiales consumibles utilizados durante la producción y el ensamblaje.",
     name: "Consumibles",
   },
   {
-    description: "Installation subcontractors and field support providers.",
+    description: "Subcontratistas de instalación y proveedores de soporte en campo.",
     name: "Instalación",
   },
   {
-    description: "Transport and delivery service providers.",
+    description: "Proveedores de servicios de transporte y entrega.",
     name: "Transporte",
   },
   {
-    description: "External service providers outside direct material supply.",
+    description: "Proveedores de servicios externos fuera del suministro directo de materiales.",
     name: "Servicios",
   },
 ];
@@ -176,7 +176,7 @@ const DEFAULT_MATERIAL_CATEGORIES: Array<{
   sortOrder: number;
 }> = [
   {
-    description: "Base glass material families used for cut sheets and panels.",
+    description: "Familias base de materiales de vidrio para hojas y paneles de corte.",
     name: "Vidrio",
     slug: "vidrio",
     sortOrder: 10,
@@ -203,155 +203,155 @@ const DEFAULT_MATERIAL_CATEGORIES: Array<{
     sortOrder: 30,
   },
   {
-    description: "Reflective and coated glass variants.",
+    description: "Variantes de vidrio reflectivo y recubierto.",
     name: "Vidrio reflectivo",
     parentSlug: "vidrio",
     slug: "vidrio-reflectivo",
     sortOrder: 40,
   },
   {
-    description: "Mirror sheets and mirrored glass products.",
+    description: "Hojas de espejo y productos de vidrio espejado.",
     name: "Espejo",
     parentSlug: "vidrio",
     slug: "espejo",
     sortOrder: 50,
   },
   {
-    description: "Aluminum stock and extrusion families.",
+    description: "Familias de existencias y extrusiones de aluminio.",
     name: "Aluminio",
     slug: "aluminio",
     sortOrder: 20,
   },
   {
-    description: "Primary extrusion profiles used in fabrication.",
+    description: "Perfiles de extrusión principales utilizados en fabricación.",
     name: "Perfiles",
     parentSlug: "aluminio",
     slug: "aluminio-perfiles",
     sortOrder: 10,
   },
   {
-    description: "Tubular aluminum stock.",
+    description: "Existencias de aluminio tubular.",
     name: "Tubos",
     parentSlug: "aluminio",
     slug: "aluminio-tubos",
     sortOrder: 20,
   },
   {
-    description: "Sliding and guide rail profiles.",
+    description: "Perfiles de rieles corredizos y guías.",
     name: "Rieles",
     parentSlug: "aluminio",
     slug: "aluminio-rieles",
     sortOrder: 30,
   },
   {
-    description: "Angular aluminum stock and edge profiles.",
+    description: "Existencias de aluminio angular y perfiles de borde.",
     name: "Ángulos",
     parentSlug: "aluminio",
     slug: "aluminio-angulos",
     sortOrder: 40,
   },
   {
-    description: "Complementary aluminum-specific accessories.",
+    description: "Accesorios complementarios específicos para aluminio.",
     name: "Accesorios de aluminio",
     parentSlug: "aluminio",
     slug: "aluminio-accesorios",
     sortOrder: 50,
   },
   {
-    description: "Hardware items used in windows, doors, and assemblies.",
+    description: "Herrajes utilizados en ventanas, puertas y ensamblajes.",
     name: "Herrajes",
     slug: "herrajes",
     sortOrder: 30,
   },
   {
-    description: "Lock hardware and security fittings.",
+    description: "Herrajes de cerraduras y accesorios de seguridad.",
     name: "Cerraduras",
     parentSlug: "herrajes",
     slug: "herrajes-cerraduras",
     sortOrder: 10,
   },
   {
-    description: "Handles, pulls, and grip hardware.",
+    description: "Manijas, tiradores y herrajes de agarre.",
     name: "Manijas",
     parentSlug: "herrajes",
     slug: "herrajes-manijas",
     sortOrder: 20,
   },
   {
-    description: "Wheels, rollers, and running accessories.",
+    description: "Ruedas, rodillos y accesorios de desplazamiento.",
     name: "Ruedas",
     parentSlug: "herrajes",
     slug: "herrajes-ruedas",
     sortOrder: 30,
   },
   {
-    description: "Hinges and articulated hardware.",
+    description: "Bisagras y herrajes articulados.",
     name: "Bisagras",
     parentSlug: "herrajes",
     slug: "herrajes-bisagras",
     sortOrder: 40,
   },
   {
-    description: "General accessories and supporting components.",
+    description: "Accesorios generales y componentes de apoyo.",
     name: "Accesorios",
     slug: "accesorios",
     sortOrder: 40,
   },
   {
-    description: "Consumable production and installation inputs.",
+    description: "Insumos consumibles de producción e instalación.",
     name: "Consumibles",
     slug: "consumibles",
     sortOrder: 50,
   },
   {
-    description: "Neutral and specialty silicones.",
+    description: "Siliconas neutras y especiales.",
     name: "Silicona",
     parentSlug: "consumibles",
     slug: "consumibles-silicona",
     sortOrder: 10,
   },
   {
-    description: "Screws and fastener stock.",
+    description: "Existencias de tornillos y sujetadores.",
     name: "Tornillos",
     parentSlug: "consumibles",
     slug: "consumibles-tornillos",
     sortOrder: 20,
   },
   {
-    description: "Anchors and wall plugs.",
+    description: "Anclajes y tarugos de pared.",
     name: "Tarugos",
     parentSlug: "consumibles",
     slug: "consumibles-tarugos",
     sortOrder: 30,
   },
   {
-    description: "Tape products for assembly and protection.",
+    description: "Productos de cinta para ensamblaje y protección.",
     name: "Cintas",
     parentSlug: "consumibles",
     slug: "consumibles-cintas",
     sortOrder: 40,
   },
   {
-    description: "Sealants beyond silicone products.",
+    description: "Selladores distintos de los productos de silicona.",
     name: "Selladores",
     parentSlug: "consumibles",
     slug: "consumibles-selladores",
     sortOrder: 50,
   },
   {
-    description: "Labor and installation service catalog.",
+    description: "Catálogo de servicios de mano de obra e instalación.",
     name: "Mano de Obra",
     slug: "mano-de-obra",
     sortOrder: 60,
   },
   {
-    description: "Transport and delivery services.",
+    description: "Servicios de transporte y entrega.",
     name: "Transporte",
     slug: "transporte",
     sortOrder: 70,
   },
   {
-    description: "Other external services tied to materialized work.",
+    description: "Otros servicios externos vinculados al trabajo materializado.",
     name: "Servicios",
     slug: "servicios",
     sortOrder: 80,
@@ -587,46 +587,46 @@ const DEFAULT_SUPPLIER_SCORING_CRITERIA: Array<{
   sortOrder: number;
 }> = [
   {
-    description: "Manual price competitiveness score until price lists are available.",
+    description: "Puntuación manual de competitividad de precios hasta disponer de listas de precios.",
     key: "price",
-    label: "Price",
+    label: "Precio",
     sortOrder: 10,
   },
   {
-    description: "Normalized supplier lead time score based on delivery expectations.",
+    description: "Puntuación normalizada del plazo de entrega del proveedor según las expectativas de entrega.",
     key: "delivery_time",
-    label: "Delivery Time",
+    label: "Plazo de entrega",
     sortOrder: 20,
   },
   {
-    description: "Historical reliability score for delivery and fulfillment confidence.",
+    description: "Puntuación histórica de confiabilidad para la entrega y el cumplimiento.",
     key: "reliability",
-    label: "Reliability",
+    label: "Confiabilidad",
     sortOrder: 30,
   },
   {
-    description: "Credit availability and credit limit strength.",
+    description: "Disponibilidad de crédito y solidez del límite de crédito.",
     key: "credit",
-    label: "Credit",
+    label: "Crédito",
     sortOrder: 40,
   },
   {
-    description: "Commercial preference score assigned by the business.",
+    description: "Puntuación de preferencia comercial asignada por la empresa.",
     key: "preference",
-    label: "Preference",
+    label: "Preferencia",
     sortOrder: 50,
   },
   {
-    description: "Manual availability score until purchasing and inventory signals exist.",
+    description: "Puntuación manual de disponibilidad hasta contar con señales de compras e inventario.",
     key: "availability",
-    label: "Availability",
+    label: "Disponibilidad",
     sortOrder: 60,
   },
 ];
 
 const DEFAULT_GLOBAL_SUPPLIER_SCORING_CONFIG = {
   key: "default-global",
-  name: "Default Global Supplier Scoring",
+  name: "Puntuación global predeterminada de proveedores",
   weights: [
     {
       criterionKey: "price",
@@ -771,14 +771,14 @@ const syncRolePermissions = async (
     const currentRoleId = roleMap.get(role.name);
 
     if (!currentRoleId) {
-      throw new Error(`Unable to find seeded role ${role.name}.`);
+      throw new Error(`No se encontró el rol inicial ${role.name}.`);
     }
 
     const nextPermissionIds = role.permissionKeys.map((permissionKey) => {
       const currentPermissionId = permissionMap.get(permissionKey);
 
       if (!currentPermissionId) {
-        throw new Error(`Unable to find seeded permission ${permissionKey}.`);
+        throw new Error(`No se encontró el permiso inicial ${permissionKey}.`);
       }
 
       return currentPermissionId;
@@ -869,7 +869,7 @@ const assignSuperAdminRole = async (
   const superAdminRoleId = roleMap.get(SUPER_ADMIN_ROLE_NAME);
 
   if (!superAdminRoleId) {
-    throw new Error("SUPER_ADMIN role was not seeded.");
+    throw new Error("No se inicializó el rol SUPER_ADMIN.");
   }
 
   await prisma.userRole.upsert({
@@ -995,7 +995,7 @@ const seedMaterialCategories = async (): Promise<Map<string, string>> => {
       : null;
 
     if (category.parentSlug && !parentId) {
-      throw new Error(`Parent material category ${category.parentSlug} was not seeded.`);
+      throw new Error(`No se inicializó la categoría de material padre ${category.parentSlug}.`);
     }
 
     const record = await prisma.materialCategory.upsert({
@@ -1031,7 +1031,7 @@ const seedMaterials = async (categoryMap: Map<string, string>): Promise<void> =>
     const categoryId = categoryMap.get(material.categorySlug);
 
     if (!categoryId) {
-      throw new Error(`Material category ${material.categorySlug} was not seeded.`);
+      throw new Error(`No se inicializó la categoría de material ${material.categorySlug}.`);
     }
 
     await prisma.material.upsert({
@@ -1401,7 +1401,7 @@ const seedProductTemplates = async (): Promise<number> => {
       defaultMarginPercent: 18,
       defaultWastePercent: 10,
       description:
-        "Simple fixed glass panel template used for quick simulation previews.",
+        "Plantilla simple de panel fijo de vidrio para vistas previas rápidas de simulación.",
       inputs: [
         {
           defaultValueJson: Prisma.JsonNull,
@@ -1445,7 +1445,7 @@ const seedProductTemplates = async (): Promise<number> => {
           inputType: "NUMBER",
           isRequired: true,
           key: "quantity",
-          label: "Quantity",
+          label: "Cantidad",
           optionsJson: Prisma.JsonNull,
           sortOrder: 40,
           unit: "unit",
@@ -1487,7 +1487,7 @@ const seedProductTemplates = async (): Promise<number> => {
             },
           }),
           isActive: true,
-          label: "Installation labor",
+          label: "Mano de obra de instalación",
           laborType: "INSTALLATION",
           sortOrder: 10,
           unitCost: 45,
@@ -1521,11 +1521,11 @@ const seedProductTemplates = async (): Promise<number> => {
         },
       ],
       name: "Fixed glass panel v1",
-      notes: "Seeded example for direct glass sheet simulation previews.",
+      notes: "Ejemplo inicial para vistas previas directas de simulación de hojas de vidrio.",
       productType: "WINDOW",
       status: "ACTIVE",
       templateDescription:
-        "Reusable fixed glass panel definitions for later quotation workflows.",
+        "Definiciones reutilizables de panel fijo de vidrio para futuros flujos de cotización.",
       templateName: "Fixed Glass Panel",
     });
     seededCount += 1;
@@ -1557,7 +1557,7 @@ const seedProductTemplates = async (): Promise<number> => {
       defaultMarginPercent: 22,
       defaultWastePercent: 12,
       description:
-        "Basic sliding window approximation with one glass rule and one aluminum perimeter rule.",
+        "Aproximación básica de ventana corrediza con una regla de vidrio y una regla de perímetro de aluminio.",
       inputs: [
         {
           defaultValueJson: Prisma.JsonNull,
@@ -1590,7 +1590,7 @@ const seedProductTemplates = async (): Promise<number> => {
           inputType: "MATERIAL_SELECT",
           isRequired: true,
           key: "glassMaterialId",
-          label: "Glass material",
+          label: "Material de vidrio",
           optionsJson: Prisma.JsonNull,
           sortOrder: 30,
           unit: null,
@@ -1601,7 +1601,7 @@ const seedProductTemplates = async (): Promise<number> => {
           inputType: "MATERIAL_SELECT",
           isRequired: true,
           key: "aluminumProfileMaterialId",
-          label: "Aluminum profile",
+          label: "Perfil de aluminio",
           optionsJson: Prisma.JsonNull,
           sortOrder: 40,
           unit: null,
@@ -1612,7 +1612,7 @@ const seedProductTemplates = async (): Promise<number> => {
           inputType: "NUMBER",
           isRequired: true,
           key: "quantity",
-          label: "Quantity",
+          label: "Cantidad",
           optionsJson: Prisma.JsonNull,
           sortOrder: 50,
           unit: "unit",
@@ -1748,7 +1748,7 @@ const seedProductTemplates = async (): Promise<number> => {
             },
           }),
           isActive: true,
-          label: "Perimeter profile approximation",
+          label: "Aproximación de perfil perimetral",
           materialId: fallbackAluminumProfile.id,
           ruleType: "LINEAR_CUT",
           sortOrder: 20,
@@ -1757,12 +1757,12 @@ const seedProductTemplates = async (): Promise<number> => {
       ],
       name: "Sliding window basic v1",
       notes:
-        "Seeded approximation for future multi-panel quotation and optimization flows.",
+        "Aproximación inicial para futuros flujos de cotización y optimización de múltiples paneles.",
       productType: "WINDOW",
       status: "ACTIVE",
       templateDescription:
-        "Reusable sliding window template with glass and aluminum preview rules.",
-      templateName: "Sliding Window Basic",
+        "Plantilla reutilizable de ventana corrediza con reglas de vista previa para vidrio y aluminio.",
+      templateName: "Ventana corrediza básica",
     });
     seededCount += 1;
   } else {
@@ -1778,14 +1778,14 @@ const seedProductTemplates = async (): Promise<number> => {
       code: "TPL-MIRROR",
       defaultMarginPercent: 18,
       defaultWastePercent: 8,
-      description: "Basic mirror template seeded only when a mirror material exists.",
+      description: "Plantilla básica de espejo inicializada solo cuando existe un material de espejo.",
       inputs: [
         {
           defaultValueJson: Prisma.JsonNull,
           inputType: "NUMBER",
           isRequired: true,
           key: "widthMm",
-          label: "Width",
+          label: "Ancho",
           optionsJson: Prisma.JsonNull,
           sortOrder: 10,
           unit: "mm",
@@ -1798,7 +1798,7 @@ const seedProductTemplates = async (): Promise<number> => {
           inputType: "NUMBER",
           isRequired: true,
           key: "heightMm",
-          label: "Height",
+          label: "Alto",
           optionsJson: Prisma.JsonNull,
           sortOrder: 20,
           unit: "mm",
@@ -1811,7 +1811,7 @@ const seedProductTemplates = async (): Promise<number> => {
           inputType: "MATERIAL_SELECT",
           isRequired: true,
           key: "mirrorMaterialId",
-          label: "Mirror material",
+          label: "Material de espejo",
           optionsJson: Prisma.JsonNull,
           sortOrder: 30,
           unit: null,
@@ -1822,7 +1822,7 @@ const seedProductTemplates = async (): Promise<number> => {
           inputType: "NUMBER",
           isRequired: true,
           key: "quantity",
-          label: "Quantity",
+          label: "Cantidad",
           optionsJson: Prisma.JsonNull,
           sortOrder: 40,
           unit: "unit",
@@ -1860,11 +1860,11 @@ const seedProductTemplates = async (): Promise<number> => {
         },
       ],
       name: "Mirror v1",
-      notes: "Seeded only when a mirror-compatible material exists in the catalog.",
+      notes: "Inicializado solo cuando existe un material compatible con espejo en el catálogo.",
       productType: "MIRROR",
       status: "ACTIVE",
       templateDescription:
-        "Reusable mirror template for future simulation and quotation flows.",
+        "Plantilla reutilizable de espejo para futuros flujos de simulación y cotización.",
       templateName: "Mirror",
     });
     seededCount += 1;
@@ -1999,7 +1999,7 @@ const main = async (): Promise<void> => {
 
 void main()
   .catch((error: unknown) => {
-    console.error("Database seed failed.");
+    console.error("La inicialización de la base de datos falló.");
     console.error(error);
     process.exitCode = 1;
   })

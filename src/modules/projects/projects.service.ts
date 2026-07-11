@@ -1140,7 +1140,7 @@ export const projectsService = {
       }
     }
 
-    throw new Error("Unexpected project creation state.");
+    throw new Error("Estado inesperado al crear el proyecto.");
   },
 
   async updateProject(

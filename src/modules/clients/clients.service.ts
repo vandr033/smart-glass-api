@@ -494,7 +494,7 @@ export const clientsService = {
       });
     }
 
-    throw new Error("Unexpected client creation state.");
+    throw new Error("Estado inesperado al crear el cliente.");
   },
 
   async updateClient(

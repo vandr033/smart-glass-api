@@ -539,7 +539,7 @@ export const supplierScoringService = {
       });
     }
 
-    throw new Error("Unexpected supplier scoring config creation state.");
+    throw new Error("Estado inesperado al crear la configuración de puntuación de proveedores.");
   },
 
   async updateConfig(

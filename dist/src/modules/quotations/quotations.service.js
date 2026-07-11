@@ -1370,7 +1370,7 @@ export const quotationsService = {
         });
         const item = refreshed.items.find((record) => record.id === itemId);
         if (!item) {
-            throw new AppError("Quotation item could not be loaded after creation.", 500);
+            throw new AppError("No se pudo cargar el ítem de cotización después de crearlo.", 500);
         }
         return {
             item,
@@ -1410,7 +1410,7 @@ export const quotationsService = {
         });
         const item = refreshed.items.find((record) => record.id === itemId);
         if (!item) {
-            throw new AppError("Quotation item could not be loaded after creation.", 500);
+            throw new AppError("No se pudo cargar el ítem de cotización después de crearlo.", 500);
         }
         return {
             item,
@@ -1450,7 +1450,7 @@ export const quotationsService = {
         });
         const item = refreshed.items.find((record) => record.id === itemId);
         if (!item) {
-            throw new AppError("Quotation item could not be loaded after creation.", 500);
+            throw new AppError("No se pudo cargar el ítem de cotización después de crearlo.", 500);
         }
         return {
             item,
@@ -1658,7 +1658,7 @@ export const quotationsService = {
         });
         const current = refreshed.items.find((record) => record.id === itemId);
         if (!current) {
-            throw new AppError("Quotation item could not be loaded after update.", 500);
+            throw new AppError("No se pudo cargar el ítem de cotización después de actualizarlo.", 500);
         }
         return {
             current,
@@ -1777,7 +1777,7 @@ export const quotationsService = {
             },
         });
         if (!version) {
-            throw new AppError("Quotation version could not be loaded.", 500);
+            throw new AppError("No se pudo cargar la versión de cotización.", 500);
         }
         return mapQuotationVersion(version, options.canViewCost ?? false);
     },
@@ -2034,7 +2034,7 @@ export const quotationsService = {
         });
         const historyEntry = refreshed.statusHistory[0];
         if (!historyEntry) {
-            throw new AppError("Quotation status history could not be loaded.", 500);
+            throw new AppError("No se pudo cargar el historial de estados de la cotización.", 500);
         }
         return {
             historyEntry,

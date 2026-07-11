@@ -68,10 +68,10 @@ const main = async () => {
     const warehouse = await inventoryService.createWarehouse({
         address: null,
         code: warehouseCode,
-        description: "Temporary Module 9 smoke verification warehouse.",
+        description: "Almacén temporal para la verificación de humo del módulo 9.",
         latitude: null,
         longitude: null,
-        name: `Cutting Smoke ${suffix}`,
+        name: `Prueba de corte ${suffix}`,
         status: "ACTIVE",
     }, actor.id);
     const fullSheetStock = await inventoryService.createStockEntry({

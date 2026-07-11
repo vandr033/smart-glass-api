@@ -6,7 +6,7 @@ import { sendError, sendSuccess } from "../utils/response.js";
 export const meRouter = Router();
 meRouter.get("/me", requireAuth(), asyncHandler(async (request, response) => {
     if (!request.currentUser || !request.authorizationSummary) {
-        sendError(response, "Authentication required.", 401);
+        sendError(response, "Se requiere autenticación.", 401);
         return;
     }
     const enabledModules = await moduleRegistryService.getEnabledModules(request.authorizationSummary.permissions);

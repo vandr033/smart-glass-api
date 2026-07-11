@@ -8,10 +8,10 @@ const buildDescriptions = (names) => {
     const moduleLabelPlural = toTitleCase(names.routeSegment);
     const moduleLabelSingular = toTitleCase(names.entityNameSingular);
     return {
-        createDescription: `Create a ${moduleLabelSingular.toLowerCase()} record with shared validation, logging, and permission-aware workflows.`,
-        editDescription: `Update ${moduleLabelPlural.toLowerCase()} details using the same schema contract and RBAC safeguards as the create flow.`,
-        listDescription: `Manage ${moduleLabelPlural.toLowerCase()} with the shared DataTable foundation, including search, filters, pagination, and row actions.`,
-        viewDescription: `Review ${moduleLabelSingular.toLowerCase()} metadata from the shared module scaffold without leaving the permission-aware admin workspace.`,
+        createDescription: `Crea un registro de ${moduleLabelSingular.toLowerCase()} con validación, auditoría y flujos protegidos por permisos.`,
+        editDescription: `Actualiza los detalles de ${moduleLabelPlural.toLowerCase()} usando el mismo contrato de esquema y controles de acceso del flujo de creación.`,
+        listDescription: `Administra ${moduleLabelPlural.toLowerCase()} con la tabla compartida, incluyendo búsqueda, filtros, paginación y acciones por fila.`,
+        viewDescription: `Revisa los metadatos de ${moduleLabelSingular.toLowerCase()} desde el módulo compartido protegido por permisos.`,
     };
 };
 export const renderBackendConstantsTemplate = (names) => {
@@ -198,7 +198,7 @@ const findRecordOrThrow = async (id: string) => {
   });
 
   if (!record) {
-    throw new AppError("${names.entityLabelSingular} not found.", 404);
+    throw new AppError("No se encontró ${names.entityLabelSingular}.", 404);
   }
 
   return record;
@@ -332,7 +332,7 @@ const getRequired${names.entityLabelSingular}Id = (
   const ${names.pageParam} = Array.isArray(value) ? value[0] : value;
 
   if (!${names.pageParam}) {
-    throw new AppError("${names.entityLabelSingular} id is required.", 400);
+    throw new AppError("El identificador de ${names.entityLabelSingular} es obligatorio.", 400);
   }
 
   return ${names.entityNameSingular}IdParamSchema.parse({
@@ -548,7 +548,7 @@ import {
 export const ${names.entityNameSingular}FormSchema = z.object({
   description: z.string().trim().max(500).optional(),
   isActive: z.boolean().default(true),
-  name: z.string().trim().min(2, "Name must be at least 2 characters.").max(191),
+  name: z.string().trim().min(2, "El nombre debe tener al menos 2 caracteres.").max(191),
 });
 
 export type ${names.entityLabelSingular}FormValues = z.infer<typeof ${names.entityNameSingular}FormSchema>;
@@ -724,11 +724,11 @@ export function ${names.entityLabelSingular}Form(props: ${names.entityLabelSingu
             }}
             type="button"
           >
-            Retry
+            Intentar nuevamente
           </button>
         }
         description={${names.entityNameSingular}Query.error.message}
-        title="${names.entityLabelSingular} details could not be loaded"
+        title="No se pudieron cargar los detalles de ${names.entityLabelSingular}"
       />
     );
   }
@@ -754,8 +754,8 @@ export function ${names.entityLabelSingular}Form(props: ${names.entityLabelSingu
           setSubmitError(null);
           setSubmitMessage(
             props.mode === "create"
-              ? "${names.entityLabelSingular} created successfully."
-              : "${names.entityLabelSingular} updated successfully.",
+              ? "${names.entityLabelSingular} creado correctamente."
+              : "${names.entityLabelSingular} actualizado correctamente.",
           );
 
           router.push(${names.constantPrefix}_ROUTES.view(record.id));
@@ -770,16 +770,16 @@ export function ${names.entityLabelSingular}Form(props: ${names.entityLabelSingu
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">
-              {props.mode === "create" ? "Create ${names.entityLabelSingular}" : "Edit ${names.entityLabelSingular}"}
+              {props.mode === "create" ? "Crear ${names.entityLabelSingular}" : "Editar ${names.entityLabelSingular}"}
             </p>
             <h2 className="text-2xl font-semibold tracking-tight text-stone-950">
               {props.mode === "create"
-                ? "Add a ${names.entityNameSingular}"
-                : \`Update \${${names.entityNameSingular}Query.data?.name ?? "${names.entityNameSingular}"}\`}
+                ? "Agregar un ${names.entityNameSingular}"
+                : \`Actualizar \${${names.entityNameSingular}Query.data?.name ?? "${names.entityNameSingular}"}\`}
             </h2>
             <p className="max-w-3xl text-sm leading-7 text-stone-700">
-              Keep future modules consistent by reusing the same validation, logging, and
-              permission-aware form foundation.
+              Mantén consistencia entre módulos reutilizando la misma base de validación,
+              auditoría y permisos.
             </p>
           </div>
 
@@ -788,7 +788,7 @@ export function ${names.entityLabelSingular}Form(props: ${names.entityLabelSingu
             href={props.mode === "create" ? ${names.constantPrefix}_ROUTES.list : ${names.constantPrefix}_ROUTES.view(props.${names.pageParam})}
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            Volver
           </Link>
         </div>
       </section>
@@ -796,11 +796,11 @@ export function ${names.entityLabelSingular}Form(props: ${names.entityLabelSingu
       <section className={sectionClassName}>
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <label className="block space-y-2">
-            <span className="text-sm font-medium text-stone-700">Name</span>
+            <span className="text-sm font-medium text-stone-700">Nombre</span>
             <input
               className="w-full rounded-2xl border border-stone-200 bg-stone-50/80 px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-stone-400 focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
               disabled={isBusy}
-              placeholder="Enter the ${names.entityNameSingular} name"
+              placeholder="Escribe el nombre de ${names.entityNameSingular}"
               {...form.register("name")}
             />
             {form.formState.errors.name ? (
@@ -812,9 +812,9 @@ export function ${names.entityLabelSingular}Form(props: ${names.entityLabelSingu
 
           <label className="flex items-center justify-between gap-4 rounded-[1.5rem] border border-stone-200/90 bg-white/85 px-4 py-4">
             <span className="space-y-1">
-              <span className="block text-sm font-medium text-stone-700">Active status</span>
+              <span className="block text-sm font-medium text-stone-700">Estado activo</span>
               <span className="block text-xs text-stone-500">
-                Keep this ${names.entityNameSingular} visible in active table results.
+                Mantén este ${names.entityNameSingular} visible en los resultados activos.
               </span>
             </span>
             <input
@@ -827,11 +827,11 @@ export function ${names.entityLabelSingular}Form(props: ${names.entityLabelSingu
         </div>
 
         <label className="mt-6 block space-y-2">
-          <span className="text-sm font-medium text-stone-700">Description</span>
+          <span className="text-sm font-medium text-stone-700">Descripción</span>
           <textarea
             className="min-h-40 w-full rounded-2xl border border-stone-200 bg-stone-50/80 px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-stone-400 focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
             disabled={isBusy}
-            placeholder="Describe how this ${names.entityNameSingular} should be used"
+            placeholder="Describe cómo debe utilizarse este ${names.entityNameSingular}"
             {...form.register("description")}
           />
           {form.formState.errors.description ? (
@@ -863,11 +863,11 @@ export function ${names.entityLabelSingular}Form(props: ${names.entityLabelSingu
           {props.mode === "create" ? <PackagePlus className="h-4 w-4" /> : <Save className="h-4 w-4" />}
           {isBusy
             ? props.mode === "create"
-              ? "Creating ${names.entityNameSingular}..."
-              : "Saving changes..."
+              ? "Creando ${names.entityNameSingular}…"
+              : "Guardando cambios…"
             : props.mode === "create"
-              ? "Create ${names.entityLabelSingular}"
-              : "Save changes"}
+              ? "Crear ${names.entityLabelSingular}"
+              : "Guardar cambios"}
         </button>
       </div>
     </form>
@@ -903,21 +903,21 @@ const ${names.entityNameSingular}Columns: ColumnDef<${names.entityLabelSingular}
       <div className="min-w-[14rem] space-y-1">
         <p className="font-semibold text-stone-950">{row.original.name}</p>
         <p className="text-xs uppercase tracking-[0.18em] text-stone-500">
-          {row.original.isActive ? "Active record" : "Inactive record"}
+          {row.original.isActive ? "Registro activo" : "Registro inactivo"}
         </p>
       </div>
     ),
-    header: "Name",
+    header: "Nombre",
   },
   {
     accessorKey: "description",
     cell: ({ row }) => (
       <span className="text-sm text-stone-700">
-        {row.original.description || "No description provided."}
+        {row.original.description || "No se proporcionó una descripción."}
       </span>
     ),
     enableSorting: false,
-    header: "Description",
+    header: "Descripción",
   },
   {
     accessorKey: "isActive",
@@ -929,10 +929,10 @@ const ${names.entityNameSingular}Columns: ColumnDef<${names.entityLabelSingular}
             : "bg-stone-200 text-stone-700"
         }\`}
       >
-        {row.original.isActive ? "Active" : "Inactive"}
+        {row.original.isActive ? "Activo" : "Inactivo"}
       </span>
     ),
-    header: "Status",
+    header: "Estado",
   },
   {
     accessorKey: "updatedAt",
@@ -941,7 +941,7 @@ const ${names.entityNameSingular}Columns: ColumnDef<${names.entityLabelSingular}
         {formatDate(row.original.updatedAt)}
       </span>
     ),
-    header: "Updated",
+    header: "Actualizado",
   },
   {
     accessorKey: "createdAt",
@@ -950,7 +950,7 @@ const ${names.entityNameSingular}Columns: ColumnDef<${names.entityLabelSingular}
         {formatDate(row.original.createdAt)}
       </span>
     ),
-    header: "Created",
+    header: "Creado",
   },
 ];
 
@@ -963,22 +963,22 @@ export function ${names.entityLabelSingular}Table() {
     csv: {
       columns: [
         {
-          header: "Name",
+          header: "Nombre",
           key: "name",
           value: (row) => row.name,
         },
         {
-          header: "Description",
+          header: "Descripción",
           key: "description",
           value: (row) => row.description ?? "",
         },
         {
-          header: "Status",
+          header: "Estado",
           key: "status",
-          value: (row) => (row.isActive ? "Active" : "Inactive"),
+          value: (row) => (row.isActive ? "Activo" : "Inactivo"),
         },
         {
-          header: "Updated At",
+          header: "Actualizado el",
           key: "updatedAt",
           value: (row) => row.updatedAt,
         },
@@ -991,20 +991,20 @@ export function ${names.entityLabelSingular}Table() {
     },
     emptyState: {
       description:
-        "Try broadening the search, clearing filters, or creating the first record for this scaffolded module.",
-      title: "No records matched the current table view",
+        "Prueba ampliando la búsqueda, quitando filtros o creando el primer registro de este módulo.",
+      title: "No hay registros para la vista actual",
     },
     filters: [
       {
         id: "isActive",
-        label: "Status",
+        label: "Estado",
         options: [
           {
-            label: "Active",
+            label: "Activo",
             value: "true",
           },
           {
-            label: "Inactive",
+            label: "Inactivo",
             value: "false",
           },
         ],
@@ -1019,28 +1019,28 @@ export function ${names.entityLabelSingular}Table() {
         href: (row) => ${names.constantPrefix}_ROUTES.view(row.id),
         icon: Eye,
         id: "view",
-        label: "View",
+        label: "Ver",
         variant: "view",
       },
       {
         href: (row) => ${names.constantPrefix}_ROUTES.edit(row.id),
         icon: Pencil,
         id: "edit",
-        label: "Edit",
+        label: "Editar",
         variant: "edit",
       },
       {
         confirmation: {
-          confirmLabel: "Delete record",
+          confirmLabel: "Eliminar registro",
           description: (rows) =>
-            \`Delete \${rows[0]?.name ?? "this record"} from active views? This preserves the audit trail through a soft delete.\`,
-          title: "Delete record?",
+            \`¿Eliminar \${rows[0]?.name ?? "este registro"} de las vistas activas? El historial de auditoría se conservará.\`,
+          title: "¿Eliminar registro?",
           tone: "danger",
         },
         icon: Trash2,
         id: "delete",
         invalidateAfterSuccess: true,
-        label: "Delete",
+        label: "Eliminar",
         onClick: async (row) => {
           await deleteMutation.mutateAsync(row.id);
         },
@@ -1048,7 +1048,7 @@ export function ${names.entityLabelSingular}Table() {
         variant: "delete",
       },
     ],
-    searchPlaceholder: "Search by name or description",
+    searchPlaceholder: "Buscar por nombre o descripción",
   };
 
   return <DataTable config={tableConfig} endpoint={${names.constantPrefix}_API_ENDPOINT} />;
@@ -1082,7 +1082,7 @@ export default function ${names.entityLabelPlural}ListPage({
               className="inline-flex items-center rounded-2xl bg-stone-950 px-4 py-3 text-sm font-semibold text-amber-100 transition hover:bg-stone-800"
               href={${names.constantPrefix}_ROUTES.create}
             >
-              Create ${names.entityNameSingular}
+              Crear ${names.entityNameSingular}
             </Link>
           ) : null
         }
@@ -1108,8 +1108,8 @@ export default function Create${names.entityLabelSingular}Page() {
     <main className="space-y-6">
       <PageHeader
         description="${descriptions.createDescription}"
-        eyebrow="Create ${names.entityLabelSingular}"
-        title="New ${names.entityLabelSingular}"
+        eyebrow="Crear ${names.entityLabelSingular}"
+        title="Nuevo ${names.entityLabelSingular}"
       />
 
       <${names.entityLabelSingular}Form mode="create" />
@@ -1135,8 +1135,8 @@ export default function Edit${names.entityLabelSingular}Page({
     <main className="space-y-6">
       <PageHeader
         description="${descriptions.editDescription}"
-        eyebrow="Edit ${names.entityLabelSingular}"
-        title="Edit ${names.entityLabelSingular}"
+        eyebrow="Editar ${names.entityLabelSingular}"
+        title="Editar ${names.entityLabelSingular}"
       />
 
       <${names.entityLabelSingular}Form mode="edit" ${names.pageParam}={${names.pageParam}} />
@@ -1183,11 +1183,11 @@ export default function ${names.entityLabelSingular}ViewPage({
             }}
             type="button"
           >
-            Retry
+            Intentar nuevamente
           </button>
         }
         description={${names.entityNameSingular}Query.error.message}
-        title="${names.entityLabelSingular} details could not be loaded"
+        title="No se pudieron cargar los detalles de ${names.entityLabelSingular}"
       />
     );
   }
@@ -1195,7 +1195,7 @@ export default function ${names.entityLabelSingular}ViewPage({
   if (${names.entityNameSingular}Query.isLoading || !${names.entityNameSingular}Query.data) {
     return (
       <section className={sectionClassName}>
-        <p className="text-sm text-stone-500">Loading ${names.entityNameSingular} details...</p>
+        <p className="text-sm text-stone-500">Cargando los detalles de ${names.entityNameSingular}…</p>
       </section>
     );
   }
@@ -1210,47 +1210,47 @@ export default function ${names.entityLabelSingular}ViewPage({
             className="inline-flex items-center rounded-2xl bg-stone-950 px-4 py-3 text-sm font-semibold text-amber-100 transition hover:bg-stone-800"
             href={${names.constantPrefix}_ROUTES.edit(record.id)}
           >
-            Edit ${names.entityNameSingular}
+            Editar ${names.entityNameSingular}
           </Link>
         }
         description="${descriptions.viewDescription}"
-        eyebrow="${names.entityLabelSingular} Record"
-        title="${names.entityLabelSingular} Details"
+        eyebrow="Registro de ${names.entityLabelSingular}"
+        title="Detalle de ${names.entityLabelSingular}"
       />
 
       <section className={sectionClassName}>
         <dl className="grid gap-6 sm:grid-cols-2">
           <div className="space-y-2">
             <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">
-              Name
+              Nombre
             </dt>
             <dd className="text-lg font-semibold text-stone-950">{record.name}</dd>
           </div>
           <div className="space-y-2">
             <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">
-              Status
+              Estado
             </dt>
             <dd className="text-sm text-stone-700">
-              {record.isActive ? "Active" : "Inactive"}
+              {record.isActive ? "Activo" : "Inactivo"}
             </dd>
           </div>
           <div className="space-y-2 sm:col-span-2">
             <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">
-              Description
+              Descripción
             </dt>
             <dd className="text-sm leading-7 text-stone-700">
-              {record.description || "No description provided."}
+              {record.description || "No se proporcionó una descripción."}
             </dd>
           </div>
           <div className="space-y-2">
             <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">
-              Created
+              Creado
             </dt>
             <dd className="text-sm text-stone-700">{record.createdAt}</dd>
           </div>
           <div className="space-y-2">
             <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">
-              Updated
+              Actualizado
             </dt>
             <dd className="text-sm text-stone-700">{record.updatedAt}</dd>
           </div>

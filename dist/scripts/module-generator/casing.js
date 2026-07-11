@@ -28,7 +28,7 @@ const toPascalCase = (words) => {
 export const buildModuleNames = (value) => {
     const words = toWords(value);
     if (words.length === 0) {
-        throw new Error("Module name must contain at least one alphanumeric character.");
+        throw new Error("El nombre del módulo debe contener al menos un carácter alfanumérico.");
     }
     const pluralWords = [...words];
     const singularWords = [...words];

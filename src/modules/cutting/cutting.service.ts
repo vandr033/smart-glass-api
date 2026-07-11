@@ -1419,7 +1419,7 @@ const findCandidateSheetsWithWarnings = async (
     return {
       candidates: [],
       warnings: [
-        "No warehouse was provided, so inventory sheet candidates were skipped.",
+        "No se proporcionó un almacén, por lo que se omitieron las hojas candidatas de inventario.",
       ],
     };
   }
@@ -1513,7 +1513,7 @@ const findCandidateRemnantsWithWarnings = async (
     return {
       candidates: [],
       warnings: [
-        "No warehouse was provided, so remnant candidates were skipped.",
+        "No se proporcionó un almacén, por lo que se omitieron los remanentes candidatos.",
       ],
     };
   }

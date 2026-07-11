@@ -196,32 +196,32 @@ export const profileCuttingPlanIdParamSchema = z.object({
 });
 
 export const productionJobItemInputSchema = z.object({
-  description: nullableStringSchema(4000, "Item description"),
+  description: nullableStringSchema(4000, "Descripción del ítem"),
   materialId: nullableUuidSchema,
   metadataJson: nullableJsonObjectSchema,
-  name: z.string().trim().min(1, "Item name is required.").max(191),
-  quantity: positiveNumberSchema("Item quantity").default(1),
+  name: z.string().trim().min(1, "El nombre del ítem es obligatorio.").max(191),
+  quantity: positiveNumberSchema("Cantidad del ítem").default(1),
   quotationItemId: nullableUuidSchema,
   status: productionJobItemStatusSchema.default("PENDING"),
 });
 
 export const productionTaskInputSchema = z.object({
   assignedToUserId: nullableUuidSchema,
-  description: nullableStringSchema(4000, "Task description"),
+  description: nullableStringSchema(4000, "Descripción de la tarea"),
   productionJobItemId: nullableUuidSchema,
   sortOrder: z.coerce.number().int().min(0).default(0),
   status: productionTaskStatusSchema.default("PENDING"),
   taskType: productionTaskTypeSchema,
-  title: z.string().trim().min(1, "Task title is required.").max(191),
+  title: z.string().trim().min(1, "El título de la tarea es obligatorio.").max(191),
 });
 
 export const createProductionJobSchema = z.object({
   assignedToUserId: nullableUuidSchema,
   cuttingPlanId: nullableUuidSchema,
   items: z.array(productionJobItemInputSchema).default([]),
-  notes: nullableStringSchema(4000, "Notes"),
-  plannedEndDate: nullableDateSchema("Planned end date"),
-  plannedStartDate: nullableDateSchema("Planned start date"),
+  notes: nullableStringSchema(4000, "Notas"),
+  plannedEndDate: nullableDateSchema("Fecha de finalización planificada"),
+  plannedStartDate: nullableDateSchema("Fecha de inicio planificada"),
   priority: productionJobPrioritySchema.default("NORMAL"),
   projectId: nullableUuidSchema,
   quotationId: nullableUuidSchema,
@@ -263,30 +263,30 @@ export const generateProductionTasksSchema = z.object({
 
 export const updateProductionTaskSchema = z.object({
   assignedToUserId: nullableUuidSchema,
-  description: nullableStringSchema(4000, "Task description"),
+  description: nullableStringSchema(4000, "Descripción de la tarea"),
   sortOrder: z.coerce.number().int().min(0),
   status: productionTaskStatusSchema,
-  title: z.string().trim().min(1, "Task title is required.").max(191),
+  title: z.string().trim().min(1, "El título de la tarea es obligatorio.").max(191),
 });
 
 const remnantOutputSchema = z.object({
-  code: nullableStringSchema(100, "Remnant code"),
+  code: nullableStringSchema(100, "Código del remanente"),
   lengthMm: nullableNumberSchema({
-    label: "Remnant length",
+    label: "Largo del remanente",
     min: 0,
   }),
-  notes: nullableStringSchema(4000, "Remnant notes"),
-  quantity: positiveNumberSchema("Remnant quantity").default(1),
+  notes: nullableStringSchema(4000, "Notas del remanente"),
+  quantity: positiveNumberSchema("Cantidad del remanente").default(1),
   thicknessMm: nullableNumberSchema({
-    label: "Remnant thickness",
+    label: "Espesor del remanente",
     min: 0,
   }),
   unit: materialUnitSchema,
   warehouseId: z.uuid({
-    message: "Remnant warehouse is required.",
+      message: "El almacén del remanente es obligatorio.",
   }),
   widthMm: nullableNumberSchema({
-    label: "Remnant width",
+    label: "Ancho del remanente",
     min: 0,
   }),
 });
@@ -294,21 +294,21 @@ const remnantOutputSchema = z.object({
 export const consumeMaterialForTaskSchema = z
   .object({
     actualWasteAreaM2: nullableNumberSchema({
-      label: "Actual waste area",
+      label: "Área de desperdicio real",
       min: 0,
     }),
     consumptionType: materialConsumptionTypeSchema.default("ACTUAL"),
-    consumedAt: nullableDateSchema("Consumed at"),
+    consumedAt: nullableDateSchema("Consumido el"),
     inventoryStockId: nullableUuidSchema,
     materialId: nullableUuidSchema,
-    notes: nullableStringSchema(4000, "Consumption notes"),
-    quantity: positiveNumberSchema("Consumption quantity"),
+    notes: nullableStringSchema(4000, "Notas de consumo"),
+    quantity: positiveNumberSchema("Cantidad consumida"),
     remnantOutput: z.union([remnantOutputSchema, z.null(), z.undefined()]).transform(
       (value) => value ?? null,
     ),
     remnantPieceId: nullableUuidSchema,
     scrapQuantity: nullableNumberSchema({
-      label: "Scrap quantity",
+      label: "Cantidad desechada",
       min: 0,
     }),
     scrapUnit: z.union([materialUnitSchema, z.null(), z.undefined()]).transform(

@@ -1463,7 +1463,7 @@ export const purchasingService = {
         return this.createPurchaseRequest({
             items: [
                 {
-                    description: `${cuttingPlan.material.name} purchase requirement from cutting plan ${cuttingPlan.code}.`,
+                    description: `Necesidad de compra de ${cuttingPlan.material.name} desde el plan de corte ${cuttingPlan.code}.`,
                     estimatedUnitCost: null,
                     id: undefined,
                     materialId: cuttingPlan.material.id,
@@ -1528,7 +1528,7 @@ export const purchasingService = {
         return this.createPurchaseRequest({
             items: [
                 {
-                    description: `${profileCuttingPlan.material.name} purchase requirement from profile cutting plan ${profileCuttingPlan.code}.`,
+                    description: `Necesidad de compra de ${profileCuttingPlan.material.name} desde el plan de corte de perfiles ${profileCuttingPlan.code}.`,
                     estimatedUnitCost: null,
                     id: undefined,
                     materialId: profileCuttingPlan.material.id,
@@ -1578,7 +1578,7 @@ export const purchasingService = {
         const stockByMaterialId = new Map(stockRows.map((row) => [row.materialId, Number(row._sum.quantity ?? 0)]));
         return this.createPurchaseRequest({
             items: materials.map((material) => ({
-                description: `Inventory shortage review for ${material.name}.`,
+                description: `Revisión de escasez de inventario para ${material.name}.`,
                 estimatedUnitCost: null,
                 id: undefined,
                 materialId: material.id,

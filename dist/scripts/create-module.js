@@ -6,7 +6,7 @@ const currentDir = path.dirname(currentFilePath);
 const backendRoot = path.resolve(currentDir, "..");
 const moduleName = process.argv[2];
 if (!moduleName) {
-    console.error("Module name is required. Example: npm run create:module products");
+    console.error("El nombre del módulo es obligatorio. Ejemplo: npm run create:module productos");
     process.exit(1);
 }
 generateModuleScaffold({
@@ -14,12 +14,12 @@ generateModuleScaffold({
     moduleName,
 })
     .then((result) => {
-    console.log(`Created module scaffold for "${result.names.routeSegment}".`);
+    console.log(`Estructura del módulo "${result.names.routeSegment}" creada correctamente.`);
     console.log(`Backend: ${result.backendModuleDir}`);
     console.log(`Frontend: ${result.frontendModuleDir}`);
 })
     .catch((error) => {
-    const message = error instanceof Error ? error.message : "Module generation failed.";
+    const message = error instanceof Error ? error.message : "La generación del módulo falló.";
     console.error(message);
     process.exit(1);
 });

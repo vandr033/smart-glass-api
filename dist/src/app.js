@@ -38,7 +38,7 @@ app.get("/", (_request, response) => {
 app.use("/api", clientPortalPublicRouter);
 app.use("/api", sessionValidationMiddleware, apiRouter);
 app.use((_request, response) => {
-    sendError(response, "Route not found.", 404);
+    sendError(response, "Ruta no encontrada.", 404);
 });
 app.use(errorMiddleware);
 //# sourceMappingURL=app.js.map

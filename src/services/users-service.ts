@@ -1071,7 +1071,7 @@ export const usersService = {
           await activityLogService.logUserAction(
             {
               ...context,
-              action: "Role changed",
+              action: "Rol cambiado",
               entityId: userId,
               entityType: "user",
               metadata: {
@@ -1088,7 +1088,7 @@ export const usersService = {
           await notificationService.create(
             {
               message: `Your access roles changed from ${previousSnapshot.roleNames.join(", ") || "none"} to ${nextSnapshot.roleNames.join(", ") || "none"}.`,
-              title: "Role changed",
+              title: "Rol cambiado",
               type: "warning",
               userId,
             },

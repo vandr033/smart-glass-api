@@ -437,7 +437,7 @@ const assertTemplateVersionExists = async (versionId, db) => {
 };
 const ensureObject = (value, label) => {
     if (!isRecord(value)) {
-        throw new Error(`${label} must be an object.`);
+        throw new Error(`${label} debe ser un objeto.`);
     }
     return value;
 };
@@ -450,7 +450,7 @@ const getOptionalString = (value) => {
 };
 const getFormulaValue = (value, key, label) => {
     if (!(key in value)) {
-        throw new Error(`${label} is required.`);
+        throw new Error(`${label} es obligatorio.`);
     }
     return value[key];
 };

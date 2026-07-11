@@ -193,20 +193,20 @@ export const materialIdParamSchema = z.object({
 });
 
 export const warehouseMutationSchema = z.object({
-  address: nullableStringSchema(255, "Address"),
-  code: z.string().trim().min(1, "Warehouse code is required.").max(100),
-  description: nullableStringSchema(4000, "Description"),
+  address: nullableStringSchema(255, "Dirección"),
+  code: z.string().trim().min(1, "El código del almacén es obligatorio.").max(100),
+  description: nullableStringSchema(4000, "Descripción"),
   latitude: nullableNumberSchema({
-    label: "Latitude",
+    label: "Latitud",
     max: 90,
     min: -90,
   }),
   longitude: nullableNumberSchema({
-    label: "Longitude",
+    label: "Longitud",
     max: 180,
     min: -180,
   }),
-  name: z.string().trim().min(1, "Warehouse name is required.").max(191),
+  name: z.string().trim().min(1, "El nombre del almacén es obligatorio.").max(191),
   status: warehouseStatusSchema.default("ACTIVE"),
 });
 
@@ -216,32 +216,32 @@ export const listWarehousesQuerySchema = z.object({
 });
 
 export const stockEntrySchema = z.object({
-  batchNumber: nullableStringSchema(100, "Batch number"),
+  batchNumber: nullableStringSchema(100, "Número de lote"),
   condition: inventoryConditionSchema.default("AVAILABLE"),
   heightMm: nullableNumberSchema({
-    label: "Height",
+    label: "Alto",
     min: 0,
   }),
   lengthMm: nullableNumberSchema({
-    label: "Length",
+    label: "Largo",
     min: 0,
   }),
-  locationCode: nullableStringSchema(100, "Location code"),
+  locationCode: nullableStringSchema(100, "Código de ubicación"),
   materialId: z.uuid({
-    message: "Material is required.",
+      message: "El material es obligatorio.",
   }),
-  notes: nullableStringSchema(4000, "Notes"),
-  quantity: positiveNumberSchema("Quantity"),
-  sourceId: nullableStringSchema(191, "Source reference"),
+  notes: nullableStringSchema(4000, "Notas"),
+  quantity: positiveNumberSchema("Cantidad"),
+  sourceId: nullableStringSchema(191, "Referencia de origen"),
   sourceType: inventorySourceTypeSchema.default("MANUAL"),
   stockType: inventoryStockTypeSchema.default("STANDARD"),
   thicknessMm: nullableNumberSchema({
-    label: "Thickness",
+    label: "Espesor",
     min: 0,
   }),
   unit: materialUnitSchema,
   warehouseId: z.uuid({
-    message: "Warehouse is required.",
+      message: "El almacén es obligatorio.",
   }),
   widthMm: nullableNumberSchema({
     label: "Width",
@@ -400,12 +400,12 @@ export const listRemnantsQuerySchema = z.object({
 
 export const usableRemnantsQuerySchema = z.object({
   materialId: z.uuid({
-    message: "Material is required.",
+    message: "El material es obligatorio.",
   }),
-  requiredHeightMm: positiveNumberSchema("Required height"),
-  requiredWidthMm: positiveNumberSchema("Required width"),
+  requiredHeightMm: positiveNumberSchema("Alto requerido"),
+  requiredWidthMm: positiveNumberSchema("Ancho requerido"),
   thicknessMm: nullableNumberSchema({
-    label: "Thickness",
+    label: "Espesor",
     min: 0,
   }).transform((value) => value ?? undefined),
   warehouseId: optionalUuidSchema,
@@ -413,16 +413,16 @@ export const usableRemnantsQuerySchema = z.object({
 
 export const damagedMaterialMutationSchema = z.object({
   damageType: damageTypeSchema,
-  description: nullableStringSchema(4000, "Description"),
+  description: nullableStringSchema(4000, "Descripción"),
   inventoryStockId: optionalUuidSchema,
   materialId: z.uuid({
-    message: "Material is required.",
+    message: "El material es obligatorio.",
   }),
-  quantity: positiveNumberSchema("Quantity"),
+  quantity: positiveNumberSchema("Cantidad"),
   severity: damageSeveritySchema,
   unit: materialUnitSchema,
   warehouseId: z.uuid({
-    message: "Warehouse is required.",
+    message: "El almacén es obligatorio.",
   }),
 });
 
@@ -439,21 +439,21 @@ export const listDamagedMaterialsQuerySchema = z.object({
 });
 
 export const reviewDamagedMaterialSchema = z.object({
-  description: nullableStringSchema(4000, "Description"),
+  description: nullableStringSchema(4000, "Descripción"),
   status: z.enum(["REVIEWED", "REUSABLE"]),
 });
 
 export const scrapMaterialSchema = z.object({
-  reason: nullableStringSchema(4000, "Reason"),
+  reason: nullableStringSchema(4000, "Motivo"),
 });
 
 export const returnToSupplierSchema = z.object({
-  reason: nullableStringSchema(4000, "Reason"),
+  reason: nullableStringSchema(4000, "Motivo"),
 });
 
 export const availabilityMaterialQuerySchema = z.object({
   quantity: nullableNumberSchema({
-    label: "Quantity",
+    label: "Cantidad",
     min: 0,
   }).transform((value) => value ?? undefined),
   unit: materialUnitSchema.optional(),

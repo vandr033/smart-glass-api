@@ -34,8 +34,8 @@ export class EmailService {
                 from: formatSenderAddress(brand),
             });
             logger.info(result.providerMode === "json"
-                ? "Email captured by JSON transport."
-                : "Email sent successfully.", {
+                ? "Correo capturado por el transporte JSON."
+                : "Correo enviado correctamente.", {
                 messageId: result.messageId,
                 subject: request.subject,
                 to: normalizeEmailAddresses(request.to),
@@ -48,7 +48,7 @@ export class EmailService {
             };
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Unknown email delivery error";
+            const message = error instanceof Error ? error.message : "Error desconocido al entregar el correo";
             logger.error("Email send failed.", {
                 message,
                 subject: request.subject,
@@ -92,7 +92,7 @@ export class EmailService {
             return await this.sendEmail(emailRequest);
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Unknown email template error";
+            const message = error instanceof Error ? error.message : "Error desconocido en la plantilla de correo";
             logger.error("Email template send failed.", {
                 message,
                 template: request.template,
@@ -103,7 +103,7 @@ export class EmailService {
                 error: message,
                 providerMode: emailProvider.mode,
                 rejected: normalizeEmailAddresses(request.to),
-                subject: `Template: ${request.template}`,
+                subject: `Plantilla: ${request.template}`,
                 success: false,
                 to: normalizeEmailAddresses(request.to),
             };
@@ -132,7 +132,7 @@ export class EmailService {
             return await emailProvider.verifyConnection();
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Unknown email connection error";
+            const message = error instanceof Error ? error.message : "Error desconocido de conexión del correo";
             logger.error("Email provider verification failed.", {
                 message,
             });
@@ -159,7 +159,7 @@ export class EmailService {
             return await settingsService.getEmailBrandingSettings();
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Unknown settings lookup error";
+            const message = error instanceof Error ? error.message : "Error desconocido al consultar la configuración";
             logger.warn("Settings lookup failed. Falling back to environment email configuration.", {
                 message,
             });

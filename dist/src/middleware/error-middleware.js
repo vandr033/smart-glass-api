@@ -18,6 +18,17 @@ const localizeErrorMessage = (message, statusCode) => {
         "Conflict": "El registro fue modificado por otro usuario.",
         "File too large": "El archivo supera el tamaño permitido.",
         "Unsupported file type": "El tipo de archivo no está permitido.",
+        "Route not found.": "No se encontró la ruta solicitada.",
+        "Email template not found.": "No se encontró la plantilla de correo.",
+        "A role with this name already exists.": "Ya existe un rol con ese nombre.",
+        "A user with this email already exists.": "Ya existe un usuario con ese correo electrónico.",
+        "An active invitation already exists for this email address.": "Ya existe una invitación activa para este correo electrónico.",
+        "This invitation is invalid or no longer available.": "Esta invitación no es válida o ya no está disponible.",
+        "This invitation has been revoked.": "Esta invitación fue revocada.",
+        "This invitation has already been accepted.": "Esta invitación ya fue aceptada.",
+        "This invitation has expired.": "Esta invitación venció.",
+        "Accepted invitations cannot be revoked.": "Las invitaciones aceptadas no se pueden revocar.",
+        "Only SUPER_ADMIN users can modify SUPER_ADMIN permissions.": "Solo los usuarios SUPER_ADMIN pueden modificar permisos SUPER_ADMIN.",
     };
     const exactTranslation = exactTranslations[message];
     if (exactTranslation) {
@@ -37,6 +48,10 @@ const localizeErrorMessage = (message, statusCode) => {
             .replaceAll(/[_-]/g, " ")
             .toLowerCase();
         const labels = {
+            "address id": "el identificador de la dirección",
+            "client and address ids": "los identificadores del cliente y la dirección",
+            "client and contact ids": "los identificadores del cliente y el contacto",
+            "client id": "el identificador del cliente",
             client: "cliente",
             code: "código",
             currency: "moneda",
@@ -52,9 +67,39 @@ const localizeErrorMessage = (message, statusCode) => {
             user: "usuario",
             role: "rol",
             invitation: "invitación",
+            "material id": "el identificador del material",
+            "purchase order id": "el identificador de la orden de compra",
+            "quotation id": "el identificador de la cotización",
+            "role id": "el identificador del rol",
+            "supplier id": "el identificador del proveedor",
             url: "URL",
+            "user id": "el identificador del usuario",
+            "warehouse id": "el identificador del almacén",
         };
-        return labels[normalized] ?? normalized;
+        if (labels[normalized])
+            return labels[normalized];
+        const words = {
+            address: "dirección",
+            client: "cliente",
+            code: "código",
+            contact: "contacto",
+            description: "descripción",
+            file: "archivo",
+            id: "identificador",
+            material: "material",
+            name: "nombre",
+            order: "orden",
+            permission: "permiso",
+            project: "proyecto",
+            purchase: "compra",
+            quotation: "cotización",
+            role: "rol",
+            supplier: "proveedor",
+            task: "tarea",
+            user: "usuario",
+            warehouse: "almacén",
+        };
+        return normalized.split(" ").map((word) => words[word] ?? word).join(" ");
     }
     const lengthMatch = message.match(/^(.+?) must be (\d+) characters or fewer\.?$/i);
     if (lengthMatch) {
@@ -84,6 +129,22 @@ const localizeErrorMessage = (message, statusCode) => {
     }
     if (/valid date/i.test(message)) {
         return "Ingrese una fecha válida.";
+    }
+    const alreadyExistsMatch = message.match(/^A[n]? (.+?) already exists\.?$/i);
+    if (alreadyExistsMatch) {
+        return `Ya existe ${fieldName(alreadyExistsMatch[1] ?? "el registro indicado")}.`;
+    }
+    const onlyMatch = message.match(/^Only (.+?) can (.+?)\.?$/i);
+    if (onlyMatch) {
+        return `Solo los registros indicados pueden ${/be (?:released|consumed|edited|deleted|cancelled)/i.test(onlyMatch[2] ?? "") ? "realizar esta acción" : "realizar esta operación"}.`;
+    }
+    const englishMessagePattern = /\b(?:is required|are required|must be|cannot be|could not|not found|already exists|only |one or more|selected|available|supported|failed|created|updated|deleted|changed|assigned|enabled|disabled|pending|accepted|expired|revoked|warehouse|supplier|material|quotation|project|purchase|inventory|production|installation|profile|cutting|price list|import|file|quantity|currency|description|name|title|code|date|password|email|role|user|notification|invitation)\b/i;
+    if (englishMessagePattern.test(message)) {
+        return statusCode === 401
+            ? "No has iniciado sesión."
+            : statusCode === 403
+                ? "No tienes permiso para realizar esta acción."
+                : "La información enviada no es válida.";
     }
     return message;
 };

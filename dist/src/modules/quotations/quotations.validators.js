@@ -112,25 +112,25 @@ export const quotationItemIdParamSchema = z.object({
 });
 export const quotationMutationSchema = z.object({
     clientId: z.uuid({
-        message: "Client is required.",
+        message: "El cliente es obligatorio.",
     }),
-    currency: z.string().trim().min(1, "Currency is required.").max(16).default("BOB"),
+    currency: z.string().trim().min(1, "La moneda es obligatoria.").max(16).default("BOB"),
     discountAmount: nullableNumberSchema({
-        label: "Discount amount",
+        label: "Monto de descuento",
         min: 0,
     }).transform((value) => value ?? 0),
     exchangeRate: nullableNumberSchema({
-        label: "Exchange rate",
+        label: "Tipo de cambio",
         min: 0,
     }),
-    internalNotes: nullableStringSchema(4000, "Internal notes"),
-    notes: nullableStringSchema(4000, "Notes"),
+    internalNotes: nullableStringSchema(4000, "Notas internas"),
+    notes: nullableStringSchema(4000, "Notas"),
     projectId: nullableUuidSchema,
     taxAmount: nullableNumberSchema({
-        label: "Tax amount",
+        label: "Monto de impuesto",
         min: 0,
     }).transform((value) => value ?? 0),
-    validUntil: nullableDateSchema("Validity date"),
+    validUntil: nullableDateSchema("Fecha de vigencia"),
 });
 export const listQuotationsQuerySchema = z.object({
     clientId: z.union([z.uuid(), z.undefined()]).optional(),
@@ -146,21 +146,21 @@ export const listQuotationsQuerySchema = z.object({
 });
 export const addTemplateQuotationItemSchema = z.object({
     inputValues: z.record(z.string(), jsonLikeSchema).default({}),
-    name: z.string().trim().min(1, "Item name is required.").max(191),
+    name: z.string().trim().min(1, "El nombre del ítem es obligatorio.").max(191),
     productTemplateVersionId: z.uuid({
-        message: "Template version is required.",
+        message: "La versión de la plantilla es obligatoria.",
     }),
-    quantity: positiveNumberSchema("Quantity"),
+    quantity: positiveNumberSchema("Cantidad"),
 });
 const salePricingSchema = z
     .object({
     marginPercent: nullableNumberSchema({
-        label: "Margin percent",
+        label: "Porcentaje de margen",
         max: 99.99,
         min: 0,
     }),
     unitSalePrice: nullableNumberSchema({
-        label: "Unit sale price",
+        label: "Precio unitario de venta",
         min: 0,
     }),
 })
@@ -168,49 +168,49 @@ const salePricingSchema = z
     if (value.marginPercent === null && value.unitSalePrice === null) {
         context.addIssue({
             code: "custom",
-            message: "Provide a unit sale price or a margin percent.",
+            message: "Proporciona un precio unitario de venta o un porcentaje de margen.",
             path: ["unitSalePrice"],
         });
     }
 });
 export const addManualMaterialItemSchema = z
     .object({
-    description: nullableStringSchema(4000, "Description"),
+    description: nullableStringSchema(4000, "Descripción"),
     marginPercent: salePricingSchema.shape.marginPercent,
     materialId: z.uuid({
-        message: "Material is required.",
+        message: "El material es obligatorio.",
     }),
-    name: nullableStringSchema(191, "Item name"),
-    quantity: positiveNumberSchema("Quantity"),
+    name: nullableStringSchema(191, "Nombre del ítem"),
+    quantity: positiveNumberSchema("Cantidad"),
     supplierId: nullableUuidSchema,
-    unit: z.string().trim().min(1, "Unit is required.").max(50),
-    unitCost: positiveNumberSchema("Unit cost"),
+    unit: z.string().trim().min(1, "La unidad es obligatoria.").max(50),
+    unitCost: positiveNumberSchema("Costo unitario"),
     unitSalePrice: salePricingSchema.shape.unitSalePrice,
 })
     .superRefine((value, context) => {
     if (value.marginPercent === null && value.unitSalePrice === null) {
         context.addIssue({
             code: "custom",
-            message: "Provide a unit sale price or a margin percent.",
+            message: "Proporciona un precio unitario de venta o un porcentaje de margen.",
             path: ["unitSalePrice"],
         });
     }
 });
 export const addManualServiceItemSchema = z
     .object({
-    description: nullableStringSchema(4000, "Description"),
+    description: nullableStringSchema(4000, "Descripción"),
     marginPercent: salePricingSchema.shape.marginPercent,
-    name: z.string().trim().min(1, "Service name is required.").max(191),
-    quantity: positiveNumberSchema("Quantity"),
-    unit: z.string().trim().min(1, "Unit is required.").max(50).default("service"),
-    unitCost: positiveNumberSchema("Unit cost"),
+    name: z.string().trim().min(1, "El nombre del servicio es obligatorio.").max(191),
+    quantity: positiveNumberSchema("Cantidad"),
+    unit: z.string().trim().min(1, "La unidad es obligatoria.").max(50).default("service"),
+    unitCost: positiveNumberSchema("Costo unitario"),
     unitSalePrice: salePricingSchema.shape.unitSalePrice,
 })
     .superRefine((value, context) => {
     if (value.marginPercent === null && value.unitSalePrice === null) {
         context.addIssue({
             code: "custom",
-            message: "Provide a unit sale price or a margin percent.",
+            message: "Proporciona un precio unitario de venta o un porcentaje de margen.",
             path: ["unitSalePrice"],
         });
     }
@@ -218,29 +218,29 @@ export const addManualServiceItemSchema = z
 export const updateQuotationItemSchema = z
     .object({
     clearManualOverride: z.boolean().optional(),
-    description: nullableStringSchema(4000, "Description").optional(),
+    description: nullableStringSchema(4000, "Descripción").optional(),
     inputValues: nullableJsonObjectSchema.optional(),
     marginPercent: nullableNumberSchema({
-        label: "Margin percent",
+        label: "Porcentaje de margen",
         max: 99.99,
         min: 0,
     }).optional(),
     materialId: nullableUuidSchema.optional(),
     name: nullableStringSchema(191, "Item name").optional(),
-    quantity: positiveNumberSchema("Quantity").optional(),
+    quantity: positiveNumberSchema("Cantidad").optional(),
     sortOrder: nullableNumberSchema({
         integer: true,
-        label: "Sort order",
+        label: "Orden de clasificación",
         min: 0,
     }).optional(),
     supplierId: nullableUuidSchema.optional(),
-    unit: nullableStringSchema(50, "Unit").optional(),
+    unit: nullableStringSchema(50, "Unidad").optional(),
     unitCost: nullableNumberSchema({
-        label: "Unit cost",
+        label: "Costo unitario",
         min: 0,
     }).optional(),
     unitSalePrice: nullableNumberSchema({
-        label: "Unit sale price",
+        label: "Precio unitario de venta",
         min: 0,
     }).optional(),
 })

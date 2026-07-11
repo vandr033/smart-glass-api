@@ -556,7 +556,7 @@ export const suppliersService = {
       });
     }
 
-    throw new Error("Unexpected supplier creation state.");
+    throw new Error("Estado inesperado al crear el proveedor.");
   },
 
   async updateSupplier(
@@ -595,7 +595,7 @@ export const suppliersService = {
       });
     }
 
-    throw new Error("Unexpected supplier update state.");
+    throw new Error("Estado inesperado al actualizar el proveedor.");
   },
 
   async deleteSupplier(id: string): Promise<SupplierDetailRecord> {
@@ -800,7 +800,7 @@ export const suppliersService = {
       });
     }
 
-    throw new Error("Unexpected supplier category creation state.");
+    throw new Error("Estado inesperado al crear la categoría del proveedor.");
   },
 
   async updateCategory(
@@ -857,7 +857,7 @@ export const suppliersService = {
       });
     }
 
-    throw new Error("Unexpected supplier category update state.");
+    throw new Error("Estado inesperado al actualizar la categoría del proveedor.");
   },
 
   async deleteCategory(

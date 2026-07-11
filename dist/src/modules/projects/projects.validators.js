@@ -139,7 +139,7 @@ export const projectMutationSchema = z.object({
         message: "Client is required.",
     }),
     city: nullableStringSchema(100, "City"),
-    description: nullableStringSchema(4000, "Description"),
+    description: nullableStringSchema(4000, "Descripción"),
     expectedDeliveryDate: nullableDateSchema("Expected delivery date"),
     expectedInstallationDate: nullableDateSchema("Expected installation date"),
     expectedMeasurementDate: nullableDateSchema("Expected measurement date"),
@@ -194,7 +194,7 @@ export const projectNoteInputSchema = z.object({
 export const projectMeasurementInputSchema = z.object({
     depthMm: nullablePositiveNumberSchema("Depth"),
     heightMm: nullablePositiveNumberSchema("Height"),
-    locationDescription: nullableStringSchema(255, "Location description"),
+    locationDescription: nullableStringSchema(255, "Descripción de ubicación"),
     measurementDate: nullableDateSchema("Measurement date"),
     notes: nullableStringSchema(4000, "Measurement notes"),
     quantity: z.coerce.number().int().min(1).default(1),
@@ -203,7 +203,7 @@ export const projectMeasurementInputSchema = z.object({
 });
 export const projectAttachmentInputSchema = z.object({
     attachmentType: projectAttachmentTypeSchema.default("OTHER"),
-    description: nullableStringSchema(4000, "Attachment description"),
+    description: nullableStringSchema(4000, "Descripción del archivo adjunto"),
 });
 export const projectFileUploadSchema = z.object({
     mimetype: z

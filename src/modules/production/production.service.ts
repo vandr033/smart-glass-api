@@ -1936,7 +1936,7 @@ export const productionService = {
         for (const cut of bar.cutPieces) {
           await db.productionJobItem.create({
             data: {
-              description: `Profile cutting bar ${bar.sortOrder + 1}.`,
+              description: `Barra de corte de perfil ${bar.sortOrder + 1}.`,
               materialId: cut.materialId,
               metadataJson: toInputJsonValue({
                 lengthMm: Number(cut.lengthMm),
@@ -1974,7 +1974,7 @@ export const productionService = {
       await createStatusHistory(db, {
         changedByUserId: userId,
         fromStatus: null,
-        notes: `Production job created from profile cutting plan ${profileCuttingPlan.code}.`,
+        notes: `Orden de producción creada desde el plan de corte de perfiles ${profileCuttingPlan.code}.`,
         productionJobId: job.id,
         toStatus: "READY",
       });
@@ -1984,11 +1984,11 @@ export const productionService = {
       for (const bar of profileCuttingPlan.bars) {
         await db.productionTask.create({
           data: {
-            description: `Execute profile bar ${bar.sortOrder + 1} using the generated cut sequence.`,
+            description: `Ejecuta la barra de perfil ${bar.sortOrder + 1} usando la secuencia de corte generada.`,
             productionJobId: job.id,
             sortOrder,
             taskType: "CUT_PROFILE",
-            title: `Cut profile bar ${bar.sortOrder + 1}`,
+            title: `Cortar barra de perfil ${bar.sortOrder + 1}`,
           },
           include: productionTaskInclude,
         });
@@ -1998,11 +1998,11 @@ export const productionService = {
       for (const sharedTask of [
         {
           taskType: "QUALITY_CHECK" as const,
-          title: "Quality check",
+          title: "Control de calidad",
         },
         {
           taskType: "PACK" as const,
-          title: "Pack finished work",
+          title: "Empacar trabajo terminado",
         },
       ]) {
         await db.productionTask.create({
@@ -2517,11 +2517,11 @@ export const productionService = {
       for (const sharedTask of [
         {
           taskType: "QUALITY_CHECK" as const,
-          title: "Quality check",
+          title: "Control de calidad",
         },
         {
           taskType: "PACK" as const,
-          title: "Pack finished work",
+          title: "Empacar trabajo terminado",
         },
       ]) {
         const task = await db.productionTask.create({

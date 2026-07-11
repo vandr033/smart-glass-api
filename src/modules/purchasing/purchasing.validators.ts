@@ -171,16 +171,16 @@ export const profileCuttingPlanIdParamSchema = z.object({
 });
 
 export const purchaseRequestItemInputSchema = z.object({
-  description: nullableStringSchema(4000, "Description"),
-  estimatedUnitCost: nullableNumberSchema("Estimated unit cost"),
+  description: nullableStringSchema(4000, "Descripción"),
+  estimatedUnitCost: nullableNumberSchema("Costo unitario estimado"),
   id: optionalUuidSchema,
   materialId: z.uuid({
-    message: "Material is required.",
+      message: "El material es obligatorio.",
   }),
   metadataJson: metadataJsonSchema,
   preferredSupplierId: optionalUuidSchema,
-  quantity: positiveNumberSchema("Quantity"),
-  requiredDate: nullableDateSchema("Required date"),
+  quantity: positiveNumberSchema("Cantidad"),
+  requiredDate: nullableDateSchema("Fecha requerida"),
   selectedSupplierId: optionalUuidSchema,
   status: purchaseRequestItemStatusSchema.optional(),
   unit: materialUnitSchema,
@@ -188,15 +188,15 @@ export const purchaseRequestItemInputSchema = z.object({
 
 export const createPurchaseRequestSchema = z.object({
   items: z.array(purchaseRequestItemInputSchema).default([]),
-  notes: nullableStringSchema(4000, "Notes"),
-  sourceId: nullableStringSchema(191, "Source reference"),
+  notes: nullableStringSchema(4000, "Notas"),
+  sourceId: nullableStringSchema(191, "Referencia de origen"),
   sourceType: purchaseRequestSourceTypeSchema.default("MANUAL"),
 });
 
 export const updatePurchaseRequestSchema = z.object({
   items: z.array(purchaseRequestItemInputSchema).optional(),
-  notes: nullableStringSchema(4000, "Notes").optional(),
-  sourceId: nullableStringSchema(191, "Source reference").optional(),
+  notes: nullableStringSchema(4000, "Notas").optional(),
+  sourceId: nullableStringSchema(191, "Referencia de origen").optional(),
   sourceType: purchaseRequestSourceTypeSchema.optional(),
 });
 
@@ -204,15 +204,15 @@ export const createInventoryShortagePurchaseRequestSchema = z.object({
   materialIds: z
     .array(
       z.uuid({
-        message: "Material id must be a valid UUID.",
+        message: "El identificador del material debe ser un UUID válido.",
       }),
     )
-    .min(1, "Select at least one material."),
-  notes: nullableStringSchema(4000, "Notes"),
+    .min(1, "Selecciona al menos un material."),
+  notes: nullableStringSchema(4000, "Notas"),
 });
 
 export const purchaseRequestDecisionSchema = z.object({
-  notes: nullableStringSchema(4000, "Notes"),
+  notes: nullableStringSchema(4000, "Notas"),
 });
 
 export const supplierComparisonRunSchema = z.object({
@@ -220,7 +220,7 @@ export const supplierComparisonRunSchema = z.object({
 });
 
 export const supplierComparisonApprovalSchema = z.object({
-  notes: nullableStringSchema(4000, "Notes"),
+  notes: nullableStringSchema(4000, "Notas"),
 });
 
 export const listPurchaseRequestsQuerySchema = z.object({
@@ -248,15 +248,15 @@ export const listSupplierComparisonsQuerySchema = z.object({
 });
 
 export const purchaseOrderItemInputSchema = z.object({
-  description: nullableStringSchema(4000, "Description"),
+  description: nullableStringSchema(4000, "Descripción"),
   id: optionalUuidSchema,
   materialId: z.uuid({
-    message: "Material is required.",
+      message: "El material es obligatorio.",
   }),
   metadataJson: metadataJsonSchema,
-  quantity: positiveNumberSchema("Quantity"),
+  quantity: positiveNumberSchema("Cantidad"),
   unit: materialUnitSchema,
-  unitPrice: positiveNumberSchema("Unit price"),
+  unitPrice: positiveNumberSchema("Precio unitario"),
 });
 
 export const createPurchaseOrderSchema = z.object({

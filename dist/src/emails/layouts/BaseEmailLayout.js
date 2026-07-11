@@ -4,7 +4,7 @@ const renderLogoMarkup = (brand) => {
         return `
       <img
         src="${escapeHtml(brand.logoUrl)}"
-        alt="${escapeHtml(brand.appName)} logo"
+        alt="Logotipo de ${escapeHtml(brand.appName)}"
         style="display: block; max-height: 40px; max-width: 180px;"
       />
     `;
@@ -28,14 +28,14 @@ const renderLogoMarkup = (brand) => {
         text-transform: uppercase;
       "
     >
-      Logo
+      Logotipo
     </div>
   `;
 };
 export const renderBaseEmailLayout = ({ brand, contentHtml, previewText, }) => {
     return `
     <!doctype html>
-    <html lang="en">
+    <html lang="es">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -43,7 +43,7 @@ export const renderBaseEmailLayout = ({ brand, contentHtml, previewText, }) => {
       </head>
       <body style="background: #f4f7fb; color: #0f172a; font-family: Arial, sans-serif; margin: 0; padding: 24px 12px;">
         <div style="display: none; max-height: 0; max-width: 0; opacity: 0; overflow: hidden;">
-          ${escapeHtml(previewText ?? `Notification from ${brand.appName}`)}
+          ${escapeHtml(previewText ?? `Notificación de ${brand.appName}`)}
         </div>
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
           <tr>
@@ -72,8 +72,8 @@ export const renderBaseEmailLayout = ({ brand, contentHtml, previewText, }) => {
                 </tr>
                 <tr>
                   <td style="border-top: 1px solid #e2e8f0; color: #64748b; font-size: 13px; line-height: 1.7; padding: 20px 32px 28px;">
-                    <p style="margin: 0 0 8px;">Need help? Contact us at <a href="mailto:${escapeHtml(brand.supportEmail)}" style="color: ${brand.primaryColor}; text-decoration: none;">${escapeHtml(brand.supportEmail)}</a>.</p>
-                    <p style="margin: 0;">Sent by ${escapeHtml(brand.appName)}.</p>
+                    <p style="margin: 0 0 8px;">¿Necesitas ayuda? Escríbenos a <a href="mailto:${escapeHtml(brand.supportEmail)}" style="color: ${brand.primaryColor}; text-decoration: none;">${escapeHtml(brand.supportEmail)}</a>.</p>
+                    <p style="margin: 0;">Enviado por ${escapeHtml(brand.appName)}.</p>
                   </td>
                 </tr>
               </table>

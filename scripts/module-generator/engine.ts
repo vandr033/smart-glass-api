@@ -285,11 +285,11 @@ export const generateModuleScaffold = async ({
   const frontendEntryFile = path.join(frontendModuleDir, "constants.ts");
 
   if (await pathExists(backendEntryFile)) {
-    throw new Error(`Module "${names.routeSegment}" already exists.`);
+    throw new Error(`El módulo "${names.routeSegment}" ya existe.`);
   }
 
   if (await pathExists(frontendEntryFile)) {
-    throw new Error(`Frontend module "${names.routeSegment}" already exists.`);
+    throw new Error(`El módulo frontend "${names.routeSegment}" ya existe.`);
   }
 
   await createBackendFiles(backendRoot, names);

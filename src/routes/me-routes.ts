@@ -12,7 +12,7 @@ meRouter.get(
   requireAuth(),
   asyncHandler(async (request, response) => {
     if (!request.currentUser || !request.authorizationSummary) {
-      sendError(response, "Authentication required.", 401);
+      sendError(response, "Se requiere autenticación.", 401);
       return;
     }
 

@@ -5,17 +5,17 @@ export const invitationEmailTemplate = {
     render: ({ brand, variables }) => {
         const appName = variables.appName?.trim() || brand.appName;
         const roleLine = variables.roleName
-            ? `<p style="margin: 0 0 16px;">You have been invited to join as <strong>${escapeHtml(variables.roleName)}</strong>.</p>`
+            ? `<p style="margin: 0 0 16px;">Has sido invitado a participar como <strong>${escapeHtml(variables.roleName)}</strong>.</p>`
             : "";
         const invitedByLine = variables.invitedByName
-            ? `<p style="margin: 0 0 16px;">Invitation sent by ${escapeHtml(variables.invitedByName)}.</p>`
+            ? `<p style="margin: 0 0 16px;">Invitación enviada por ${escapeHtml(variables.invitedByName)}.</p>`
             : "";
         const expiryLine = variables.expiresAt
-            ? `<p style="margin: 0 0 16px;">This invitation expires on ${escapeHtml(variables.expiresAt)}.</p>`
+            ? `<p style="margin: 0 0 16px;">Esta invitación vence el ${escapeHtml(variables.expiresAt)}.</p>`
             : "";
         const contentHtml = `
       <p style="margin: 0 0 16px;">${escapeHtml(greeting(variables.userName))}</p>
-      <p style="margin: 0 0 16px;">You have been invited to join ${escapeHtml(appName)}.</p>
+      <p style="margin: 0 0 16px;">Has sido invitado a participar en ${escapeHtml(appName)}.</p>
       ${roleLine}
       ${invitedByLine}
       ${expiryLine}
@@ -24,28 +24,28 @@ export const invitationEmailTemplate = {
           href="${escapeHtml(variables.invitationLink)}"
           style="background: ${brand.primaryColor}; border-radius: 10px; color: #ffffff; display: inline-block; font-weight: 700; padding: 14px 20px; text-decoration: none;"
         >
-          Accept Invitation
+          Aceptar invitación
         </a>
       </p>
-      <p style="margin: 0 0 16px;">If the button does not work, open this link:</p>
+      <p style="margin: 0 0 16px;">Si el botón no funciona, abre este enlace:</p>
       <p style="margin: 0;"><a href="${escapeHtml(variables.invitationLink)}" style="color: ${brand.primaryColor};">${escapeHtml(variables.invitationLink)}</a></p>
     `;
         return {
             html: renderBaseEmailLayout({
                 brand,
                 contentHtml,
-                previewText: `You are invited to join ${appName}.`,
+                previewText: `Has sido invitado a participar en ${appName}.`,
             }),
-            subject: `You are invited to join ${appName}`,
-            text: joinTextBlocks(greeting(variables.userName), `You have been invited to join ${appName}.`, variables.roleName ? `Role: ${variables.roleName}` : undefined, variables.invitedByName ? `Invitation sent by ${variables.invitedByName}.` : undefined, variables.expiresAt ? `Expires on ${variables.expiresAt}.` : undefined, variables.invitationLink),
+            subject: `Invitación para participar en ${appName}`,
+            text: joinTextBlocks(greeting(variables.userName), `Has sido invitado a participar en ${appName}.`, variables.roleName ? `Rol: ${variables.roleName}` : undefined, variables.invitedByName ? `Invitación enviada por ${variables.invitedByName}.` : undefined, variables.expiresAt ? `Vence el ${variables.expiresAt}.` : undefined, variables.invitationLink),
         };
     },
     sampleVariables: {
-        appName: "SaaS Base Project",
-        expiresAt: "June 30, 2026",
+        appName: "Vidriera Sebitas ERP",
+        expiresAt: "30 de junio de 2026",
         invitationLink: "https://app.example.com/invitations/accept?token=demo",
-        invitedByName: "Admin User",
-        roleName: "Admin",
+        invitedByName: "Usuario administrador",
+        roleName: "Administrador",
         userName: "Taylor",
     },
 };

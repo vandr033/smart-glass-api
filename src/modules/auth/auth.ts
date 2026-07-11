@@ -140,8 +140,8 @@ export const auth = betterAuth({
       void notificationService
         .create({
           message:
-            "Your password was reset successfully. If this wasn't you, contact support immediately.",
-          title: "Password reset",
+            "Tu contraseña se restableció correctamente. Si no fuiste tú, contacta inmediatamente al soporte.",
+          title: "Contraseña restablecida",
           type: "warning",
           userId: user.id,
         })
@@ -205,8 +205,8 @@ export const auth = betterAuth({
                 email,
                 reason: response.message,
                 summary: email
-                  ? `A login attempt failed for ${email}.`
-                  : "A login attempt failed.",
+                  ? `Un intento de inicio de sesión falló para ${email}.`
+                  : "Un intento de inicio de sesión falló.",
               },
             });
           }, {

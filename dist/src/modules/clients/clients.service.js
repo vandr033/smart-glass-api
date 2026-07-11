@@ -353,7 +353,7 @@ export const clientsService = {
                 code: "client code",
             });
         }
-        throw new Error("Unexpected client creation state.");
+        throw new Error("Estado inesperado al crear el cliente.");
     },
     async updateClient(id, input, options) {
         const previous = await this.getClientById(id, {

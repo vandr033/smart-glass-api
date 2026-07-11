@@ -418,7 +418,7 @@ export const suppliersService = {
                 code: "supplier code",
             });
         }
-        throw new Error("Unexpected supplier creation state.");
+        throw new Error("Estado inesperado al crear el proveedor.");
     },
     async updateSupplier(id, input) {
         try {
@@ -445,7 +445,7 @@ export const suppliersService = {
                 code: "supplier code",
             });
         }
-        throw new Error("Unexpected supplier update state.");
+        throw new Error("Estado inesperado al actualizar el proveedor.");
     },
     async deleteSupplier(id) {
         const existingSupplier = await findSupplierDetailOrThrow(id);
@@ -612,7 +612,7 @@ export const suppliersService = {
                 name: "supplier category name",
             });
         }
-        throw new Error("Unexpected supplier category creation state.");
+        throw new Error("Estado inesperado al crear la categoría del proveedor.");
     },
     async updateCategory(id, input) {
         const existingCategory = await prisma.supplierCategory.findUnique({
@@ -659,7 +659,7 @@ export const suppliersService = {
                 name: "supplier category name",
             });
         }
-        throw new Error("Unexpected supplier category update state.");
+        throw new Error("Estado inesperado al actualizar la categoría del proveedor.");
     },
     async deleteCategory(id, query) {
         const category = await prisma.supplierCategory.findUnique({
