@@ -370,7 +370,7 @@ const mapProductTemplateMaterialRule = (
 
   if (formulaJson === null || !isRecord(formulaJson)) {
     throw new AppError(
-      `Material rule "${rule.label}" contains invalid formula JSON.`,
+      `La regla de material "${rule.label}" contiene una fórmula JSON no válida.`,
       500,
     );
   }
@@ -400,7 +400,7 @@ const mapProductTemplateAccessoryRule = (
 
   if (quantityFormulaJson === null) {
     throw new AppError(
-      `Accessory rule "${rule.label}" contains invalid quantity formula JSON.`,
+      `La regla de accesorio "${rule.label}" contiene una fórmula de cantidad JSON no válida.`,
       500,
     );
   }
@@ -427,7 +427,7 @@ const mapProductTemplateLaborRule = (
 
   if (formulaJson === null) {
     throw new AppError(
-      `Labor rule "${rule.label}" contains invalid formula JSON.`,
+      `La regla de mano de obra "${rule.label}" contiene una fórmula JSON no válida.`,
       500,
     );
   }
@@ -466,7 +466,7 @@ const mapTemplateVersionDetailRecord = (
 
   if (inputSchemaJson === null) {
     throw new AppError(
-      `Template version "${version.name}" contains invalid input schema JSON.`,
+      `La versión "${version.name}" contiene un esquema JSON de entradas no válido.`,
       500,
     );
   }
@@ -517,7 +517,7 @@ const mapSimulationRecord = (
     !isRecord(resultJson) ||
     !Array.isArray((resultJson as Record<string, unknown>).warnings)
   ) {
-    throw new AppError("Stored simulation JSON is invalid.", 500);
+    throw new AppError("El JSON de la simulación guardada no es válido.", 500);
   }
 
   return {
@@ -606,7 +606,7 @@ const assertTemplateExists = async (
   });
 
   if (!template) {
-    throw new AppError("Product template not found.", 404);
+    throw new AppError("No se encontró la plantilla de producto.", 404);
   }
 
   return template;
@@ -624,7 +624,7 @@ const assertTemplateVersionExists = async (
   });
 
   if (!version || version.template.deletedAt !== null) {
-    throw new AppError("Product template version not found.", 404);
+    throw new AppError("No se encontró la versión de la plantilla de producto.", 404);
   }
 
   return version;
@@ -768,13 +768,13 @@ const validateInputReference = (
   const input = context.inputByKey.get(inputKey);
 
   if (!input) {
-    errors.push(`${label} references unknown input "${inputKey}".`);
+    errors.push(`${label} hace referencia a una entrada desconocida "${inputKey}".`);
     return;
   }
 
   if (input.inputType !== requiredInputType) {
     errors.push(
-      `${label} must reference a ${requiredInputType} input, but "${inputKey}" is ${input.inputType}.`,
+      `${label} debe hacer referencia a una entrada de tipo ${requiredInputType}, pero "${inputKey}" es de tipo ${input.inputType}.`,
     );
   }
 };
@@ -802,7 +802,7 @@ const validateMaterialTypeCompatibility = (
 ): void => {
   if (materialType !== expectedMaterialType) {
     errors.push(
-      `${label} requires a ${expectedMaterialType} material, but the linked material is ${materialType}.`,
+      `${label} requiere un material de tipo ${expectedMaterialType}, pero el material vinculado es de tipo ${materialType}.`,
     );
   }
 };
@@ -822,12 +822,12 @@ const validateTemplateVersionEntity = (
   };
 
   if (version.inputs.length === 0) {
-    warnings.push("The version does not define any inputs yet.");
+    warnings.push("La versión todavía no define entradas.");
   }
 
   version.inputs.forEach((input) => {
     if (input.inputType === "SELECT" && !Array.isArray(input.optionsJson)) {
-      errors.push(`Input "${input.label}" must define optionsJson as an array.`);
+      errors.push(`La entrada "${input.label}" debe definir sus opciones como una lista.`);
     }
   });
 
@@ -836,7 +836,7 @@ const validateTemplateVersionEntity = (
       const formulaJson = toJsonLike(rule.formulaJson);
 
       if (formulaJson === null) {
-        errors.push(`Material rule "${rule.label}" has empty formula JSON.`);
+        errors.push(`La regla de material "${rule.label}" no tiene una fórmula JSON.`);
         return;
       }
 
@@ -847,18 +847,18 @@ const validateTemplateVersionEntity = (
           validateMaterialTypeCompatibility(
             rule.material.materialType,
             "LINEAR",
-            `Material rule "${rule.label}"`,
+            `Regla de material "${rule.label}"`,
             errors,
           );
           validateFormulaAndCollectErrors(
             config.requiredLengthMmFormula,
-            `Material rule "${rule.label}" length formula`,
+            `Fórmula de longitud de la regla de material "${rule.label}"`,
             context.inputKeys,
             errors,
           );
           validateFormulaAndCollectErrors(
             config.quantityFormula,
-            `Material rule "${rule.label}" quantity formula`,
+            `Fórmula de cantidad de la regla de material "${rule.label}"`,
             context.inputKeys,
             errors,
           );
@@ -867,7 +867,7 @@ const validateTemplateVersionEntity = (
               context,
               config.materialInputKey,
               "MATERIAL_SELECT",
-              `Material rule "${rule.label}" materialInputKey`,
+              `Material de entrada de la regla de material "${rule.label}"`,
               errors,
             );
           }
@@ -877,31 +877,31 @@ const validateTemplateVersionEntity = (
           validateMaterialTypeCompatibility(
             rule.material.materialType,
             "SHEET",
-            `Material rule "${rule.label}"`,
+            `Regla de material "${rule.label}"`,
             errors,
           );
           validateFormulaAndCollectErrors(
             config.requiredWidthMmFormula,
-            `Material rule "${rule.label}" width formula`,
+            `Fórmula de ancho de la regla de material "${rule.label}"`,
             context.inputKeys,
             errors,
           );
           validateFormulaAndCollectErrors(
             config.requiredHeightMmFormula,
-            `Material rule "${rule.label}" height formula`,
+            `Fórmula de alto de la regla de material "${rule.label}"`,
             context.inputKeys,
             errors,
           );
           validateFormulaAndCollectErrors(
             config.quantityFormula,
-            `Material rule "${rule.label}" quantity formula`,
+            `Fórmula de cantidad de la regla de material "${rule.label}"`,
             context.inputKeys,
             errors,
           );
           if (config.thicknessMmFormula) {
             validateFormulaAndCollectErrors(
               config.thicknessMmFormula,
-              `Material rule "${rule.label}" thickness formula`,
+              `Fórmula de espesor de la regla de material "${rule.label}"`,
               context.inputKeys,
               errors,
             );
@@ -911,7 +911,7 @@ const validateTemplateVersionEntity = (
               context,
               config.materialInputKey,
               "MATERIAL_SELECT",
-              `Material rule "${rule.label}" materialInputKey`,
+              `Material de entrada de la regla de material "${rule.label}"`,
               errors,
             );
           }
@@ -921,7 +921,7 @@ const validateTemplateVersionEntity = (
           validateMaterialTypeCompatibility(
             rule.material.materialType,
             "UNIT",
-            `Material rule "${rule.label}"`,
+        `Regla de material "${rule.label}"`,
             errors,
           );
           break;
@@ -947,7 +947,7 @@ const validateTemplateVersionEntity = (
 
       validateFormulaAndCollectErrors(
         config.quantityFormula,
-        `Material rule "${rule.label}" quantity formula`,
+        `Fórmula de cantidad de la regla de material "${rule.label}"`,
         context.inputKeys,
         errors,
       );
@@ -955,7 +955,7 @@ const validateTemplateVersionEntity = (
       if (config.unitCostFormula) {
         validateFormulaAndCollectErrors(
           config.unitCostFormula,
-          `Material rule "${rule.label}" unit cost formula`,
+        `Fórmula de costo unitario de la regla de material "${rule.label}"`,
           context.inputKeys,
           errors,
         );
@@ -966,15 +966,15 @@ const validateTemplateVersionEntity = (
           context,
           config.materialInputKey,
           "MATERIAL_SELECT",
-          `Material rule "${rule.label}" materialInputKey`,
+        `Material de entrada de la regla de material "${rule.label}"`,
           errors,
         );
       }
     } catch (error) {
       errors.push(
         error instanceof Error
-          ? `Material rule "${rule.label}": ${error.message}`
-          : `Material rule "${rule.label}" could not be parsed.`,
+            ? `Regla de material "${rule.label}": ${error.message}`
+            : `No se pudo interpretar la regla de material "${rule.label}".`,
       );
     }
   });
@@ -982,13 +982,13 @@ const validateTemplateVersionEntity = (
   version.accessoryRules.forEach((rule) => {
     if (!["PACKAGE", "UNIT"].includes(rule.material.materialType)) {
       errors.push(
-        `Accessory rule "${rule.label}" requires a UNIT or PACKAGE material, but the linked material is ${rule.material.materialType}.`,
+        `La regla de accesorio "${rule.label}" requiere un material unitario o por paquete, pero el material vinculado es de tipo ${rule.material.materialType}.`,
       );
     }
 
     validateFormulaAndCollectErrors(
       toJsonLike(rule.quantityFormulaJson),
-      `Accessory rule "${rule.label}" quantity formula`,
+      `Fórmula de cantidad de la regla de accesorio "${rule.label}"`,
       context.inputKeys,
       errors,
     );
@@ -999,7 +999,7 @@ const validateTemplateVersionEntity = (
       const formulaJson = toJsonLike(rule.formulaJson);
 
       if (formulaJson === null) {
-        errors.push(`Labor rule "${rule.label}" has empty formula JSON.`);
+        errors.push(`La regla de mano de obra "${rule.label}" no tiene una fórmula JSON.`);
         return;
       }
 
@@ -1007,15 +1007,15 @@ const validateTemplateVersionEntity = (
 
       validateFormulaAndCollectErrors(
         config.quantityFormula,
-        `Labor rule "${rule.label}" quantity formula`,
+        `Fórmula de cantidad de la regla de mano de obra "${rule.label}"`,
         context.inputKeys,
         errors,
       );
     } catch (error) {
       errors.push(
         error instanceof Error
-          ? `Labor rule "${rule.label}": ${error.message}`
-          : `Labor rule "${rule.label}" could not be parsed.`,
+          ? `Regla de mano de obra "${rule.label}": ${error.message}`
+          : `No se pudo interpretar la regla de mano de obra "${rule.label}".`,
       );
     }
   });
@@ -1047,7 +1047,7 @@ const normalizeBooleanValue = (
     }
   }
 
-  throw new AppError(`${label} must be true or false.`, 400);
+  throw new AppError(`${label} debe ser sí o no.`, 400);
 };
 
 const normalizeNumberValue = (
@@ -1067,7 +1067,7 @@ const normalizeNumberValue = (
     }
   }
 
-  throw new AppError(`${label} must be a valid number.`, 400);
+  throw new AppError(`${label} debe ser un número válido.`, 400);
 };
 
 const normalizeSimulationInputs = (
@@ -1090,7 +1090,7 @@ const normalizeSimulationInputs = (
         rawValue === null ||
         (typeof rawValue === "string" && rawValue.trim().length === 0))
     ) {
-      inputErrors.push(`Input "${input.label}" is required.`);
+      inputErrors.push(`La entrada "${input.label}" es obligatoria.`);
       return;
     }
 
@@ -1110,7 +1110,7 @@ const normalizeSimulationInputs = (
 
         case "MATERIAL_SELECT": {
           if (typeof rawValue !== "string" || rawValue.trim().length === 0) {
-            throw new AppError(`${input.label} must be a material id.`, 400);
+            throw new AppError(`${input.label} debe contener un material válido.`, 400);
           }
 
           normalizedInputs[input.key] = rawValue.trim();
@@ -1127,7 +1127,7 @@ const normalizeSimulationInputs = (
         case "SELECT": {
           if (!isPrimitiveJsonLike(rawValue)) {
             throw new AppError(
-              `${input.label} must be a primitive value.`,
+              `${input.label} debe contener un valor simple.`,
               400,
             );
           }
@@ -1150,7 +1150,7 @@ const normalizeSimulationInputs = (
 
             if (!options.some((option) => String(option) === selectedValue)) {
               throw new AppError(
-                `${input.label} must match one of the configured options.`,
+                `${input.label} debe coincidir con una de las opciones configuradas.`,
                 400,
               );
             }
@@ -1171,7 +1171,7 @@ const normalizeSimulationInputs = (
       inputErrors.push(
         error instanceof Error
           ? error.message
-          : `Input "${input.label}" is invalid.`,
+          : `La entrada "${input.label}" no es válida.`,
       );
     }
   });
@@ -1277,7 +1277,7 @@ const getQuantityOrWarn = (
   },
 ): number | null => {
   if (value <= 0) {
-    warnings.push(`${label} resolved to ${roundTo(value, 2)} and was skipped.`);
+    warnings.push(`${label} dio como resultado ${roundTo(value, 2)} y se omitió.`);
     return null;
   }
 
@@ -1288,7 +1288,7 @@ const getQuantityOrWarn = (
   const normalizedValue = Math.ceil(value);
 
   if (normalizedValue !== value) {
-    warnings.push(`${label} was rounded up from ${value} to ${normalizedValue}.`);
+    warnings.push(`${label} se redondeó de ${value} a ${normalizedValue}.`);
   }
 
   return normalizedValue;
@@ -1300,7 +1300,7 @@ const getPositiveMeasurementOrWarn = (
   warnings: string[],
 ): number | null => {
   if (value <= 0) {
-    warnings.push(`${label} resolved to ${roundTo(value, 2)} and was skipped.`);
+    warnings.push(`${label} dio como resultado ${roundTo(value, 2)} y se omitió.`);
     return null;
   }
 
@@ -1334,7 +1334,7 @@ const resolveRuleMaterialId = (
 
   if (typeof selectedValue !== "string" || selectedValue.trim().length === 0) {
     throw new AppError(
-      `Input "${materialInputKey}" must provide a material id to simulate this rule.`,
+      `La entrada "${materialInputKey}" debe proporcionar un material para simular esta regla.`,
       400,
     );
   }
@@ -1494,7 +1494,7 @@ const createVersionRecord = async (
 
     if (sourceVersion.templateId !== templateId) {
       throw new AppError(
-        "Only versions from the same template can be duplicated.",
+        "Solo se pueden duplicar versiones de la misma plantilla.",
         400,
       );
     }
@@ -1682,7 +1682,7 @@ export const productTemplatesService = {
     });
 
     if (existingTemplate) {
-      throw new AppError("A product template with this code already exists.", 409);
+      throw new AppError("Ya existe una plantilla de producto con este código.", 409);
     }
 
     const templateId = await prisma.$transaction(async (db) => {
@@ -1748,7 +1748,7 @@ export const productTemplatesService = {
     });
 
     if (existingWithCode) {
-      throw new AppError("A product template with this code already exists.", 409);
+      throw new AppError("Ya existe una plantilla de producto con este código.", 409);
     }
 
     await prisma.productTemplate.update({
@@ -1804,7 +1804,7 @@ export const productTemplatesService = {
   ): Promise<ProductTemplateVersionDetailRecord> {
     if (input.status === "ACTIVE") {
       throw new AppError(
-        "Create the version in DRAFT or ARCHIVED status, then activate it with the activation endpoint.",
+        "Crea la versión como borrador o archivada y luego actívala desde la acción de activación.",
         400,
       );
     }
@@ -1833,14 +1833,14 @@ export const productTemplatesService = {
 
     if (input.status === "ACTIVE" && previous.status !== "ACTIVE") {
       throw new AppError(
-        "Use the activation endpoint to activate a template version.",
+        "Usa la acción de activación para activar una versión de plantilla.",
         400,
       );
     }
 
     if (previous.status === "ACTIVE" && input.status !== "ACTIVE") {
       throw new AppError(
-        "Active template versions stay active until another version is activated.",
+        "Las versiones activas permanecen activas hasta que se active otra versión.",
         400,
       );
     }
@@ -1910,7 +1910,7 @@ export const productTemplatesService = {
 
     if (!validation.isValid) {
       throw new AppError(
-        `The template version is invalid and cannot be activated. ${validation.errors.join(" ")}`,
+        `La versión de la plantilla no es válida y no se puede activar. ${validation.errors.join(" ")}`,
         400,
       );
     }
@@ -1976,7 +1976,7 @@ export const productTemplatesService = {
 
     if (!validation.isValid) {
       throw new AppError(
-        `The template version is invalid and cannot be simulated. ${validation.errors.join(" ")}`,
+        `La versión de la plantilla no es válida y no se puede simular. ${validation.errors.join(" ")}`,
         400,
       );
     }
@@ -2008,7 +2008,7 @@ export const productTemplatesService = {
         const formulaJson = toJsonLike(rule.formulaJson);
 
         if (formulaJson === null) {
-          warnings.push(`Material rule "${rule.label}" was skipped because it has no formula.`);
+          warnings.push(`Se omitió la regla de material "${rule.label}" porque no tiene fórmula.`);
           return;
         }
 
@@ -2022,7 +2022,7 @@ export const productTemplatesService = {
 
         if (!material) {
           throw new AppError(
-            `Material rule "${rule.label}" points to a material that does not exist or is inactive.`,
+            `La regla de material "${rule.label}" apunta a un material que no existe o está inactivo.`,
             400,
           );
         }
@@ -2036,7 +2036,7 @@ export const productTemplatesService = {
 
         if (priceSummary?.selectionMode === "latest_mixed_currency") {
           warnings.push(
-            `Material "${material.name}" has mixed current supplier currencies. The latest price in ${priceSummary.currency} was used for preview.`,
+            `El material "${material.name}" tiene precios actuales de proveedores en distintas monedas. Para la simulación se usó el precio más reciente en ${priceSummary.currency}.`,
           );
         }
 
@@ -2058,12 +2058,12 @@ export const productTemplatesService = {
             );
             const requiredLengthMm = getPositiveMeasurementOrWarn(
               rawLength,
-              `${rule.label} required length`,
+              `${rule.label}: longitud requerida`,
               warnings,
             );
             const quantity = getQuantityOrWarn(
               rawQuantity,
-              `${rule.label} quantity`,
+              `${rule.label}: cantidad`,
               warnings,
             );
 
@@ -2134,17 +2134,17 @@ export const productTemplatesService = {
             );
             const requiredWidthMm = getPositiveMeasurementOrWarn(
               rawWidth,
-              `${rule.label} required width`,
+              `${rule.label}: ancho requerido`,
               warnings,
             );
             const requiredHeightMm = getPositiveMeasurementOrWarn(
               rawHeight,
-              `${rule.label} required height`,
+              `${rule.label}: alto requerido`,
               warnings,
             );
             const quantity = getQuantityOrWarn(
               rawQuantity,
-              `${rule.label} quantity`,
+              `${rule.label}: cantidad`,
               warnings,
             );
 
@@ -2249,7 +2249,7 @@ export const productTemplatesService = {
 
             if (unitCost === null) {
               warnings.push(
-                `No current supplier price was found for material "${material.name}". Its estimated cost was treated as 0.`,
+                `No se encontró un precio vigente de proveedor para el material "${material.name}". Su costo estimado se tomó como 0.`,
               );
             }
 
@@ -2282,7 +2282,7 @@ export const productTemplatesService = {
 
         if (!material) {
           throw new AppError(
-            `Accessory rule "${rule.label}" points to a material that does not exist or is inactive.`,
+            `La regla de accesorio "${rule.label}" apunta a un material que no existe o está inactivo.`,
             400,
           );
         }
@@ -2296,7 +2296,7 @@ export const productTemplatesService = {
         );
         const quantity = getQuantityOrWarn(
           rawQuantity,
-          `${rule.label} quantity`,
+          `${rule.label}: cantidad`,
           warnings,
         );
 
@@ -2321,7 +2321,7 @@ export const productTemplatesService = {
 
         if (!priceSummary) {
           warnings.push(
-            `No current supplier price was found for accessory "${material.name}". Its estimated cost was treated as 0.`,
+            `No se encontró un precio vigente de proveedor para el accesorio "${material.name}". Su costo estimado se tomó como 0.`,
           );
         }
 
@@ -2345,7 +2345,7 @@ export const productTemplatesService = {
         const formulaJson = toJsonLike(rule.formulaJson);
 
         if (!formulaJson) {
-          warnings.push(`Labor rule "${rule.label}" was skipped because it has no formula.`);
+          warnings.push(`Se omitió la regla de mano de obra "${rule.label}" porque no tiene fórmula.`);
           return;
         }
 
@@ -2359,7 +2359,7 @@ export const productTemplatesService = {
         );
         const quantity = getQuantityOrWarn(
           rawQuantity,
-          `${rule.label} quantity`,
+          `${rule.label}: cantidad`,
           warnings,
           {
             allowDecimal: true,

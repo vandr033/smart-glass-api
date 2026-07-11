@@ -80,11 +80,11 @@ const toFiniteNumber = (value: unknown): number | null => {
 
 const getNodeType = (value: unknown, path: string): string => {
   if (!isRecord(value)) {
-    throw new FormulaError("Formula must be an object.", path);
+    throw new FormulaError("La fórmula debe ser un objeto.", path);
   }
 
   if (typeof value.type !== "string" || value.type.trim().length === 0) {
-    throw new FormulaError("Formula type is required.", path);
+    throw new FormulaError("El tipo de fórmula es obligatorio.", path);
   }
 
   return value.type;
@@ -96,7 +96,7 @@ const assertString = (
   label: string,
 ): string => {
   if (typeof value !== "string" || value.trim().length === 0) {
-    throw new FormulaError(`${label} must be a non-empty string.`, path);
+    throw new FormulaError(`${label} debe ser un texto no vacío.`, path);
   }
 
   return value.trim();
@@ -110,7 +110,7 @@ const assertInteger = (
   const parsedValue = toFiniteNumber(value);
 
   if (parsedValue === null || !Number.isInteger(parsedValue)) {
-    throw new FormulaError(`${label} must be an integer.`, path);
+    throw new FormulaError(`${label} debe ser un número entero.`, path);
   }
 
   return parsedValue;
@@ -130,14 +130,14 @@ const evaluateInputValue = (
   }
 
   throw new FormulaError(
-    "Inputs used in formulas must resolve to a string, number, boolean, or null.",
+    "Las entradas usadas en las fórmulas deben devolver texto, número, sí/no o vacío.",
     path,
   );
 };
 
 const assertBooleanResult = (value: JsonLike, path: string): boolean => {
   if (typeof value !== "boolean") {
-    throw new FormulaError("Formula must resolve to a boolean value.", path);
+    throw new FormulaError("La fórmula debe devolver un valor sí/no.", path);
   }
 
   return value;
@@ -147,7 +147,7 @@ const assertNumericResult = (value: JsonLike, path: string): number => {
   const parsedValue = toFiniteNumber(value);
 
   if (parsedValue === null) {
-    throw new FormulaError("Formula must resolve to a numeric value.", path);
+    throw new FormulaError("La fórmula debe devolver un valor numérico.", path);
   }
 
   return parsedValue;
@@ -218,7 +218,7 @@ const evaluateNode = (
       );
 
       if (!(inputKey in inputValues)) {
-        throw new FormulaError(`Missing input "${inputKey}".`, path);
+        throw new FormulaError(`Falta la entrada "${inputKey}".`, path);
       }
 
       return evaluateInputValue(inputValues[inputKey], path);
@@ -227,7 +227,7 @@ const evaluateNode = (
     case "ADD": {
       if (!Array.isArray(formulaNode.values) || formulaNode.values.length === 0) {
         throw new FormulaError(
-          "ADD.values must be a non-empty array.",
+          "Los valores de la suma deben ser una lista no vacía.",
           `${path}.values`,
         );
       }
@@ -246,7 +246,7 @@ const evaluateNode = (
     case "MULTIPLY": {
       if (!Array.isArray(formulaNode.values) || formulaNode.values.length === 0) {
         throw new FormulaError(
-          "MULTIPLY.values must be a non-empty array.",
+          "Los valores de la multiplicación deben ser una lista no vacía.",
           `${path}.values`,
         );
       }
@@ -282,7 +282,7 @@ const evaluateNode = (
       );
 
       if (divisor === 0) {
-        throw new FormulaError("Division by zero is not allowed.", path);
+        throw new FormulaError("No se permite dividir entre cero.", path);
       }
 
       return (
@@ -302,7 +302,7 @@ const evaluateNode = (
 
       if (precision < 0 || precision > 6) {
         throw new FormulaError(
-          "precision must be between 0 and 6.",
+          "La precisión debe estar entre 0 y 6.",
           `${path}.precision`,
         );
       }
@@ -343,7 +343,7 @@ const evaluateNode = (
     }
 
     default:
-      throw new FormulaError(`Unknown operator "${type}".`, path);
+      throw new FormulaError(`Operador desconocido "${type}".`, path);
   }
 };
 
@@ -357,7 +357,7 @@ const validateNode = (
     const type = getNodeType(formula, path);
 
     if (!SUPPORTED_OPERATORS.has(type)) {
-      throw new FormulaError(`Unknown operator "${type}".`, path);
+      throw new FormulaError(`Operador desconocido "${type}".`, path);
     }
 
     const formulaNode = formula as FormulaNode;
@@ -369,7 +369,7 @@ const validateNode = (
           typeof formulaNode.value !== "boolean"
         ) {
           throw new FormulaError(
-            "CONSTANT.value must be a number or boolean.",
+        "El valor de una constante debe ser un número o un valor sí/no.",
             `${path}.value`,
           );
         }
@@ -387,7 +387,7 @@ const validateNode = (
 
         if (allowedInputKeys && !allowedInputKeys.has(inputKey)) {
           throw new FormulaError(
-            `Unknown input "${inputKey}".`,
+            `Entrada desconocida "${inputKey}".`,
             `${path}.${keyProperty}`,
           );
         }
@@ -437,7 +437,7 @@ const validateNode = (
 
         if (precision < 0 || precision > 6) {
           throw new FormulaError(
-            "precision must be between 0 and 6.",
+            "La precisión debe estar entre 0 y 6.",
             `${path}.precision`,
           );
         }

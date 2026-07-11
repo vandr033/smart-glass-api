@@ -25,7 +25,7 @@ const nullableStringSchema = (maxLength: number, label: string) =>
     .union([z.string(), z.null(), z.undefined()])
     .transform((value) => trimOrNull(value))
     .refine((value) => value === null || value.length <= maxLength, {
-      message: `${label} must be ${maxLength} characters or fewer.`,
+      message: `${label} debe tener ${maxLength} caracteres o menos.`,
     });
 
 const nullableNumberSchema = ({
@@ -59,16 +59,16 @@ const nullableNumberSchema = ({
       return value;
     })
     .refine((value) => value === null || Number.isFinite(value), {
-      message: `${label} must be a valid number.`,
+      message: `${label} debe ser un número válido.`,
     })
     .refine((value) => value === null || !integer || Number.isInteger(value), {
-      message: `${label} must be a whole number.`,
+      message: `${label} debe ser un número entero.`,
     })
     .refine((value) => value === null || min === undefined || value >= min, {
-      message: `${label} must be at least ${min}.`,
+      message: `${label} debe ser como mínimo ${min}.`,
     })
     .refine((value) => value === null || max === undefined || value <= max, {
-      message: `${label} must be at most ${max}.`,
+      message: `${label} debe ser como máximo ${max}.`,
     });
 
 const jsonLikeSchema: z.ZodType<JsonLike> = z.lazy(() =>
@@ -152,7 +152,7 @@ export const createProductTemplateSchema = z.object({
 export const updateProductTemplateSchema = z.object({
   code: z.string().trim().min(1, "El código es obligatorio.").max(100),
   description: nullableStringSchema(4000, "Descripción"),
-  name: z.string().trim().min(1, "Template name is required.").max(191),
+  name: z.string().trim().min(1, "El nombre de la plantilla es obligatorio.").max(191),
   productType: productTemplateTypeSchema,
   status: productTemplateStatusSchema,
 });
@@ -173,13 +173,13 @@ const productTemplateInputMutationSchema = z
     key: z
       .string()
       .trim()
-      .min(1, "Input key is required.")
+      .min(1, "La clave de la entrada es obligatoria.")
       .max(100)
       .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
         message:
-          "Input key must start with a letter and contain only letters, numbers, and underscores.",
+          "La clave debe comenzar con una letra y contener solo letras, números y guiones bajos.",
       }),
-    label: z.string().trim().min(1, "Input label is required.").max(191),
+    label: z.string().trim().min(1, "El nombre visible de la entrada es obligatorio.").max(191),
     optionsJson: nullableJsonLikeSchema,
     sortOrder: z.coerce.number().int().min(0).default(0),
     unit: nullableStringSchema(50, "Unit"),
@@ -189,7 +189,7 @@ const productTemplateInputMutationSchema = z
     if (value.inputType === "SELECT" && !Array.isArray(value.optionsJson)) {
       context.addIssue({
         code: "custom",
-        message: "SELECT inputs require optionsJson to be an array.",
+        message: "Las entradas de selección deben tener las opciones en formato de lista.",
         path: ["optionsJson"],
       });
     }
@@ -200,14 +200,14 @@ const productTemplateMaterialRuleMutationSchema = z.object({
   allowRotation: z.boolean().default(false),
   formulaJson: jsonLikeSchema,
   isActive: z.boolean().default(true),
-  label: z.string().trim().min(1, "Rule label is required.").max(191),
+  label: z.string().trim().min(1, "El nombre de la regla es obligatorio.").max(191),
   materialId: z.uuid({
-    message: "Material is required.",
+    message: "El material es obligatorio.",
   }),
   ruleType: productTemplateMaterialRuleTypeSchema,
   sortOrder: z.coerce.number().int().min(0).default(0),
   wastePercent: nullableNumberSchema({
-    label: "Waste percent",
+    label: "Porcentaje de desperdicio",
     max: 100,
     min: 0,
   }),
@@ -216,9 +216,9 @@ const productTemplateMaterialRuleMutationSchema = z.object({
 const productTemplateAccessoryRuleMutationSchema = z.object({
   isActive: z.boolean().default(true),
   isOptional: z.boolean().default(false),
-  label: z.string().trim().min(1, "Accessory label is required.").max(191),
+  label: z.string().trim().min(1, "El nombre del accesorio es obligatorio.").max(191),
   materialId: z.uuid({
-    message: "Accessory material is required.",
+    message: "El material del accesorio es obligatorio.",
   }),
   quantityFormulaJson: jsonLikeSchema,
   sortOrder: z.coerce.number().int().min(0).default(0),
