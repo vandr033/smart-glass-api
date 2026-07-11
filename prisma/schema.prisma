@@ -298,6 +298,88 @@ enum MeasurementEvidenceType {
   OTHER
 }
 
+enum PostventaCaseType {
+  GARANTIA
+  RECLAMO
+  AJUSTE
+  ROTURA
+  FUGA
+  MALA_INSTALACION
+  PRODUCTO_INCOMPLETO
+  REPOSICION
+  OTRO
+}
+
+enum PostventaCaseStatus {
+  REPORTADO
+  EN_REVISION
+  VISITA_PROGRAMADA
+  EN_ATENCION
+  PENDIENTE_REPUESTO
+  RESUELTO
+  RECHAZADO
+  CERRADO
+}
+
+enum PostventaPriority {
+  BAJA
+  MEDIA
+  ALTA
+  CRITICA
+}
+
+enum ProductWarrantyStatus {
+  VIGENTE
+  VENCIDA
+  ANULADA
+}
+
+enum PostventaActivityType {
+  VISITA_REVISION
+  DIAGNOSTICO
+  SOLUCION
+  REPUESTO
+  CIERRE
+  NOTA_INTERNA
+}
+
+enum PostventaActivityStatus {
+  PENDIENTE
+  PROGRAMADA
+  EJECUTADA
+  CANCELADA
+}
+
+enum PostventaEvidenceType {
+  FOTO
+  DOCUMENTO
+  VIDEO
+  OTRO
+}
+
+enum PostventaCostCategory {
+  GARANTIA
+  RECLAMO
+  REPOSICION
+  VISITA
+  DIAGNOSTICO
+  MATERIAL
+  MANO_DE_OBRA
+  TRANSPORTE
+  INSTALACION
+  OTRO
+}
+
+enum PostventaCostOrigin {
+  MANUAL
+  INVENTARIO
+  INSTALACION
+  PRODUCCION
+  GARANTIA
+  COTIZACION
+  OTRO
+}
+
 enum TechnicalObservationType {
   ACCESS
   STRUCTURAL
@@ -333,6 +415,34 @@ enum ProjectAttachmentType {
   CONTRACT
   QUOTATION
   OTHER
+}
+
+enum ClientPortalUserStatus {
+  ACTIVO
+  INACTIVO
+  PENDIENTE_INVITACION
+  INVITACION_ENVIADA
+  ACCESO_BLOQUEADO
+}
+
+enum ClientPortalProjectAccessStatus {
+  ACTIVO
+  INACTIVO
+}
+
+enum ClientPortalDocumentType {
+  COTIZACION
+  CONTRATO
+  PLANO
+  MEDICION
+  REPORTE_INSTALACION
+  GARANTIA
+  DOCUMENTO_ADICIONAL
+}
+
+enum ClientPortalMessageSender {
+  CLIENTE
+  EQUIPO_INTERNO
 }
 
 enum QuotationStatus {
@@ -559,11 +669,113 @@ enum ProductionJobStatus {
   CANCELLED
 }
 
+enum ProductionWorkflowStatus {
+  DRAFT
+  PENDING_PLANNING
+  SCHEDULED
+  MATERIALS_PREPARATION
+  READY_TO_START
+  IN_PROGRESS
+  PAUSED
+  BLOCKED
+  PENDING_QUALITY
+  COMPLETED
+  CANCELLED
+}
+
+enum ProductionWorkCenterType {
+  GLASS_CUTTING
+  POLISHING
+  DRILLING
+  SANDBLASTING
+  LAMINATION
+  EXTERNAL_TEMPERING
+  ALUMINUM_CUTTING
+  PROFILE_MACHINING
+  ASSEMBLY
+  SEALING
+  QUALITY_CONTROL
+  PACKING
+  DISPATCH_PREPARATION
+  OTHER
+}
+
+enum ProductionWorkCenterStatus {
+  AVAILABLE
+  OCCUPIED
+  SATURATED
+  MAINTENANCE
+  INACTIVE
+}
+
+enum ProductionBlockType {
+  MATERIAL_SHORTAGE
+  MEASUREMENT_PENDING
+  MEASUREMENT_REJECTED
+  DRAWING_PENDING
+  APPROVAL_PENDING
+  MACHINE_UNAVAILABLE
+  WORK_CENTER_SATURATED
+  QUALITY_INCIDENT
+  DEFECTIVE_PART
+  EXTERNAL_PROCESS_PENDING
+  STAFF_SHORTAGE
+  OTHER
+}
+
+enum ProductionBlockSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ProductionBlockStatus {
+  OPEN
+  UNDER_REVIEW
+  IN_PROGRESS
+  RESOLVED
+  DISMISSED
+}
+
+enum ProductionTaskDependencyType {
+  FINISH_TO_START
+  START_TO_START
+  FINISH_TO_FINISH
+}
+
+enum ProductionTimeEventType {
+  START
+  PAUSE
+  RESUME
+  BLOCK
+  UNBLOCK
+  FINISH
+}
+
+enum ProductionWasteEntryType {
+  WASTE
+  SCRAP
+  REMNANT
+}
+
+enum ProductionWasteReason {
+  CUTTING
+  BREAKAGE
+  MEASUREMENT_ERROR
+  MATERIAL_DEFECT
+  MANUFACTURING_ERROR
+  TECHNICAL_ADJUSTMENT
+  HANDLING_DAMAGE
+  OTHER
+}
+
 enum ProductionJobPriority {
   LOW
   NORMAL
   HIGH
   URGENT
+  CRITICAL
 }
 
 enum ProductionJobItemStatus {
@@ -586,6 +798,7 @@ enum ProductionTaskType {
 enum ProductionTaskStatus {
   PENDING
   IN_PROGRESS
+  PAUSED
   COMPLETED
   BLOCKED
   CANCELLED
@@ -653,78 +866,92 @@ enum PurchaseOrderStatus {
 }
 
 model User {
-  id                              String                      @id @default(uuid()) @db.Char(36)
-  name                            String                      @db.VarChar(191)
-  email                           String                      @unique @db.VarChar(191)
-  password                        String?                     @db.VarChar(255)
-  avatar                          String?                     @db.VarChar(255)
-  isActive                        Boolean                     @default(true) @map("is_active")
-  emailVerified                   Boolean                     @default(false) @map("email_verified")
-  lastLoginAt                     DateTime?                   @map("last_login_at")
-  createdAt                       DateTime                    @default(now()) @map("created_at")
-  updatedAt                       DateTime                    @updatedAt @map("updated_at")
-  deletedAt                       DateTime?                   @map("deleted_at")
+  id                              String                          @id @default(uuid()) @db.Char(36)
+  name                            String                          @db.VarChar(191)
+  email                           String                          @unique @db.VarChar(191)
+  password                        String?                         @db.VarChar(255)
+  avatar                          String?                         @db.VarChar(255)
+  isActive                        Boolean                         @default(true) @map("is_active")
+  emailVerified                   Boolean                         @default(false) @map("email_verified")
+  lastLoginAt                     DateTime?                       @map("last_login_at")
+  createdAt                       DateTime                        @default(now()) @map("created_at")
+  updatedAt                       DateTime                        @updatedAt @map("updated_at")
+  deletedAt                       DateTime?                       @map("deleted_at")
   accounts                        Account[]
   sessions                        Session[]
-  createdInvites                  Invitation[]                @relation("InvitationCreatedBy")
+  createdInvites                  Invitation[]                    @relation("InvitationCreatedBy")
   userRoles                       UserRole[]
   notifications                   Notification[]
   activityLogs                    ActivityLog[]
-  auditLogs                       AuditLog[]                  @relation("AuditLogActor")
-  importedPriceLists              PriceListImport[]           @relation("PriceListImportedBy")
-  approvedPriceLists              PriceListImport[]           @relation("PriceListApprovedBy")
-  responsibleProjects             Project[]                   @relation("ProjectResponsibleUser")
-  salesProjects                   Project[]                   @relation("ProjectSalesUser")
-  changedProjectStatuses          ProjectStatusHistory[]      @relation("ProjectStatusHistoryChangedBy")
+  auditLogs                       AuditLog[]                      @relation("AuditLogActor")
+  importedPriceLists              PriceListImport[]               @relation("PriceListImportedBy")
+  approvedPriceLists              PriceListImport[]               @relation("PriceListApprovedBy")
+  responsibleProjects             Project[]                       @relation("ProjectResponsibleUser")
+  salesProjects                   Project[]                       @relation("ProjectSalesUser")
+  changedProjectStatuses          ProjectStatusHistory[]          @relation("ProjectStatusHistoryChangedBy")
   projectNotes                    ProjectNote[]
-  uploadedProjectAttachments      ProjectAttachment[]         @relation("ProjectAttachmentUploadedBy")
-  measuredProjects                ProjectMeasurement[]        @relation("ProjectMeasurementMeasuredBy")
-  createdProductTemplates         ProductTemplate[]           @relation("ProductTemplateCreatedBy")
-  createdProductTemplateVersions  ProductTemplateVersion[]    @relation("ProductTemplateVersionCreatedBy")
-  productTemplateSimulations      ProductTemplateSimulation[] @relation("ProductTemplateSimulationBy")
-  createdQuotations               Quotation[]                 @relation("QuotationCreatedBy")
-  approvedQuotations              Quotation[]                 @relation("QuotationApprovedBy")
-  createdQuotationVersions        QuotationVersion[]          @relation("QuotationVersionCreatedBy")
-  requestedQuotationApprovals     QuotationApproval[]         @relation("QuotationApprovalRequestedBy")
-  assignedQuotationApprovals      QuotationApproval[]         @relation("QuotationApprovalApprover")
-  decidedQuotationApprovals       QuotationApproval[]         @relation("QuotationApprovalDecidedBy")
-  changedQuotationStatuses        QuotationStatusHistory[]    @relation("QuotationStatusHistoryChangedBy")
-  generatedQuotationPdfExports    QuotationPdfExport[]        @relation("QuotationPdfExportGeneratedBy")
-  inventoryMovementsCreated       InventoryMovement[]         @relation("InventoryMovementCreatedBy")
-  inventoryReservationsCreated    InventoryReservation[]      @relation("InventoryReservationCreatedBy")
-  reportedDamagedMaterials        DamagedMaterial[]           @relation("DamagedMaterialReportedBy")
-  createdCuttingOptimizationRuns  CuttingOptimizationRun[]    @relation("CuttingOptimizationRunCreatedBy")
-  approvedCuttingOptimizationRuns CuttingOptimizationRun[]    @relation("CuttingOptimizationRunApprovedBy")
-  createdProfileOptimizationRuns  ProfileOptimizationRun[]    @relation("ProfileOptimizationRunCreatedBy")
-  requestedPurchaseRequests       PurchaseRequest[]           @relation("PurchaseRequestRequestedBy")
-  approvedPurchaseRequests        PurchaseRequest[]           @relation("PurchaseRequestApprovedBy")
-  createdSupplierComparisons      SupplierComparison[]        @relation("SupplierComparisonCreatedBy")
-  approvedSupplierComparisons     SupplierComparison[]        @relation("SupplierComparisonApprovedBy")
-  createdPurchaseOrders           PurchaseOrder[]             @relation("PurchaseOrderCreatedBy")
-  receivedPurchaseReceipts        PurchaseReceipt[]           @relation("PurchaseReceiptReceivedBy")
-  assignedProductionJobs          ProductionJob[]             @relation("ProductionJobAssignedTo")
-  createdProductionJobs           ProductionJob[]             @relation("ProductionJobCreatedBy")
-  assignedProductionTasks         ProductionTask[]            @relation("ProductionTaskAssignedTo")
-  consumedMaterials               MaterialConsumption[]       @relation("MaterialConsumptionConsumedBy")
-  changedProductionStatuses       ProductionStatusHistory[]   @relation("ProductionStatusHistoryChangedBy")
-  checkedQualityChecks            QualityCheck[]              @relation("QualityCheckCheckedBy")
-  createdInstallationOrders       InstallationOrder[]         @relation("InstallationOrderCreatedBy")
-  supervisedInstallationOrders    InstallationOrder[]         @relation("InstallationOrderSupervisor")
-  supervisedInstallationTeams     InstallationTeam[]          @relation("InstallationTeamSupervisor")
-  installationTeamMemberships     InstallationTeamMember[]    @relation("InstallationTeamMemberUser")
-  completedInstallationTasks      InstallationTask[]          @relation("InstallationTaskCompletedBy")
-  uploadedInstallationEvidence    InstallationEvidence[]      @relation("InstallationEvidenceUploadedBy")
-  reportedInstallationIssues      InstallationIssue[]         @relation("InstallationIssueReportedBy")
-  resolvedInstallationIssues      InstallationIssue[]         @relation("InstallationIssueResolvedBy")
-  changedInstallationStatuses     InstallationStatusHistory[] @relation("InstallationStatusHistoryChangedBy")
-  createdMeasurementRequests      MeasurementRequest[]        @relation("MeasurementRequestCreatedBy")
-  assignedMeasurementRequests     MeasurementRequest[]        @relation("MeasurementRequestTechnician")
-  approvedMeasurementRequests     MeasurementRequest[]        @relation("MeasurementRequestApprovedBy")
-  technicalVisits                 MeasurementVisit[]          @relation("MeasurementVisitTechnician")
-  uploadedMeasurementEvidence     MeasurementEvidence[]       @relation("MeasurementEvidenceUploadedBy")
-  createdTechnicalObservations    TechnicalObservation[]      @relation("TechnicalObservationCreatedBy")
-  resolvedTechnicalObservations   TechnicalObservation[]      @relation("TechnicalObservationResolvedBy")
-  changedMeasurementStatuses      MeasurementStatusHistory[]  @relation("MeasurementStatusHistoryChangedBy")
+  uploadedProjectAttachments      ProjectAttachment[]             @relation("ProjectAttachmentUploadedBy")
+  measuredProjects                ProjectMeasurement[]            @relation("ProjectMeasurementMeasuredBy")
+  createdProductTemplates         ProductTemplate[]               @relation("ProductTemplateCreatedBy")
+  createdProductTemplateVersions  ProductTemplateVersion[]        @relation("ProductTemplateVersionCreatedBy")
+  productTemplateSimulations      ProductTemplateSimulation[]     @relation("ProductTemplateSimulationBy")
+  createdQuotations               Quotation[]                     @relation("QuotationCreatedBy")
+  approvedQuotations              Quotation[]                     @relation("QuotationApprovedBy")
+  createdQuotationVersions        QuotationVersion[]              @relation("QuotationVersionCreatedBy")
+  requestedQuotationApprovals     QuotationApproval[]             @relation("QuotationApprovalRequestedBy")
+  assignedQuotationApprovals      QuotationApproval[]             @relation("QuotationApprovalApprover")
+  decidedQuotationApprovals       QuotationApproval[]             @relation("QuotationApprovalDecidedBy")
+  changedQuotationStatuses        QuotationStatusHistory[]        @relation("QuotationStatusHistoryChangedBy")
+  generatedQuotationPdfExports    QuotationPdfExport[]            @relation("QuotationPdfExportGeneratedBy")
+  inventoryMovementsCreated       InventoryMovement[]             @relation("InventoryMovementCreatedBy")
+  inventoryReservationsCreated    InventoryReservation[]          @relation("InventoryReservationCreatedBy")
+  reportedDamagedMaterials        DamagedMaterial[]               @relation("DamagedMaterialReportedBy")
+  createdCuttingOptimizationRuns  CuttingOptimizationRun[]        @relation("CuttingOptimizationRunCreatedBy")
+  approvedCuttingOptimizationRuns CuttingOptimizationRun[]        @relation("CuttingOptimizationRunApprovedBy")
+  createdProfileOptimizationRuns  ProfileOptimizationRun[]        @relation("ProfileOptimizationRunCreatedBy")
+  requestedPurchaseRequests       PurchaseRequest[]               @relation("PurchaseRequestRequestedBy")
+  approvedPurchaseRequests        PurchaseRequest[]               @relation("PurchaseRequestApprovedBy")
+  createdSupplierComparisons      SupplierComparison[]            @relation("SupplierComparisonCreatedBy")
+  approvedSupplierComparisons     SupplierComparison[]            @relation("SupplierComparisonApprovedBy")
+  createdPurchaseOrders           PurchaseOrder[]                 @relation("PurchaseOrderCreatedBy")
+  receivedPurchaseReceipts        PurchaseReceipt[]               @relation("PurchaseReceiptReceivedBy")
+  assignedProductionJobs          ProductionJob[]                 @relation("ProductionJobAssignedTo")
+  createdProductionJobs           ProductionJob[]                 @relation("ProductionJobCreatedBy")
+  assignedProductionTasks         ProductionTask[]                @relation("ProductionTaskAssignedTo")
+  createdProductionBlocks         ProductionBlock[]               @relation("ProductionBlockCreatedBy")
+  assignedProductionBlocks        ProductionBlock[]               @relation("ProductionBlockAssignedTo")
+  resolvedProductionBlocks        ProductionBlock[]               @relation("ProductionBlockResolvedBy")
+  productionTimeEntries           ProductionTimeEntry[]           @relation("ProductionTimeEntryUser")
+  productionWasteEntries          ProductionWasteEntry[]          @relation("ProductionWasteEntryReportedBy")
+  consumedMaterials               MaterialConsumption[]           @relation("MaterialConsumptionConsumedBy")
+  changedProductionStatuses       ProductionStatusHistory[]       @relation("ProductionStatusHistoryChangedBy")
+  checkedQualityChecks            QualityCheck[]                  @relation("QualityCheckCheckedBy")
+  createdInstallationOrders       InstallationOrder[]             @relation("InstallationOrderCreatedBy")
+  supervisedInstallationOrders    InstallationOrder[]             @relation("InstallationOrderSupervisor")
+  supervisedInstallationTeams     InstallationTeam[]              @relation("InstallationTeamSupervisor")
+  installationTeamMemberships     InstallationTeamMember[]        @relation("InstallationTeamMemberUser")
+  completedInstallationTasks      InstallationTask[]              @relation("InstallationTaskCompletedBy")
+  uploadedInstallationEvidence    InstallationEvidence[]          @relation("InstallationEvidenceUploadedBy")
+  reportedInstallationIssues      InstallationIssue[]             @relation("InstallationIssueReportedBy")
+  resolvedInstallationIssues      InstallationIssue[]             @relation("InstallationIssueResolvedBy")
+  changedInstallationStatuses     InstallationStatusHistory[]     @relation("InstallationStatusHistoryChangedBy")
+  createdMeasurementRequests      MeasurementRequest[]            @relation("MeasurementRequestCreatedBy")
+  assignedMeasurementRequests     MeasurementRequest[]            @relation("MeasurementRequestTechnician")
+  approvedMeasurementRequests     MeasurementRequest[]            @relation("MeasurementRequestApprovedBy")
+  technicalVisits                 MeasurementVisit[]              @relation("MeasurementVisitTechnician")
+  uploadedMeasurementEvidence     MeasurementEvidence[]           @relation("MeasurementEvidenceUploadedBy")
+  createdTechnicalObservations    TechnicalObservation[]          @relation("TechnicalObservationCreatedBy")
+  resolvedTechnicalObservations   TechnicalObservation[]          @relation("TechnicalObservationResolvedBy")
+  changedMeasurementStatuses      MeasurementStatusHistory[]      @relation("MeasurementStatusHistoryChangedBy")
+  responsiblePostventaCases       PostventaCase[]                 @relation("PostventaCaseResponsible")
+  createdPostventaCases           PostventaCase[]                 @relation("PostventaCaseCreatedBy")
+  postventaActivities             PostventaActivity[]             @relation("PostventaActivityResponsible")
+  uploadedPostventaEvidence       PostventaEvidence[]             @relation("PostventaEvidenceUploadedBy")
+  changedPostventaStatuses        PostventaStatusHistory[]        @relation("PostventaStatusHistoryChangedBy")
+  createdPostventaReservations    PostventaInventoryReservation[] @relation("PostventaReservationCreatedBy")
+  invitedClientPortalUsers        ClientPortalInvitationToken[]   @relation("ClientPortalInvitationCreatedBy")
+  uploadedClientPortalDocuments   ClientPortalDocument[]          @relation("ClientPortalDocumentUploadedBy")
+  internalClientPortalMessages    ClientPortalMessage[]           @relation("ClientPortalMessageInternalUser")
 
   @@index([deletedAt])
   @@map("users")
@@ -1030,31 +1257,36 @@ model Supplier {
 }
 
 model Client {
-  id             String          @id @default(uuid()) @db.Char(36)
-  clientType     ClientType      @map("client_type")
-  code           String?         @unique @db.VarChar(100)
-  legalName      String?         @map("legal_name") @db.VarChar(191)
-  commercialName String?         @map("commercial_name") @db.VarChar(191)
-  firstName      String?         @map("first_name") @db.VarChar(191)
-  lastName       String?         @map("last_name") @db.VarChar(191)
-  taxId          String?         @map("tax_id") @db.VarChar(100)
-  phone          String?         @db.VarChar(50)
-  whatsapp       String?         @db.VarChar(50)
-  email          String?         @db.VarChar(191)
-  billingAddress String?         @map("billing_address") @db.VarChar(255)
-  city           String?         @db.VarChar(100)
-  country        String          @default("Bolivia") @db.VarChar(100)
-  notes          String?         @db.Text
-  status         ClientStatus    @default(ACTIVE)
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @updatedAt @map("updated_at")
-  deletedAt      DateTime?       @map("deleted_at")
-  contacts       ClientContact[]
-  addresses      ClientAddress[]
-  projects       Project[]
-  quotations     Quotation[]
-  installationOrders InstallationOrder[]
-  measurementRequests MeasurementRequest[]
+  id                    String                 @id @default(uuid()) @db.Char(36)
+  clientType            ClientType             @map("client_type")
+  code                  String?                @unique @db.VarChar(100)
+  legalName             String?                @map("legal_name") @db.VarChar(191)
+  commercialName        String?                @map("commercial_name") @db.VarChar(191)
+  firstName             String?                @map("first_name") @db.VarChar(191)
+  lastName              String?                @map("last_name") @db.VarChar(191)
+  taxId                 String?                @map("tax_id") @db.VarChar(100)
+  phone                 String?                @db.VarChar(50)
+  whatsapp              String?                @db.VarChar(50)
+  email                 String?                @db.VarChar(191)
+  billingAddress        String?                @map("billing_address") @db.VarChar(255)
+  city                  String?                @db.VarChar(100)
+  country               String                 @default("Bolivia") @db.VarChar(100)
+  notes                 String?                @db.Text
+  status                ClientStatus           @default(ACTIVE)
+  createdAt             DateTime               @default(now()) @map("created_at")
+  updatedAt             DateTime               @updatedAt @map("updated_at")
+  deletedAt             DateTime?              @map("deleted_at")
+  contacts              ClientContact[]
+  addresses             ClientAddress[]
+  projects              Project[]
+  quotations            Quotation[]
+  installationOrders    InstallationOrder[]
+  measurementRequests   MeasurementRequest[]
+  postventaCases        PostventaCase[]
+  productWarranties     ProductWarranty[]
+  clientPortalUsers     ClientPortalUser[]
+  clientPortalDocuments ClientPortalDocument[]
+  clientPortalMessages  ClientPortalMessage[]
 
   @@index([deletedAt])
   @@index([clientType, deletedAt])
@@ -1087,20 +1319,20 @@ model ClientContact {
 }
 
 model ClientAddress {
-  id            String   @id @default(uuid()) @db.Char(36)
-  clientId      String   @map("client_id") @db.Char(36)
-  label         String   @db.VarChar(191)
-  address       String   @db.VarChar(255)
-  city          String?  @db.VarChar(100)
-  latitude      Decimal? @db.Decimal(10, 7)
-  longitude     Decimal? @db.Decimal(10, 7)
-  isBilling     Boolean  @default(false) @map("is_billing")
-  isProjectSite Boolean  @default(false) @map("is_project_site")
-  notes         String?  @db.Text
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-  client        Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  installationOrders InstallationOrder[]
+  id                  String               @id @default(uuid()) @db.Char(36)
+  clientId            String               @map("client_id") @db.Char(36)
+  label               String               @db.VarChar(191)
+  address             String               @db.VarChar(255)
+  city                String?              @db.VarChar(100)
+  latitude            Decimal?             @db.Decimal(10, 7)
+  longitude           Decimal?             @db.Decimal(10, 7)
+  isBilling           Boolean              @default(false) @map("is_billing")
+  isProjectSite       Boolean              @default(false) @map("is_project_site")
+  notes               String?              @db.Text
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  client              Client               @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  installationOrders  InstallationOrder[]
   measurementRequests MeasurementRequest[]
 
   @@index([clientId, isBilling])
@@ -1109,30 +1341,30 @@ model ClientAddress {
 }
 
 model Project {
-  id                       String                   @id @default(uuid()) @db.Char(36)
-  code                     String                   @unique @db.VarChar(100)
-  clientId                 String                   @map("client_id") @db.Char(36)
-  title                    String                   @db.VarChar(191)
-  description              String?                  @db.Text
-  projectType              ProjectType              @map("project_type")
-  status                   ProjectStatus            @default(LEAD)
-  priority                 ProjectPriority          @default(NORMAL)
-  siteAddress              String?                  @map("site_address") @db.VarChar(255)
-  city                     String?                  @db.VarChar(100)
-  latitude                 Decimal?                 @db.Decimal(10, 7)
-  longitude                Decimal?                 @db.Decimal(10, 7)
-  expectedMeasurementDate  DateTime?                @map("expected_measurement_date")
-  expectedDeliveryDate     DateTime?                @map("expected_delivery_date")
-  expectedInstallationDate DateTime?                @map("expected_installation_date")
-  responsibleUserId        String?                  @map("responsible_user_id") @db.Char(36)
-  salesUserId              String?                  @map("sales_user_id") @db.Char(36)
-  notes                    String?                  @db.Text
-  createdAt                DateTime                 @default(now()) @map("created_at")
-  updatedAt                DateTime                 @updatedAt @map("updated_at")
-  deletedAt                DateTime?                @map("deleted_at")
-  client                   Client                   @relation(fields: [clientId], references: [id], onDelete: Restrict)
-  responsibleUser          User?                    @relation("ProjectResponsibleUser", fields: [responsibleUserId], references: [id], onDelete: SetNull)
-  salesUser                User?                    @relation("ProjectSalesUser", fields: [salesUserId], references: [id], onDelete: SetNull)
+  id                       String                      @id @default(uuid()) @db.Char(36)
+  code                     String                      @unique @db.VarChar(100)
+  clientId                 String                      @map("client_id") @db.Char(36)
+  title                    String                      @db.VarChar(191)
+  description              String?                     @db.Text
+  projectType              ProjectType                 @map("project_type")
+  status                   ProjectStatus               @default(LEAD)
+  priority                 ProjectPriority             @default(NORMAL)
+  siteAddress              String?                     @map("site_address") @db.VarChar(255)
+  city                     String?                     @db.VarChar(100)
+  latitude                 Decimal?                    @db.Decimal(10, 7)
+  longitude                Decimal?                    @db.Decimal(10, 7)
+  expectedMeasurementDate  DateTime?                   @map("expected_measurement_date")
+  expectedDeliveryDate     DateTime?                   @map("expected_delivery_date")
+  expectedInstallationDate DateTime?                   @map("expected_installation_date")
+  responsibleUserId        String?                     @map("responsible_user_id") @db.Char(36)
+  salesUserId              String?                     @map("sales_user_id") @db.Char(36)
+  notes                    String?                     @db.Text
+  createdAt                DateTime                    @default(now()) @map("created_at")
+  updatedAt                DateTime                    @updatedAt @map("updated_at")
+  deletedAt                DateTime?                   @map("deleted_at")
+  client                   Client                      @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  responsibleUser          User?                       @relation("ProjectResponsibleUser", fields: [responsibleUserId], references: [id], onDelete: SetNull)
+  salesUser                User?                       @relation("ProjectSalesUser", fields: [salesUserId], references: [id], onDelete: SetNull)
   statusHistory            ProjectStatusHistory[]
   projectNotes             ProjectNote[]
   attachments              ProjectAttachment[]
@@ -1144,6 +1376,11 @@ model Project {
   productionJobs           ProductionJob[]
   installationOrders       InstallationOrder[]
   measurementRequests      MeasurementRequest[]
+  postventaCases           PostventaCase[]
+  productWarranties        ProductWarranty[]
+  clientPortalAccesses     ClientPortalProjectAccess[]
+  clientPortalDocuments    ClientPortalDocument[]
+  clientPortalMessages     ClientPortalMessage[]
 
   @@index([deletedAt])
   @@index([clientId, deletedAt])
@@ -1315,6 +1552,7 @@ model Material {
   purchaseReceiptItems          PurchaseReceiptItem[]
   productionJobItems            ProductionJobItem[]
   materialConsumptions          MaterialConsumption[]
+  productionWasteEntries        ProductionWasteEntry[]
 
   @@index([categoryId, deletedAt])
   @@index([materialType, status, deletedAt])
@@ -1672,6 +1910,7 @@ model Quotation {
   profileOptimizationRuns ProfileOptimizationRun[]
   productionJobs          ProductionJob[]
   installationOrders      InstallationOrder[]
+  postventaCases          PostventaCase[]
 
   @@index([clientId, deletedAt])
   @@index([projectId, deletedAt])
@@ -1948,26 +2187,27 @@ model InventoryMovement {
 }
 
 model InventoryReservation {
-  id               String                     @id @default(uuid()) @db.Char(36)
-  quotationId      String?                    @map("quotation_id") @db.Char(36)
-  projectId        String?                    @map("project_id") @db.Char(36)
-  warehouseId      String                     @map("warehouse_id") @db.Char(36)
-  materialId       String                     @map("material_id") @db.Char(36)
-  inventoryStockId String?                    @map("inventory_stock_id") @db.Char(36)
-  reservationType  InventoryReservationType   @map("reservation_type")
-  status           InventoryReservationStatus @default(ACTIVE)
-  quantity         Decimal                    @db.Decimal(14, 4)
+  id               String                          @id @default(uuid()) @db.Char(36)
+  quotationId      String?                         @map("quotation_id") @db.Char(36)
+  projectId        String?                         @map("project_id") @db.Char(36)
+  warehouseId      String                          @map("warehouse_id") @db.Char(36)
+  materialId       String                          @map("material_id") @db.Char(36)
+  inventoryStockId String?                         @map("inventory_stock_id") @db.Char(36)
+  reservationType  InventoryReservationType        @map("reservation_type")
+  status           InventoryReservationStatus      @default(ACTIVE)
+  quantity         Decimal                         @db.Decimal(14, 4)
   unit             MaterialUnit
-  expiresAt        DateTime?                  @map("expires_at")
-  reservedByUserId String?                    @map("reserved_by_user_id") @db.Char(36)
-  createdAt        DateTime                   @default(now()) @map("created_at")
-  updatedAt        DateTime                   @updatedAt @map("updated_at")
-  quotation        Quotation?                 @relation(fields: [quotationId], references: [id], onDelete: SetNull)
-  project          Project?                   @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  warehouse        Warehouse                  @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
-  material         Material                   @relation(fields: [materialId], references: [id], onDelete: Restrict)
-  inventoryStock   InventoryStock?            @relation(fields: [inventoryStockId], references: [id], onDelete: SetNull)
-  reservedByUser   User?                      @relation("InventoryReservationCreatedBy", fields: [reservedByUserId], references: [id], onDelete: SetNull)
+  expiresAt        DateTime?                       @map("expires_at")
+  reservedByUserId String?                         @map("reserved_by_user_id") @db.Char(36)
+  createdAt        DateTime                        @default(now()) @map("created_at")
+  updatedAt        DateTime                        @updatedAt @map("updated_at")
+  quotation        Quotation?                      @relation(fields: [quotationId], references: [id], onDelete: SetNull)
+  project          Project?                        @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  warehouse        Warehouse                       @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+  material         Material                        @relation(fields: [materialId], references: [id], onDelete: Restrict)
+  inventoryStock   InventoryStock?                 @relation(fields: [inventoryStockId], references: [id], onDelete: SetNull)
+  reservedByUser   User?                           @relation("InventoryReservationCreatedBy", fields: [reservedByUserId], references: [id], onDelete: SetNull)
+  postventaLinks   PostventaInventoryReservation[]
 
   @@index([quotationId, status])
   @@index([projectId, status])
@@ -2306,45 +2546,170 @@ model ProfileRemnantOutput {
   @@map("profile_remnant_outputs")
 }
 
+model ProductionWorkCenter {
+  id                    String                     @id @default(uuid()) @db.Char(36)
+  code                  String                     @unique @db.VarChar(100)
+  name                  String                     @db.VarChar(191)
+  description           String?                    @db.Text
+  type                  ProductionWorkCenterType
+  capacityDailyMinutes  Int                        @default(0) @map("capacity_daily_minutes")
+  scheduleStart         String?                    @map("schedule_start") @db.VarChar(5)
+  scheduleEnd           String?                    @map("schedule_end") @db.VarChar(5)
+  active                Boolean                    @default(true)
+  allowsConcurrentTasks Boolean                    @default(false) @map("allows_concurrent_tasks")
+  workstationCount      Int                        @default(1) @map("workstation_count")
+  setupMinutes          Int                        @default(0) @map("setup_minutes")
+  status                ProductionWorkCenterStatus @default(AVAILABLE)
+  unavailableFrom       DateTime?                  @map("unavailable_from")
+  unavailableTo         DateTime?                  @map("unavailable_to")
+  unavailableReason     String?                    @map("unavailable_reason") @db.Text
+  createdAt             DateTime                   @default(now()) @map("created_at")
+  updatedAt             DateTime                   @updatedAt @map("updated_at")
+  currentJobs           ProductionJob[]            @relation("ProductionJobCurrentWorkCenter")
+  tasks                 ProductionTask[]           @relation("ProductionTaskWorkCenter")
+
+  @@index([type, active])
+  @@index([status, active])
+  @@map("production_work_centers")
+}
+
+model ProductionTaskDependency {
+  id              String                       @id @default(uuid()) @db.Char(36)
+  taskId          String                       @map("task_id") @db.Char(36)
+  dependsOnTaskId String                       @map("depends_on_task_id") @db.Char(36)
+  type            ProductionTaskDependencyType @default(FINISH_TO_START)
+  createdAt       DateTime                     @default(now()) @map("created_at")
+  task            ProductionTask               @relation("ProductionTaskDependencyTask", fields: [taskId], references: [id], onDelete: Cascade)
+  dependsOnTask   ProductionTask               @relation("ProductionTaskDependencyDependsOn", fields: [dependsOnTaskId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, dependsOnTaskId])
+  @@index([dependsOnTaskId])
+  @@map("production_task_dependencies")
+}
+
+model ProductionBlock {
+  id                     String                  @id @default(uuid()) @db.Char(36)
+  productionJobId        String?                 @map("production_job_id") @db.Char(36)
+  productionTaskId       String?                 @map("production_task_id") @db.Char(36)
+  type                   ProductionBlockType
+  severity               ProductionBlockSeverity @default(MEDIUM)
+  description            String                  @db.Text
+  status                 ProductionBlockStatus   @default(OPEN)
+  createdById            String?                 @map("created_by_id") @db.Char(36)
+  assignedToId           String?                 @map("assigned_to_id") @db.Char(36)
+  resolvedById           String?                 @map("resolved_by_id") @db.Char(36)
+  resolution             String?                 @db.Text
+  estimatedImpactMinutes Int?                    @map("estimated_impact_minutes")
+  createdAt              DateTime                @default(now()) @map("created_at")
+  updatedAt              DateTime                @updatedAt @map("updated_at")
+  resolvedAt             DateTime?               @map("resolved_at")
+  productionJob          ProductionJob?          @relation(fields: [productionJobId], references: [id], onDelete: Cascade)
+  productionTask         ProductionTask?         @relation(fields: [productionTaskId], references: [id], onDelete: Cascade)
+  createdBy              User?                   @relation("ProductionBlockCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  assignedTo             User?                   @relation("ProductionBlockAssignedTo", fields: [assignedToId], references: [id], onDelete: SetNull)
+  resolvedBy             User?                   @relation("ProductionBlockResolvedBy", fields: [resolvedById], references: [id], onDelete: SetNull)
+
+  @@index([productionJobId, status, severity])
+  @@index([productionTaskId, status, severity])
+  @@index([status, createdAt])
+  @@map("production_blocks")
+}
+
+model ProductionTimeEntry {
+  id               String                  @id @default(uuid()) @db.Char(36)
+  productionTaskId String                  @map("production_task_id") @db.Char(36)
+  userId           String?                 @map("user_id") @db.Char(36)
+  eventType        ProductionTimeEventType @map("event_type")
+  eventAt          DateTime                @map("event_at")
+  reason           String?                 @db.Text
+  createdAt        DateTime                @default(now()) @map("created_at")
+  productionTask   ProductionTask          @relation(fields: [productionTaskId], references: [id], onDelete: Cascade)
+  user             User?                   @relation("ProductionTimeEntryUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([productionTaskId, eventAt])
+  @@index([userId, eventAt])
+  @@map("production_time_entries")
+}
+
+model ProductionWasteEntry {
+  id               String                   @id @default(uuid()) @db.Char(36)
+  productionJobId  String                   @map("production_job_id") @db.Char(36)
+  productionTaskId String?                  @map("production_task_id") @db.Char(36)
+  materialId       String?                  @map("material_id") @db.Char(36)
+  entryType        ProductionWasteEntryType @map("entry_type")
+  reason           ProductionWasteReason
+  quantity         Decimal                  @db.Decimal(14, 4)
+  unit             MaterialUnit
+  areaM2           Decimal?                 @map("area_m2") @db.Decimal(14, 4)
+  widthMm          Decimal?                 @map("width_mm") @db.Decimal(14, 2)
+  heightMm         Decimal?                 @map("height_mm") @db.Decimal(14, 2)
+  lengthMm         Decimal?                 @map("length_mm") @db.Decimal(14, 2)
+  recoverable      Boolean                  @default(false)
+  notes            String?                  @db.Text
+  evidenceJson     Json?                    @map("evidence_json")
+  reportedById     String?                  @map("reported_by_id") @db.Char(36)
+  createdAt        DateTime                 @default(now()) @map("created_at")
+  updatedAt        DateTime                 @updatedAt @map("updated_at")
+  productionJob    ProductionJob            @relation(fields: [productionJobId], references: [id], onDelete: Cascade)
+  productionTask   ProductionTask?          @relation(fields: [productionTaskId], references: [id], onDelete: SetNull)
+  material         Material?                @relation(fields: [materialId], references: [id], onDelete: SetNull)
+  reportedBy       User?                    @relation("ProductionWasteEntryReportedBy", fields: [reportedById], references: [id], onDelete: SetNull)
+
+  @@index([productionJobId, createdAt])
+  @@index([productionTaskId, createdAt])
+  @@index([materialId, reason])
+  @@map("production_waste_entries")
+}
+
 model ProductionJob {
-  id                   String                    @id @default(uuid()) @db.Char(36)
-  code                 String                    @unique @db.VarChar(100)
-  quotationId          String?                   @map("quotation_id") @db.Char(36)
-  projectId            String?                   @map("project_id") @db.Char(36)
-  measurementRequestId String?                   @map("measurement_request_id") @db.Char(36)
-  cuttingPlanId        String?                   @map("cutting_plan_id") @db.Char(36)
-  status               ProductionJobStatus       @default(DRAFT)
-  priority             ProductionJobPriority     @default(NORMAL)
-  plannedStartDate     DateTime?                 @map("planned_start_date")
-  plannedEndDate       DateTime?                 @map("planned_end_date")
-  actualStartDate      DateTime?                 @map("actual_start_date")
-  actualEndDate        DateTime?                 @map("actual_end_date")
-  assignedToUserId     String?                   @map("assigned_to_user_id") @db.Char(36)
-  createdByUserId      String?                   @map("created_by_user_id") @db.Char(36)
-  notes                String?                   @db.Text
-  createdAt            DateTime                  @default(now()) @map("created_at")
-  updatedAt            DateTime                  @updatedAt @map("updated_at")
-  deletedAt            DateTime?                 @map("deleted_at")
-  quotation            Quotation?                @relation(fields: [quotationId], references: [id], onDelete: SetNull)
-  project              Project?                  @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  measurementRequest   MeasurementRequest?       @relation(fields: [measurementRequestId], references: [id], onDelete: SetNull)
-  cuttingPlan          CuttingPlan?              @relation(fields: [cuttingPlanId], references: [id], onDelete: SetNull)
-  assignedToUser       User?                     @relation("ProductionJobAssignedTo", fields: [assignedToUserId], references: [id], onDelete: SetNull)
-  createdByUser        User?                     @relation("ProductionJobCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
-  items                ProductionJobItem[]
-  tasks                ProductionTask[]
-  materialConsumptions MaterialConsumption[]
-  wasteReports         ProductionWasteReport[]
-  statusHistory        ProductionStatusHistory[]
-  qualityChecks        QualityCheck[]
+  id                       String                    @id @default(uuid()) @db.Char(36)
+  code                     String                    @unique @db.VarChar(100)
+  quotationId              String?                   @map("quotation_id") @db.Char(36)
+  projectId                String?                   @map("project_id") @db.Char(36)
+  measurementRequestId     String?                   @map("measurement_request_id") @db.Char(36)
+  cuttingPlanId            String?                   @map("cutting_plan_id") @db.Char(36)
+  status                   ProductionJobStatus       @default(DRAFT)
+  workflowStatus           ProductionWorkflowStatus  @default(DRAFT) @map("workflow_status")
+  priority                 ProductionJobPriority     @default(NORMAL)
+  version                  Int                       @default(1)
+  estimatedMinutes         Int                       @default(0) @map("estimated_minutes")
+  plannedStartDate         DateTime?                 @map("planned_start_date")
+  plannedEndDate           DateTime?                 @map("planned_end_date")
+  requiredInstallationDate DateTime?                 @map("required_installation_date")
+  actualStartDate          DateTime?                 @map("actual_start_date")
+  actualEndDate            DateTime?                 @map("actual_end_date")
+  assignedToUserId         String?                   @map("assigned_to_user_id") @db.Char(36)
+  currentWorkCenterId      String?                   @map("current_work_center_id") @db.Char(36)
+  createdByUserId          String?                   @map("created_by_user_id") @db.Char(36)
+  notes                    String?                   @db.Text
+  createdAt                DateTime                  @default(now()) @map("created_at")
+  updatedAt                DateTime                  @updatedAt @map("updated_at")
+  deletedAt                DateTime?                 @map("deleted_at")
+  quotation                Quotation?                @relation(fields: [quotationId], references: [id], onDelete: SetNull)
+  project                  Project?                  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  measurementRequest       MeasurementRequest?       @relation(fields: [measurementRequestId], references: [id], onDelete: SetNull)
+  cuttingPlan              CuttingPlan?              @relation(fields: [cuttingPlanId], references: [id], onDelete: SetNull)
+  assignedToUser           User?                     @relation("ProductionJobAssignedTo", fields: [assignedToUserId], references: [id], onDelete: SetNull)
+  currentWorkCenter        ProductionWorkCenter?     @relation("ProductionJobCurrentWorkCenter", fields: [currentWorkCenterId], references: [id], onDelete: SetNull)
+  createdByUser            User?                     @relation("ProductionJobCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  items                    ProductionJobItem[]
+  tasks                    ProductionTask[]
+  materialConsumptions     MaterialConsumption[]
+  wasteReports             ProductionWasteReport[]
+  statusHistory            ProductionStatusHistory[]
+  qualityChecks            QualityCheck[]
+  blocks                   ProductionBlock[]
+  wasteEntries             ProductionWasteEntry[]
 
   @@index([quotationId, deletedAt])
   @@index([projectId, deletedAt])
   @@index([measurementRequestId, deletedAt])
   @@index([cuttingPlanId, deletedAt])
   @@index([status, deletedAt])
+  @@index([workflowStatus, deletedAt])
   @@index([priority, deletedAt])
   @@index([assignedToUserId, deletedAt])
+  @@index([currentWorkCenterId, deletedAt])
   @@index([plannedStartDate, deletedAt])
   @@index([plannedEndDate, deletedAt])
   @@index([deletedAt])
@@ -2375,28 +2740,41 @@ model ProductionJobItem {
 }
 
 model ProductionTask {
-  id                   String                @id @default(uuid()) @db.Char(36)
-  productionJobId      String                @map("production_job_id") @db.Char(36)
-  productionJobItemId  String?               @map("production_job_item_id") @db.Char(36)
-  taskType             ProductionTaskType    @map("task_type")
-  title                String                @db.VarChar(191)
-  description          String?               @db.Text
-  status               ProductionTaskStatus  @default(PENDING)
-  assignedToUserId     String?               @map("assigned_to_user_id") @db.Char(36)
-  startedAt            DateTime?             @map("started_at")
-  completedAt          DateTime?             @map("completed_at")
-  sortOrder            Int                   @default(0) @map("sort_order")
-  createdAt            DateTime              @default(now()) @map("created_at")
-  updatedAt            DateTime              @updatedAt @map("updated_at")
-  productionJob        ProductionJob         @relation(fields: [productionJobId], references: [id], onDelete: Cascade)
-  productionJobItem    ProductionJobItem?    @relation(fields: [productionJobItemId], references: [id], onDelete: SetNull)
-  assignedToUser       User?                 @relation("ProductionTaskAssignedTo", fields: [assignedToUserId], references: [id], onDelete: SetNull)
-  materialConsumptions MaterialConsumption[]
-  qualityChecks        QualityCheck[]
+  id                     String                     @id @default(uuid()) @db.Char(36)
+  productionJobId        String                     @map("production_job_id") @db.Char(36)
+  productionJobItemId    String?                    @map("production_job_item_id") @db.Char(36)
+  taskType               ProductionTaskType         @map("task_type")
+  title                  String                     @db.VarChar(191)
+  description            String?                    @db.Text
+  status                 ProductionTaskStatus       @default(PENDING)
+  assignedToUserId       String?                    @map("assigned_to_user_id") @db.Char(36)
+  workCenterId           String?                    @map("work_center_id") @db.Char(36)
+  estimatedMinutes       Int                        @default(0) @map("estimated_minutes")
+  actualMinutes          Int                        @default(0) @map("actual_minutes")
+  scheduledStart         DateTime?                  @map("scheduled_start")
+  scheduledEnd           DateTime?                  @map("scheduled_end")
+  requiresQualityControl Boolean                    @default(false) @map("requires_quality_control")
+  startedAt              DateTime?                  @map("started_at")
+  completedAt            DateTime?                  @map("completed_at")
+  sortOrder              Int                        @default(0) @map("sort_order")
+  createdAt              DateTime                   @default(now()) @map("created_at")
+  updatedAt              DateTime                   @updatedAt @map("updated_at")
+  productionJob          ProductionJob              @relation(fields: [productionJobId], references: [id], onDelete: Cascade)
+  productionJobItem      ProductionJobItem?         @relation(fields: [productionJobItemId], references: [id], onDelete: SetNull)
+  assignedToUser         User?                      @relation("ProductionTaskAssignedTo", fields: [assignedToUserId], references: [id], onDelete: SetNull)
+  workCenter             ProductionWorkCenter?      @relation("ProductionTaskWorkCenter", fields: [workCenterId], references: [id], onDelete: SetNull)
+  materialConsumptions   MaterialConsumption[]
+  qualityChecks          QualityCheck[]
+  dependencies           ProductionTaskDependency[] @relation("ProductionTaskDependencyTask")
+  dependents             ProductionTaskDependency[] @relation("ProductionTaskDependencyDependsOn")
+  blocks                 ProductionBlock[]
+  timeEntries            ProductionTimeEntry[]
+  wasteEntries           ProductionWasteEntry[]
 
   @@index([productionJobId, sortOrder])
   @@index([productionJobItemId])
   @@index([assignedToUserId, status])
+  @@index([workCenterId, scheduledStart, scheduledEnd])
   @@index([taskType, status])
   @@map("production_tasks")
 }
@@ -2493,36 +2871,36 @@ model QualityCheck {
 }
 
 model MeasurementRequest {
-  id                  String                   @id @default(uuid()) @db.Char(36)
-  code                String                   @unique @db.VarChar(100)
-  clientId            String                   @map("client_id") @db.Char(36)
-  projectId           String?                  @map("project_id") @db.Char(36)
-  addressId           String?                  @map("address_id") @db.Char(36)
-  status              MeasurementRequestStatus @default(REQUESTED)
-  priority            ProjectPriority          @default(NORMAL)
-  requestedDate       DateTime                 @map("requested_date")
-  scheduledDate       DateTime?                @map("scheduled_date")
-  scheduledStartTime  String?                  @map("scheduled_start_time") @db.VarChar(5)
-  scheduledEndTime    String?                  @map("scheduled_end_time") @db.VarChar(5)
-  assignedTechnicianId String?                 @map("assigned_technician_id") @db.Char(36)
-  observations        String?                  @db.Text
-  createdByUserId     String?                  @map("created_by_user_id") @db.Char(36)
-  approvedByUserId    String?                  @map("approved_by_user_id") @db.Char(36)
-  approvedAt          DateTime?                @map("approved_at")
-  rejectedAt          DateTime?                @map("rejected_at")
-  createdAt           DateTime                 @default(now()) @map("created_at")
-  updatedAt           DateTime                 @updatedAt @map("updated_at")
-  deletedAt           DateTime?                @map("deleted_at")
-  client              Client                   @relation(fields: [clientId], references: [id], onDelete: Restrict)
-  project             Project?                 @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  address             ClientAddress?           @relation(fields: [addressId], references: [id], onDelete: SetNull)
-  assignedTechnician  User?                    @relation("MeasurementRequestTechnician", fields: [assignedTechnicianId], references: [id], onDelete: SetNull)
-  createdByUser       User?                    @relation("MeasurementRequestCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
-  approvedByUser      User?                    @relation("MeasurementRequestApprovedBy", fields: [approvedByUserId], references: [id], onDelete: SetNull)
-  technicalVisits     MeasurementVisit[]
-  statusHistory       MeasurementStatusHistory[]
-  quotations          Quotation[]
-  productionJobs      ProductionJob[]
+  id                   String                     @id @default(uuid()) @db.Char(36)
+  code                 String                     @unique @db.VarChar(100)
+  clientId             String                     @map("client_id") @db.Char(36)
+  projectId            String?                    @map("project_id") @db.Char(36)
+  addressId            String?                    @map("address_id") @db.Char(36)
+  status               MeasurementRequestStatus   @default(REQUESTED)
+  priority             ProjectPriority            @default(NORMAL)
+  requestedDate        DateTime                   @map("requested_date")
+  scheduledDate        DateTime?                  @map("scheduled_date")
+  scheduledStartTime   String?                    @map("scheduled_start_time") @db.VarChar(5)
+  scheduledEndTime     String?                    @map("scheduled_end_time") @db.VarChar(5)
+  assignedTechnicianId String?                    @map("assigned_technician_id") @db.Char(36)
+  observations         String?                    @db.Text
+  createdByUserId      String?                    @map("created_by_user_id") @db.Char(36)
+  approvedByUserId     String?                    @map("approved_by_user_id") @db.Char(36)
+  approvedAt           DateTime?                  @map("approved_at")
+  rejectedAt           DateTime?                  @map("rejected_at")
+  createdAt            DateTime                   @default(now()) @map("created_at")
+  updatedAt            DateTime                   @updatedAt @map("updated_at")
+  deletedAt            DateTime?                  @map("deleted_at")
+  client               Client                     @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  project              Project?                   @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  address              ClientAddress?             @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  assignedTechnician   User?                      @relation("MeasurementRequestTechnician", fields: [assignedTechnicianId], references: [id], onDelete: SetNull)
+  createdByUser        User?                      @relation("MeasurementRequestCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  approvedByUser       User?                      @relation("MeasurementRequestApprovedBy", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+  technicalVisits      MeasurementVisit[]
+  statusHistory        MeasurementStatusHistory[]
+  quotations           Quotation[]
+  productionJobs       ProductionJob[]
 
   @@index([clientId, deletedAt])
   @@index([projectId, deletedAt])
@@ -2537,22 +2915,22 @@ model MeasurementRequest {
 }
 
 model MeasurementVisit {
-  id                  String                 @id @default(uuid()) @db.Char(36)
-  measurementRequestId String                @map("measurement_request_id") @db.Char(36)
-  technicianId        String?                @map("technician_id") @db.Char(36)
-  status              MeasurementVisitStatus @default(SCHEDULED)
-  startedAt           DateTime?              @map("started_at")
-  finishedAt          DateTime?              @map("finished_at")
-  locationConfirmed   Boolean                @default(false) @map("location_confirmed")
-  generalObservations String?                @map("general_observations") @db.Text
-  result              MeasurementVisitResult @default(PENDING)
-  createdAt           DateTime               @default(now()) @map("created_at")
-  updatedAt           DateTime               @updatedAt @map("updated_at")
-  measurementRequest  MeasurementRequest     @relation(fields: [measurementRequestId], references: [id], onDelete: Cascade)
-  technician          User?                  @relation("MeasurementVisitTechnician", fields: [technicianId], references: [id], onDelete: SetNull)
-  openings            MeasurementOpening[]
-  evidence            MeasurementEvidence[]
-  observations        TechnicalObservation[]
+  id                   String                 @id @default(uuid()) @db.Char(36)
+  measurementRequestId String                 @map("measurement_request_id") @db.Char(36)
+  technicianId         String?                @map("technician_id") @db.Char(36)
+  status               MeasurementVisitStatus @default(SCHEDULED)
+  startedAt            DateTime?              @map("started_at")
+  finishedAt           DateTime?              @map("finished_at")
+  locationConfirmed    Boolean                @default(false) @map("location_confirmed")
+  generalObservations  String?                @map("general_observations") @db.Text
+  result               MeasurementVisitResult @default(PENDING)
+  createdAt            DateTime               @default(now()) @map("created_at")
+  updatedAt            DateTime               @updatedAt @map("updated_at")
+  measurementRequest   MeasurementRequest     @relation(fields: [measurementRequestId], references: [id], onDelete: Cascade)
+  technician           User?                  @relation("MeasurementVisitTechnician", fields: [technicianId], references: [id], onDelete: SetNull)
+  openings             MeasurementOpening[]
+  evidence             MeasurementEvidence[]
+  observations         TechnicalObservation[]
 
   @@index([measurementRequestId, createdAt])
   @@index([technicianId, startedAt])
@@ -2561,22 +2939,22 @@ model MeasurementVisit {
 }
 
 model MeasurementOpening {
-  id                String                   @id @default(uuid()) @db.Char(36)
-  measurementVisitId String                  @map("measurement_visit_id") @db.Char(36)
-  code              String                   @db.VarChar(100)
-  environment       String                   @db.VarChar(191)
-  elementType       MeasurementElementType   @map("element_type")
-  widthMm           Decimal                  @map("width_mm") @db.Decimal(14, 2)
-  heightMm          Decimal                  @map("height_mm") @db.Decimal(14, 2)
-  depthMm           Decimal?                 @map("depth_mm") @db.Decimal(14, 2)
-  quantity          Int                      @default(1)
-  observations      String?                  @db.Text
-  requiresCorrection Boolean                 @default(false) @map("requires_correction")
-  status            MeasurementOpeningStatus @default(REGISTERED)
-  createdAt         DateTime                 @default(now()) @map("created_at")
-  updatedAt         DateTime                 @updatedAt @map("updated_at")
-  measurementVisit  MeasurementVisit         @relation(fields: [measurementVisitId], references: [id], onDelete: Cascade)
-  evidence          MeasurementEvidence[]
+  id                 String                   @id @default(uuid()) @db.Char(36)
+  measurementVisitId String                   @map("measurement_visit_id") @db.Char(36)
+  code               String                   @db.VarChar(100)
+  environment        String                   @db.VarChar(191)
+  elementType        MeasurementElementType   @map("element_type")
+  widthMm            Decimal                  @map("width_mm") @db.Decimal(14, 2)
+  heightMm           Decimal                  @map("height_mm") @db.Decimal(14, 2)
+  depthMm            Decimal?                 @map("depth_mm") @db.Decimal(14, 2)
+  quantity           Int                      @default(1)
+  observations       String?                  @db.Text
+  requiresCorrection Boolean                  @default(false) @map("requires_correction")
+  status             MeasurementOpeningStatus @default(REGISTERED)
+  createdAt          DateTime                 @default(now()) @map("created_at")
+  updatedAt          DateTime                 @updatedAt @map("updated_at")
+  measurementVisit   MeasurementVisit         @relation(fields: [measurementVisitId], references: [id], onDelete: Cascade)
+  evidence           MeasurementEvidence[]
 
   @@index([measurementVisitId, createdAt])
   @@index([elementType, status])
@@ -2585,20 +2963,20 @@ model MeasurementOpening {
 }
 
 model MeasurementEvidence {
-  id                 String                  @id @default(uuid()) @db.Char(36)
-  measurementVisitId String                  @map("measurement_visit_id") @db.Char(36)
-  measurementOpeningId String?               @map("measurement_opening_id") @db.Char(36)
-  type               MeasurementEvidenceType
-  fileName           String                  @map("file_name") @db.VarChar(255)
-  fileUrl            String                  @map("file_url") @db.VarChar(255)
-  mimeType           String?                 @map("mime_type") @db.VarChar(191)
-  sizeBytes          Int?                    @map("size_bytes")
-  description        String?                 @db.Text
-  uploadedByUserId   String?                 @map("uploaded_by_user_id") @db.Char(36)
-  uploadedAt         DateTime                @default(now()) @map("uploaded_at")
-  measurementVisit   MeasurementVisit        @relation(fields: [measurementVisitId], references: [id], onDelete: Cascade)
-  measurementOpening MeasurementOpening?     @relation(fields: [measurementOpeningId], references: [id], onDelete: SetNull)
-  uploadedByUser     User?                   @relation("MeasurementEvidenceUploadedBy", fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+  id                   String                  @id @default(uuid()) @db.Char(36)
+  measurementVisitId   String                  @map("measurement_visit_id") @db.Char(36)
+  measurementOpeningId String?                 @map("measurement_opening_id") @db.Char(36)
+  type                 MeasurementEvidenceType
+  fileName             String                  @map("file_name") @db.VarChar(255)
+  fileUrl              String                  @map("file_url") @db.VarChar(255)
+  mimeType             String?                 @map("mime_type") @db.VarChar(191)
+  sizeBytes            Int?                    @map("size_bytes")
+  description          String?                 @db.Text
+  uploadedByUserId     String?                 @map("uploaded_by_user_id") @db.Char(36)
+  uploadedAt           DateTime                @default(now()) @map("uploaded_at")
+  measurementVisit     MeasurementVisit        @relation(fields: [measurementVisitId], references: [id], onDelete: Cascade)
+  measurementOpening   MeasurementOpening?     @relation(fields: [measurementOpeningId], references: [id], onDelete: SetNull)
+  uploadedByUser       User?                   @relation("MeasurementEvidenceUploadedBy", fields: [uploadedByUserId], references: [id], onDelete: SetNull)
 
   @@index([measurementVisitId, uploadedAt])
   @@index([measurementOpeningId, uploadedAt])
@@ -2608,20 +2986,20 @@ model MeasurementEvidence {
 }
 
 model TechnicalObservation {
-  id                 String                     @id @default(uuid()) @db.Char(36)
-  measurementVisitId String                     @map("measurement_visit_id") @db.Char(36)
+  id                 String                       @id @default(uuid()) @db.Char(36)
+  measurementVisitId String                       @map("measurement_visit_id") @db.Char(36)
   type               TechnicalObservationType
   severity           TechnicalObservationSeverity
-  description        String                     @db.Text
-  status             TechnicalObservationStatus @default(OPEN)
-  createdByUserId    String?                    @map("created_by_user_id") @db.Char(36)
-  resolvedByUserId   String?                    @map("resolved_by_user_id") @db.Char(36)
-  resolvedAt         DateTime?                  @map("resolved_at")
-  createdAt          DateTime                   @default(now()) @map("created_at")
-  updatedAt          DateTime                   @updatedAt @map("updated_at")
-  measurementVisit   MeasurementVisit           @relation(fields: [measurementVisitId], references: [id], onDelete: Cascade)
-  createdByUser      User?                      @relation("TechnicalObservationCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
-  resolvedByUser     User?                      @relation("TechnicalObservationResolvedBy", fields: [resolvedByUserId], references: [id], onDelete: SetNull)
+  description        String                       @db.Text
+  status             TechnicalObservationStatus   @default(OPEN)
+  createdByUserId    String?                      @map("created_by_user_id") @db.Char(36)
+  resolvedByUserId   String?                      @map("resolved_by_user_id") @db.Char(36)
+  resolvedAt         DateTime?                    @map("resolved_at")
+  createdAt          DateTime                     @default(now()) @map("created_at")
+  updatedAt          DateTime                     @updatedAt @map("updated_at")
+  measurementVisit   MeasurementVisit             @relation(fields: [measurementVisitId], references: [id], onDelete: Cascade)
+  createdByUser      User?                        @relation("TechnicalObservationCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  resolvedByUser     User?                        @relation("TechnicalObservationResolvedBy", fields: [resolvedByUserId], references: [id], onDelete: SetNull)
 
   @@index([measurementVisitId, status, createdAt])
   @@index([createdByUserId])
@@ -2631,16 +3009,16 @@ model TechnicalObservation {
 }
 
 model MeasurementStatusHistory {
-  id                  String                   @id @default(uuid()) @db.Char(36)
-  measurementRequestId String                  @map("measurement_request_id") @db.Char(36)
-  fromStatus          MeasurementRequestStatus? @map("from_status")
-  toStatus            MeasurementRequestStatus  @map("to_status")
-  changedByUserId     String?                  @map("changed_by_user_id") @db.Char(36)
-  notes               String?                  @db.Text
-  metadataJson        Json?                    @map("metadata_json")
-  createdAt           DateTime                 @default(now()) @map("created_at")
-  measurementRequest  MeasurementRequest       @relation(fields: [measurementRequestId], references: [id], onDelete: Cascade)
-  changedByUser       User?                    @relation("MeasurementStatusHistoryChangedBy", fields: [changedByUserId], references: [id], onDelete: SetNull)
+  id                   String                    @id @default(uuid()) @db.Char(36)
+  measurementRequestId String                    @map("measurement_request_id") @db.Char(36)
+  fromStatus           MeasurementRequestStatus? @map("from_status")
+  toStatus             MeasurementRequestStatus  @map("to_status")
+  changedByUserId      String?                   @map("changed_by_user_id") @db.Char(36)
+  notes                String?                   @db.Text
+  metadataJson         Json?                     @map("metadata_json")
+  createdAt            DateTime                  @default(now()) @map("created_at")
+  measurementRequest   MeasurementRequest        @relation(fields: [measurementRequestId], references: [id], onDelete: Cascade)
+  changedByUser        User?                     @relation("MeasurementStatusHistoryChangedBy", fields: [changedByUserId], references: [id], onDelete: SetNull)
 
   @@index([measurementRequestId, createdAt])
   @@index([changedByUserId])
@@ -2649,36 +3027,37 @@ model MeasurementStatusHistory {
 }
 
 model InstallationOrder {
-  id                   String                  @id @default(uuid()) @db.Char(36)
-  code                 String                  @unique @db.VarChar(100)
-  projectId            String?                 @map("project_id") @db.Char(36)
-  quotationId          String?                 @map("quotation_id") @db.Char(36)
-  clientId             String                  @map("client_id") @db.Char(36)
-  addressId            String?                 @map("address_id") @db.Char(36)
-  assignedTeamId       String?                 @map("assigned_team_id") @db.Char(36)
-  scheduledDate        DateTime                @map("scheduled_date")
-  scheduledStartTime   String?                 @map("scheduled_start_time") @db.VarChar(5)
-  scheduledEndTime     String?                 @map("scheduled_end_time") @db.VarChar(5)
-  status               InstallationOrderStatus @default(SCHEDULED)
-  priority             ProjectPriority         @default(NORMAL)
-  installationType     String                  @map("installation_type") @db.VarChar(100)
-  notes                String?                 @db.Text
-  createdByUserId      String?                 @map("created_by_user_id") @db.Char(36)
-  assignedSupervisorId String?                 @map("assigned_supervisor_id") @db.Char(36)
-  createdAt            DateTime                @default(now()) @map("created_at")
-  updatedAt            DateTime                @updatedAt @map("updated_at")
-  deletedAt            DateTime?               @map("deleted_at")
-  project              Project?                @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  quotation            Quotation?              @relation(fields: [quotationId], references: [id], onDelete: SetNull)
-  client               Client                  @relation(fields: [clientId], references: [id], onDelete: Restrict)
-  address              ClientAddress?          @relation(fields: [addressId], references: [id], onDelete: SetNull)
-  assignedTeam         InstallationTeam?       @relation(fields: [assignedTeamId], references: [id], onDelete: SetNull)
-  createdByUser        User?                   @relation("InstallationOrderCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
-  assignedSupervisor   User?                   @relation("InstallationOrderSupervisor", fields: [assignedSupervisorId], references: [id], onDelete: SetNull)
+  id                   String                      @id @default(uuid()) @db.Char(36)
+  code                 String                      @unique @db.VarChar(100)
+  projectId            String?                     @map("project_id") @db.Char(36)
+  quotationId          String?                     @map("quotation_id") @db.Char(36)
+  clientId             String                      @map("client_id") @db.Char(36)
+  addressId            String?                     @map("address_id") @db.Char(36)
+  assignedTeamId       String?                     @map("assigned_team_id") @db.Char(36)
+  scheduledDate        DateTime                    @map("scheduled_date")
+  scheduledStartTime   String?                     @map("scheduled_start_time") @db.VarChar(5)
+  scheduledEndTime     String?                     @map("scheduled_end_time") @db.VarChar(5)
+  status               InstallationOrderStatus     @default(SCHEDULED)
+  priority             ProjectPriority             @default(NORMAL)
+  installationType     String                      @map("installation_type") @db.VarChar(100)
+  notes                String?                     @db.Text
+  createdByUserId      String?                     @map("created_by_user_id") @db.Char(36)
+  assignedSupervisorId String?                     @map("assigned_supervisor_id") @db.Char(36)
+  createdAt            DateTime                    @default(now()) @map("created_at")
+  updatedAt            DateTime                    @updatedAt @map("updated_at")
+  deletedAt            DateTime?                   @map("deleted_at")
+  project              Project?                    @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  quotation            Quotation?                  @relation(fields: [quotationId], references: [id], onDelete: SetNull)
+  client               Client                      @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  address              ClientAddress?              @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  assignedTeam         InstallationTeam?           @relation(fields: [assignedTeamId], references: [id], onDelete: SetNull)
+  createdByUser        User?                       @relation("InstallationOrderCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  assignedSupervisor   User?                       @relation("InstallationOrderSupervisor", fields: [assignedSupervisorId], references: [id], onDelete: SetNull)
   tasks                InstallationTask[]
   evidence             InstallationEvidence[]
   issues               InstallationIssue[]
   statusHistory        InstallationStatusHistory[]
+  postventaCases       PostventaCase[]
 
   @@index([projectId, deletedAt])
   @@index([quotationId, deletedAt])
@@ -2694,14 +3073,14 @@ model InstallationOrder {
 }
 
 model InstallationTeam {
-  id           String                 @id @default(uuid()) @db.Char(36)
-  name         String                 @unique @db.VarChar(191)
-  supervisorId String?                @map("supervisor_id") @db.Char(36)
-  status       InstallationTeamStatus @default(ACTIVE)
-  notes        String?                @db.Text
-  createdAt    DateTime               @default(now()) @map("created_at")
-  updatedAt    DateTime               @updatedAt @map("updated_at")
-  supervisor   User?                  @relation("InstallationTeamSupervisor", fields: [supervisorId], references: [id], onDelete: SetNull)
+  id           String                   @id @default(uuid()) @db.Char(36)
+  name         String                   @unique @db.VarChar(191)
+  supervisorId String?                  @map("supervisor_id") @db.Char(36)
+  status       InstallationTeamStatus   @default(ACTIVE)
+  notes        String?                  @db.Text
+  createdAt    DateTime                 @default(now()) @map("created_at")
+  updatedAt    DateTime                 @updatedAt @map("updated_at")
+  supervisor   User?                    @relation("InstallationTeamSupervisor", fields: [supervisorId], references: [id], onDelete: SetNull)
   members      InstallationTeamMember[]
   orders       InstallationOrder[]
 
@@ -2796,21 +3175,324 @@ model InstallationIssue {
 }
 
 model InstallationStatusHistory {
-  id                  String                  @id @default(uuid()) @db.Char(36)
-  installationOrderId String                  @map("installation_order_id") @db.Char(36)
+  id                  String                   @id @default(uuid()) @db.Char(36)
+  installationOrderId String                   @map("installation_order_id") @db.Char(36)
   fromStatus          InstallationOrderStatus? @map("from_status")
   toStatus            InstallationOrderStatus  @map("to_status")
-  changedByUserId     String?                 @map("changed_by_user_id") @db.Char(36)
-  notes               String?                 @db.Text
-  metadataJson        Json?                   @map("metadata_json")
-  createdAt           DateTime                @default(now()) @map("created_at")
-  installationOrder   InstallationOrder       @relation(fields: [installationOrderId], references: [id], onDelete: Cascade)
-  changedByUser       User?                   @relation("InstallationStatusHistoryChangedBy", fields: [changedByUserId], references: [id], onDelete: SetNull)
+  changedByUserId     String?                  @map("changed_by_user_id") @db.Char(36)
+  notes               String?                  @db.Text
+  metadataJson        Json?                    @map("metadata_json")
+  createdAt           DateTime                 @default(now()) @map("created_at")
+  installationOrder   InstallationOrder        @relation(fields: [installationOrderId], references: [id], onDelete: Cascade)
+  changedByUser       User?                    @relation("InstallationStatusHistoryChangedBy", fields: [changedByUserId], references: [id], onDelete: SetNull)
 
   @@index([installationOrderId, createdAt])
   @@index([changedByUserId])
   @@index([toStatus, createdAt])
   @@map("installation_status_history")
+}
+
+model PostventaCase {
+  id                    String                          @id @default(uuid()) @db.Char(36)
+  code                  String                          @unique @db.VarChar(100)
+  clientId              String                          @map("client_id") @db.Char(36)
+  projectId             String?                         @map("project_id") @db.Char(36)
+  quotationId           String?                         @map("quotation_id") @db.Char(36)
+  installationId        String?                         @map("installation_id") @db.Char(36)
+  warrantyId            String?                         @map("warranty_id") @db.Char(36)
+  caseType              PostventaCaseType               @map("case_type")
+  status                PostventaCaseStatus             @default(REPORTADO)
+  priority              PostventaPriority               @default(MEDIA)
+  reportedAt            DateTime                        @map("reported_at")
+  commitmentDate        DateTime?                       @map("commitment_date")
+  responsibleUserId     String?                         @map("responsible_user_id") @db.Char(36)
+  description           String                          @db.Text
+  proposedSolution      String?                         @map("proposed_solution") @db.Text
+  internalNotes         String?                         @map("internal_notes") @db.Text
+  outsideWarranty       Boolean                         @default(false) @map("outside_warranty")
+  closedAt              DateTime?                       @map("closed_at")
+  createdByUserId       String?                         @map("created_by_user_id") @db.Char(36)
+  createdAt             DateTime                        @default(now()) @map("created_at")
+  updatedAt             DateTime                        @updatedAt @map("updated_at")
+  client                Client                          @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  project               Project?                        @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  quotation             Quotation?                      @relation(fields: [quotationId], references: [id], onDelete: SetNull)
+  installation          InstallationOrder?              @relation(fields: [installationId], references: [id], onDelete: SetNull)
+  warranty              ProductWarranty?                @relation(fields: [warrantyId], references: [id], onDelete: SetNull)
+  responsibleUser       User?                           @relation("PostventaCaseResponsible", fields: [responsibleUserId], references: [id], onDelete: SetNull)
+  createdByUser         User?                           @relation("PostventaCaseCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  activities            PostventaActivity[]
+  evidences             PostventaEvidence[]
+  costs                 PostventaCost[]
+  statusHistory         PostventaStatusHistory[]
+  inventoryReservations PostventaInventoryReservation[]
+
+  @@index([clientId, status])
+  @@index([projectId, status])
+  @@index([quotationId, status])
+  @@index([installationId, status])
+  @@index([warrantyId])
+  @@index([responsibleUserId, status])
+  @@index([priority, status])
+  @@index([reportedAt, status])
+  @@index([commitmentDate, status])
+  @@map("postventa_cases")
+}
+
+model ProductWarranty {
+  id          String                @id @default(uuid()) @db.Char(36)
+  projectId   String                @map("project_id") @db.Char(36)
+  clientId    String                @map("client_id") @db.Char(36)
+  productType String                @map("product_type") @db.VarChar(100)
+  startDate   DateTime              @map("start_date")
+  endDate     DateTime              @map("end_date")
+  conditions  String?               @db.Text
+  status      ProductWarrantyStatus @default(VIGENTE)
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @updatedAt @map("updated_at")
+  project     Project               @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  client      Client                @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  cases       PostventaCase[]
+
+  @@index([projectId, status])
+  @@index([clientId, status])
+  @@index([startDate, endDate])
+  @@map("product_warranties")
+}
+
+model ClientPortalUser {
+  id              String                           @id @default(uuid()) @db.Char(36)
+  clientId        String                           @map("client_id") @db.Char(36)
+  name            String                           @db.VarChar(191)
+  email           String                           @unique @db.VarChar(191)
+  phone           String?                          @db.VarChar(50)
+  passwordHash    String?                          @map("password_hash") @db.VarChar(255)
+  status          ClientPortalUserStatus           @default(PENDIENTE_INVITACION)
+  lastAccessAt    DateTime?                        @map("last_access_at")
+  createdAt       DateTime                         @default(now()) @map("created_at")
+  updatedAt       DateTime                         @updatedAt @map("updated_at")
+  client          Client                           @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  projectAccesses ClientPortalProjectAccess[]
+  messages        ClientPortalMessage[]            @relation("ClientPortalMessagePortalUser")
+  invitations     ClientPortalInvitationToken[]
+  resetTokens     ClientPortalPasswordResetToken[]
+  downloadLogs    ClientPortalDocumentDownload[]
+
+  @@index([clientId, status])
+  @@index([status, createdAt])
+  @@index([lastAccessAt])
+  @@map("client_portal_users")
+}
+
+model ClientPortalProjectAccess {
+  id              String                          @id @default(uuid()) @db.Char(36)
+  userId          String                          @map("user_id") @db.Char(36)
+  projectId       String                          @map("project_id") @db.Char(36)
+  permissionsJson Json?                           @map("permissions_json")
+  status          ClientPortalProjectAccessStatus @default(ACTIVO)
+  createdAt       DateTime                        @default(now()) @map("created_at")
+  updatedAt       DateTime                        @updatedAt @map("updated_at")
+  user            ClientPortalUser                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project         Project                         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+  @@index([projectId, status])
+  @@index([userId, status])
+  @@map("client_portal_project_accesses")
+}
+
+model ClientPortalDocument {
+  id               String                         @id @default(uuid()) @db.Char(36)
+  clientId         String                         @map("client_id") @db.Char(36)
+  projectId        String?                        @map("project_id") @db.Char(36)
+  type             ClientPortalDocumentType
+  name             String                         @db.VarChar(255)
+  fileUrl          String                         @map("file_url") @db.VarChar(255)
+  visibleToClient  Boolean                        @default(true) @map("visible_to_client")
+  mimeType         String?                        @map("mime_type") @db.VarChar(191)
+  sizeBytes        Int?                           @map("size_bytes")
+  uploadedByUserId String?                        @map("uploaded_by_user_id") @db.Char(36)
+  uploadedAt       DateTime                       @default(now()) @map("uploaded_at")
+  client           Client                         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  project          Project?                       @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  uploadedByUser   User?                          @relation("ClientPortalDocumentUploadedBy", fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+  downloadLogs     ClientPortalDocumentDownload[]
+
+  @@index([clientId, visibleToClient, uploadedAt])
+  @@index([projectId, visibleToClient, uploadedAt])
+  @@index([type, uploadedAt])
+  @@map("client_portal_documents")
+}
+
+model ClientPortalMessage {
+  id                  String                    @id @default(uuid()) @db.Char(36)
+  clientId            String                    @map("client_id") @db.Char(36)
+  projectId           String                    @map("project_id") @db.Char(36)
+  portalUserId        String?                   @map("portal_user_id") @db.Char(36)
+  internalUserId      String?                   @map("internal_user_id") @db.Char(36)
+  sentBy              ClientPortalMessageSender @map("sent_by")
+  message             String                    @db.Text
+  fileUrl             String?                   @map("file_url") @db.VarChar(255)
+  attachmentName      String?                   @map("attachment_name") @db.VarChar(255)
+  attachmentMimeType  String?                   @map("attachment_mime_type") @db.VarChar(191)
+  attachmentSizeBytes Int?                      @map("attachment_size_bytes")
+  readAt              DateTime?                 @map("read_at")
+  createdAt           DateTime                  @default(now()) @map("created_at")
+  client              Client                    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  project             Project                   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  portalUser          ClientPortalUser?         @relation("ClientPortalMessagePortalUser", fields: [portalUserId], references: [id], onDelete: SetNull)
+  internalUser        User?                     @relation("ClientPortalMessageInternalUser", fields: [internalUserId], references: [id], onDelete: SetNull)
+
+  @@index([clientId, createdAt])
+  @@index([projectId, createdAt])
+  @@index([portalUserId, createdAt])
+  @@index([readAt])
+  @@map("client_portal_messages")
+}
+
+model ClientPortalInvitationToken {
+  id              String           @id @default(uuid()) @db.Char(36)
+  userId          String           @map("user_id") @db.Char(36)
+  tokenHash       String           @unique @map("token_hash") @db.VarChar(191)
+  createdByUserId String?          @map("created_by_user_id") @db.Char(36)
+  expiresAt       DateTime         @map("expires_at")
+  sentAt          DateTime         @default(now()) @map("sent_at")
+  usedAt          DateTime?        @map("used_at")
+  user            ClientPortalUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdByUser   User?            @relation("ClientPortalInvitationCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+
+  @@index([userId, expiresAt])
+  @@index([usedAt])
+  @@map("client_portal_invitation_tokens")
+}
+
+model ClientPortalPasswordResetToken {
+  id        String           @id @default(uuid()) @db.Char(36)
+  userId    String           @map("user_id") @db.Char(36)
+  tokenHash String           @unique @map("token_hash") @db.VarChar(191)
+  expiresAt DateTime         @map("expires_at")
+  usedAt    DateTime?        @map("used_at")
+  createdAt DateTime         @default(now()) @map("created_at")
+  user      ClientPortalUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([usedAt])
+  @@map("client_portal_password_reset_tokens")
+}
+
+model ClientPortalDocumentDownload {
+  id           String                @id @default(uuid()) @db.Char(36)
+  userId       String                @map("user_id") @db.Char(36)
+  documentId   String?               @map("document_id") @db.Char(36)
+  referenceKey String                @map("reference_key") @db.VarChar(100)
+  referenceId  String                @map("reference_id") @db.VarChar(191)
+  downloadedAt DateTime              @default(now()) @map("downloaded_at")
+  user         ClientPortalUser      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  document     ClientPortalDocument? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+
+  @@index([userId, downloadedAt])
+  @@index([documentId, downloadedAt])
+  @@index([referenceKey, referenceId])
+  @@map("client_portal_document_downloads")
+}
+
+model PostventaActivity {
+  id                String                  @id @default(uuid()) @db.Char(36)
+  postventaCaseId   String                  @map("postventa_case_id") @db.Char(36)
+  activityType      PostventaActivityType   @map("activity_type")
+  description       String                  @db.Text
+  responsibleUserId String?                 @map("responsible_user_id") @db.Char(36)
+  scheduledAt       DateTime?               @map("scheduled_at")
+  executedAt        DateTime?               @map("executed_at")
+  status            PostventaActivityStatus @default(PENDIENTE)
+  createdAt         DateTime                @default(now()) @map("created_at")
+  updatedAt         DateTime                @updatedAt @map("updated_at")
+  postventaCase     PostventaCase           @relation(fields: [postventaCaseId], references: [id], onDelete: Cascade)
+  responsibleUser   User?                   @relation("PostventaActivityResponsible", fields: [responsibleUserId], references: [id], onDelete: SetNull)
+  evidences         PostventaEvidence[]
+
+  @@index([postventaCaseId, createdAt])
+  @@index([responsibleUserId, status])
+  @@index([scheduledAt, status])
+  @@index([executedAt, status])
+  @@map("postventa_activities")
+}
+
+model PostventaEvidence {
+  id                  String                @id @default(uuid()) @db.Char(36)
+  postventaCaseId     String                @map("postventa_case_id") @db.Char(36)
+  postventaActivityId String?               @map("postventa_activity_id") @db.Char(36)
+  evidenceType        PostventaEvidenceType @map("evidence_type")
+  fileName            String                @map("file_name") @db.VarChar(255)
+  fileUrl             String                @map("file_url") @db.VarChar(255)
+  mimeType            String?               @map("mime_type") @db.VarChar(191)
+  sizeBytes           Int?                  @map("size_bytes")
+  description         String?               @db.Text
+  uploadedByUserId    String?               @map("uploaded_by_user_id") @db.Char(36)
+  uploadedAt          DateTime              @default(now()) @map("uploaded_at")
+  postventaCase       PostventaCase         @relation(fields: [postventaCaseId], references: [id], onDelete: Cascade)
+  postventaActivity   PostventaActivity?    @relation(fields: [postventaActivityId], references: [id], onDelete: SetNull)
+  uploadedByUser      User?                 @relation("PostventaEvidenceUploadedBy", fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([postventaCaseId, uploadedAt])
+  @@index([postventaActivityId, uploadedAt])
+  @@index([uploadedByUserId])
+  @@index([evidenceType, uploadedAt])
+  @@map("postventa_evidence")
+}
+
+model PostventaCost {
+  id              String                @id @default(uuid()) @db.Char(36)
+  postventaCaseId String                @map("postventa_case_id") @db.Char(36)
+  category        PostventaCostCategory
+  description     String                @db.Text
+  amount          Decimal               @db.Decimal(14, 4)
+  origin          PostventaCostOrigin
+  referenceId     String?               @map("reference_id") @db.VarChar(191)
+  costDate        DateTime              @map("cost_date")
+  createdAt       DateTime              @default(now()) @map("created_at")
+  postventaCase   PostventaCase         @relation(fields: [postventaCaseId], references: [id], onDelete: Cascade)
+
+  @@index([postventaCaseId, costDate])
+  @@index([category, costDate])
+  @@index([origin, costDate])
+  @@index([referenceId])
+  @@map("postventa_costs")
+}
+
+model PostventaStatusHistory {
+  id              String               @id @default(uuid()) @db.Char(36)
+  postventaCaseId String               @map("postventa_case_id") @db.Char(36)
+  fromStatus      PostventaCaseStatus? @map("from_status")
+  toStatus        PostventaCaseStatus  @map("to_status")
+  changedByUserId String?              @map("changed_by_user_id") @db.Char(36)
+  notes           String?              @db.Text
+  metadataJson    Json?                @map("metadata_json")
+  createdAt       DateTime             @default(now()) @map("created_at")
+  postventaCase   PostventaCase        @relation(fields: [postventaCaseId], references: [id], onDelete: Cascade)
+  changedByUser   User?                @relation("PostventaStatusHistoryChangedBy", fields: [changedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([postventaCaseId, createdAt])
+  @@index([changedByUserId])
+  @@index([toStatus, createdAt])
+  @@map("postventa_status_history")
+}
+
+model PostventaInventoryReservation {
+  id                     String               @id @default(uuid()) @db.Char(36)
+  postventaCaseId        String               @map("postventa_case_id") @db.Char(36)
+  inventoryReservationId String               @map("inventory_reservation_id") @db.Char(36)
+  notes                  String?              @db.Text
+  createdByUserId        String?              @map("created_by_user_id") @db.Char(36)
+  createdAt              DateTime             @default(now()) @map("created_at")
+  postventaCase          PostventaCase        @relation(fields: [postventaCaseId], references: [id], onDelete: Cascade)
+  inventoryReservation   InventoryReservation @relation(fields: [inventoryReservationId], references: [id], onDelete: Cascade)
+  createdByUser          User?                @relation("PostventaReservationCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([postventaCaseId, inventoryReservationId])
+  @@index([inventoryReservationId])
+  @@index([createdByUserId])
+  @@map("postventa_inventory_reservations")
 }
 
 model PurchaseRequest {

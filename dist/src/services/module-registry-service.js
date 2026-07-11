@@ -1,13 +1,26 @@
 import { prisma } from "../utils/prisma.js";
+const normalizeModuleRecord = (moduleRecord) => {
+    if (moduleRecord.key === "reports" || moduleRecord.route === "/admin/reports") {
+        return {
+            ...moduleRecord,
+            description: "Panel ejecutivo, analisis comercial, indicadores operativos y exportaciones gerenciales.",
+            key: "tableros",
+            label: "Tableros ejecutivos",
+            route: "/admin/tableros",
+        };
+    }
+    return moduleRecord;
+};
 const mapModule = (moduleRecord) => {
+    const normalizedRecord = normalizeModuleRecord(moduleRecord);
     return {
-        description: moduleRecord.description,
-        icon: moduleRecord.icon,
-        key: moduleRecord.key,
-        label: moduleRecord.label,
-        requiredPermission: moduleRecord.requiredPermission,
-        route: moduleRecord.route,
-        sortOrder: moduleRecord.sortOrder,
+        description: normalizedRecord.description,
+        icon: normalizedRecord.icon,
+        key: normalizedRecord.key,
+        label: normalizedRecord.label,
+        requiredPermission: normalizedRecord.requiredPermission,
+        route: normalizedRecord.route,
+        sortOrder: normalizedRecord.sortOrder,
     };
 };
 export const moduleRegistryService = {

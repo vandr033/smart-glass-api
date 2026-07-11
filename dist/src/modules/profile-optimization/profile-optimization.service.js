@@ -156,9 +156,6 @@ const decimalToNumber = (value) => {
     }
     return Number(value);
 };
-const toIsoString = (value) => {
-    return value ? value.toISOString() : null;
-};
 const toInputJsonValue = (value) => {
     return value;
 };
@@ -1120,7 +1117,6 @@ export const profileOptimizationService = {
                 throw new AppError("Profile remnants have already been created for this plan.", 400);
             }
             const settings = await getProfileSettings(db);
-            const material = await getMaterialOrThrow(db, plan.materialId);
             for (const bar of plan.bars) {
                 const sourceWarehouseId = bar.inventoryStockId
                     ? (await db.inventoryStock.findUnique({

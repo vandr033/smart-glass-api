@@ -129,7 +129,7 @@ const assertUserCanLoseActiveAccess = async (userId) => {
         },
     });
     if (remainingAdminCount === 0) {
-        throw new AppError("The last admin user cannot be deactivated.", 400);
+        throw new AppError("No se puede desactivar al último usuario administrador.", 400);
     }
 };
 const assertEmailAvailable = async (email, excludedUserId) => {
@@ -370,11 +370,11 @@ export const usersService = {
             },
         });
         if (!user?.password) {
-            throw new AppError("Password credentials are not available for this account.", 400);
+            throw new AppError("Esta cuenta no tiene credenciales de contraseña disponibles.", 400);
         }
         const passwordMatches = await bcrypt.compare(input.currentPassword, user.password);
         if (!passwordMatches) {
-            throw new AppError("The current password is incorrect.", 400);
+            throw new AppError("La contraseña actual no es correcta.", 400);
         }
         const nextPasswordHash = await bcrypt.hash(input.newPassword, 12);
         await prisma.$transaction(async (transaction) => {

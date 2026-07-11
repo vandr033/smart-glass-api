@@ -82,6 +82,31 @@ const projectProfitabilityInclude = {
             deletedAt: null,
         },
     },
+    postventaCases: {
+        include: {
+            costs: {
+                orderBy: [
+                    {
+                        costDate: "desc",
+                    },
+                ],
+                select: {
+                    amount: true,
+                    category: true,
+                    costDate: true,
+                    description: true,
+                    id: true,
+                    origin: true,
+                    referenceId: true,
+                },
+            },
+        },
+        orderBy: [
+            {
+                reportedAt: "desc",
+            },
+        ],
+    },
     measurements: {
         select: {
             heightMm: true,
@@ -567,6 +592,80 @@ const classifyPurchaseItemCategory = (item) => {
         materialName: item.material.name,
     });
 };
+const classifyPostventaCostCategory = (caseType, category) => {
+    if (category === "GARANTIA") {
+        return "GARANTIAS";
+    }
+    if (category === "RECLAMO") {
+        return "RECLAMOS";
+    }
+    if (category === "REPOSICION") {
+        return "REPOSICIONES";
+    }
+    if (category === "MATERIAL") {
+        return caseType === "REPOSICION" ? "REPOSICIONES" : "MATERIALES";
+    }
+    if (category === "MANO_DE_OBRA") {
+        return "MANO_DE_OBRA";
+    }
+    if (category === "TRANSPORTE") {
+        return "TRANSPORTE";
+    }
+    if (category === "INSTALACION" ||
+        category === "VISITA" ||
+        category === "DIAGNOSTICO") {
+        return "INSTALACION";
+    }
+    if (caseType === "GARANTIA") {
+        return "GARANTIAS";
+    }
+    if (caseType === "RECLAMO") {
+        return "RECLAMOS";
+    }
+    if (caseType === "REPOSICION") {
+        return "REPOSICIONES";
+    }
+    return "OTROS";
+};
+const mapPostventaCostOrigin = (origin) => {
+    if (origin === "INVENTARIO") {
+        return "CONSUMO_INVENTARIO";
+    }
+    if (origin === "INSTALACION") {
+        return "INSTALACION";
+    }
+    if (origin === "PRODUCCION") {
+        return "PRODUCCION";
+    }
+    if (origin === "GARANTIA") {
+        return "GARANTIA";
+    }
+    if (origin === "COTIZACION") {
+        return "COTIZACION";
+    }
+    return "POSTVENTA";
+};
+const POSTVENTA_EVENT_TYPE_LABELS = {
+    AJUSTE: "ajuste",
+    FUGA: "fuga",
+    GARANTIA: "garantia",
+    MALA_INSTALACION: "mala instalacion",
+    OTRO: "caso general",
+    PRODUCTO_INCOMPLETO: "producto incompleto",
+    RECLAMO: "reclamo",
+    REPOSICION: "reposicion",
+    ROTURA: "rotura",
+};
+const POSTVENTA_EVENT_STATUS_LABELS = {
+    CERRADO: "cerrado",
+    EN_ATENCION: "en atencion",
+    EN_REVISION: "en revision",
+    PENDIENTE_REPUESTO: "pendiente de repuesto",
+    RECHAZADO: "rechazado",
+    REPORTADO: "reportado",
+    RESUELTO: "resuelto",
+    VISITA_PROGRAMADA: "visita programada",
+};
 const weightedAverage = (rows) => {
     const normalized = rows.filter((row) => row.value !== null &&
         Number.isFinite(row.value) &&
@@ -758,6 +857,7 @@ const buildProfitabilityForProject = (project, purchaseOrders, minimumMarginPerc
         "Los ingresos presupuestados se toman de la cotizacion comercial vigente del proyecto.",
         "Los costos reales de materiales priorizan ordenes de compra vinculadas; cuando no existen, se valoran consumos reales de inventario y remanentes.",
         "La mano de obra e instalacion real se derivan del avance registrado cuando no existe un costo horario directo en el ERP.",
+        "Los casos de postventa, garantias y reposiciones afectan el costo real total y se reflejan en la utilidad del proyecto.",
     ];
     const budgetLines = budgetQuotation?.items.flatMap((item) => item.materials.map((line) => ({
         categoria: classifyQuotationMaterialCategory(line, item.description),
@@ -866,6 +966,31 @@ const buildProfitabilityForProject = (project, purchaseOrders, minimumMarginPerc
             });
         });
     });
+    project.postventaCases.forEach((postventaCase) => {
+        const caseTypeLabel = POSTVENTA_EVENT_TYPE_LABELS[postventaCase.caseType] ?? "caso";
+        const caseStatusLabel = POSTVENTA_EVENT_STATUS_LABELS[postventaCase.status] ?? "en seguimiento";
+        const caseTotalCost = roundTo(postventaCase.costs.reduce((sum, cost) => sum + Number(cost.amount), 0), 4);
+        eventos.push({
+            creadoEn: postventaCase.reportedAt.toISOString(),
+            descripcion: `Caso postventa ${postventaCase.code} registrado por ${caseTypeLabel} con estado ${caseStatusLabel}.`,
+            id: `evento:postventa:${postventaCase.id}`,
+            impacto: caseTotalCost,
+            proyectoId: project.id,
+            tipo: "POSTVENTA",
+        });
+        postventaCase.costs.forEach((cost) => {
+            costos.push({
+                categoria: classifyPostventaCostCategory(postventaCase.caseType, cost.category),
+                descripcion: `${postventaCase.code} · ${cost.description}`,
+                fecha: cost.costDate.toISOString(),
+                id: `postventa:${cost.id}`,
+                monto: roundTo(Number(cost.amount), 4),
+                origen: mapPostventaCostOrigin(cost.origin),
+                proyectoId: project.id,
+                referenciaId: cost.referenceId,
+            });
+        });
+    });
     project.productionJobs.forEach((job) => {
         job.materialConsumptions.forEach((consumption) => {
             if (!["ACTUAL", "WASTE", "SCRAP"].includes(consumption.consumptionType)) {
@@ -952,7 +1077,7 @@ const buildProfitabilityForProject = (project, purchaseOrders, minimumMarginPerc
     const totalActualCost = roundTo(costos.reduce((sum, line) => sum + line.monto, 0), 4);
     const ingresoPresupuestado = roundTo(budgetQuotation ? Number(budgetQuotation.totalSale) : 0, 4);
     const ingresoReal = roundTo(actualQuotation ? Number(actualQuotation.totalSale) : ingresoPresupuestado, 4);
-    const utilidadBruta = roundTo(ingresoReal - (actualMaterial + actualLabor + actualInstallation), 4);
+    const utilidadBruta = roundTo(ingresoReal - totalActualCost, 4);
     const margenBruto = roundTo(safeDivide(utilidadBruta, ingresoReal) === null
         ? 0
         : (safeDivide(utilidadBruta, ingresoReal) ?? 0) * 100, 4);

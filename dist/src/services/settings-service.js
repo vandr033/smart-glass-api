@@ -218,11 +218,11 @@ export class SettingsService {
             });
             await activityLogService.logUserAction({
                 ...context,
-                action: "Settings updated",
+                action: "Configuración actualizada",
                 entityId: nextSnapshot.recordId,
                 entityType: "setting",
                 metadata: {
-                    summary: "Application settings were updated.",
+                    summary: "Se actualizó la configuración de la aplicación.",
                     updatedFields: [
                         "appName",
                         "dateFormat",
@@ -237,8 +237,8 @@ export class SettingsService {
                 db: transaction,
             });
             await notificationService.createMany({
-                message: "Application settings were updated. Review branding, sender identity, and localization defaults if this affects your workflow.",
-                title: "Settings updated",
+                message: "Se actualizó la configuración de la aplicación. Revise la marca, el remitente y los valores regionales si afecta su flujo de trabajo.",
+                title: "Configuración actualizada",
                 type: "info",
                 userIds: await listActiveAdminUserIds(transaction),
             }, {
@@ -292,19 +292,19 @@ export class SettingsService {
             });
             await activityLogService.logUserAction({
                 ...context,
-                action: "Settings updated",
+                action: "Configuración actualizada",
                 entityId: nextSnapshot.recordId,
                 entityType: "setting",
                 metadata: {
-                    summary: "The application logo was updated.",
+                    summary: "Se actualizó el logotipo de la aplicación.",
                     updatedFields: ["logo"],
                 },
             }, {
                 db: transaction,
             });
             await notificationService.createMany({
-                message: "Application settings were updated. The logo and shared branding assets changed.",
-                title: "Settings updated",
+                message: "Se actualizó la configuración de la aplicación. Cambiaron el logotipo y los recursos compartidos de marca.",
+                title: "Configuración actualizada",
                 type: "info",
                 userIds: await listActiveAdminUserIds(transaction),
             }, {

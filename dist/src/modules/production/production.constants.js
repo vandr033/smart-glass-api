@@ -1,6 +1,25 @@
 export const PRODUCTION_JOBS_API_PATH = "/production/jobs";
 export const PRODUCTION_TASKS_API_PATH = "/production/tasks";
 export const PRODUCTION_PERMISSIONS = {
+    boardRead: "produccion.tablero.ver",
+    planningRead: "produccion.planificacion.ver",
+    planningSchedule: "produccion.planificacion.programar",
+    planningReschedule: "produccion.planificacion.reprogramar",
+    tasksAssign: "produccion.tareas.asignar",
+    tasksExecute: "produccion.tareas.ejecutar",
+    tasksComplete: "produccion.tareas.completar",
+    priorityUpdate: "produccion.prioridad.actualizar",
+    blocksRead: "produccion.bloqueos.ver",
+    blocksCreate: "produccion.bloqueos.crear",
+    blocksResolve: "produccion.bloqueos.resolver",
+    centersRead: "produccion.centros.ver",
+    centersConfigure: "produccion.centros.configurar",
+    capacityRead: "produccion.capacidad.ver",
+    qualityRead: "produccion.calidad.ver",
+    qualityApprove: "produccion.calidad.aprobar",
+    wasteRead: "produccion.desperdicios.ver",
+    wasteCreate: "produccion.desperdicios.registrar",
+    export: "produccion.exportar",
     complete: "production.complete",
     consumeMaterial: "production.consume_material",
     create: "production.create",
@@ -29,11 +48,77 @@ export const PRODUCTION_JOB_STATUSES = [
     "COMPLETED",
     "CANCELLED",
 ];
+export const PRODUCTION_WORKFLOW_STATUSES = [
+    "DRAFT",
+    "PENDING_PLANNING",
+    "SCHEDULED",
+    "MATERIALS_PREPARATION",
+    "READY_TO_START",
+    "IN_PROGRESS",
+    "PAUSED",
+    "BLOCKED",
+    "PENDING_QUALITY",
+    "COMPLETED",
+    "CANCELLED",
+];
+export const PRODUCTION_WORK_CENTER_TYPES = [
+    "GLASS_CUTTING",
+    "POLISHING",
+    "DRILLING",
+    "SANDBLASTING",
+    "LAMINATION",
+    "EXTERNAL_TEMPERING",
+    "ALUMINUM_CUTTING",
+    "PROFILE_MACHINING",
+    "ASSEMBLY",
+    "SEALING",
+    "QUALITY_CONTROL",
+    "PACKING",
+    "DISPATCH_PREPARATION",
+    "OTHER",
+];
+export const PRODUCTION_WORK_CENTER_STATUSES = [
+    "AVAILABLE",
+    "OCCUPIED",
+    "SATURATED",
+    "MAINTENANCE",
+    "INACTIVE",
+];
+export const PRODUCTION_BLOCK_TYPES = [
+    "MATERIAL_SHORTAGE",
+    "MEASUREMENT_PENDING",
+    "MEASUREMENT_REJECTED",
+    "DRAWING_PENDING",
+    "APPROVAL_PENDING",
+    "MACHINE_UNAVAILABLE",
+    "WORK_CENTER_SATURATED",
+    "QUALITY_INCIDENT",
+    "DEFECTIVE_PART",
+    "EXTERNAL_PROCESS_PENDING",
+    "STAFF_SHORTAGE",
+    "OTHER",
+];
+export const PRODUCTION_BLOCK_SEVERITIES = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
+export const PRODUCTION_BLOCK_STATUSES = ["OPEN", "UNDER_REVIEW", "IN_PROGRESS", "RESOLVED", "DISMISSED"];
+export const PRODUCTION_TASK_DEPENDENCY_TYPES = ["FINISH_TO_START", "START_TO_START", "FINISH_TO_FINISH"];
+export const PRODUCTION_TIME_EVENT_TYPES = ["START", "PAUSE", "RESUME", "BLOCK", "UNBLOCK", "FINISH"];
+export const PRODUCTION_WASTE_ENTRY_TYPES = ["WASTE", "SCRAP", "REMNANT"];
+export const PRODUCTION_WASTE_REASONS = [
+    "CUTTING",
+    "BREAKAGE",
+    "MEASUREMENT_ERROR",
+    "MATERIAL_DEFECT",
+    "MANUFACTURING_ERROR",
+    "TECHNICAL_ADJUSTMENT",
+    "HANDLING_DAMAGE",
+    "OTHER",
+];
 export const PRODUCTION_JOB_PRIORITIES = [
     "LOW",
     "NORMAL",
     "HIGH",
     "URGENT",
+    "CRITICAL",
 ];
 export const PRODUCTION_JOB_ITEM_STATUSES = [
     "PENDING",
@@ -53,6 +138,7 @@ export const PRODUCTION_TASK_TYPES = [
 export const PRODUCTION_TASK_STATUSES = [
     "PENDING",
     "IN_PROGRESS",
+    "PAUSED",
     "COMPLETED",
     "BLOCKED",
     "CANCELLED",

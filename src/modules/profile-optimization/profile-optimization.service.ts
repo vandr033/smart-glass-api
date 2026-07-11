@@ -28,7 +28,6 @@ import type {
   ProfileOptimizationResult,
   ProfileOptimizationRunListItem,
   ProfileOptimizationRunRecord,
-  ProfileOptimizationRunStatus,
   ProfileProjectSummary,
   ProfileQuotationSummary,
   ProfileRemnantOutputRecord,
@@ -267,10 +266,6 @@ const decimalToNumber = (
   }
 
   return Number(value);
-};
-
-const toIsoString = (value: Date | null | undefined): string | null => {
-  return value ? value.toISOString() : null;
 };
 
 const toInputJsonValue = (value: unknown): Prisma.InputJsonValue => {
@@ -1573,7 +1568,6 @@ export const profileOptimizationService = {
       }
 
       const settings = await getProfileSettings(db);
-      const material = await getMaterialOrThrow(db, plan.materialId);
 
       for (const bar of plan.bars) {
         const sourceWarehouseId = bar.inventoryStockId

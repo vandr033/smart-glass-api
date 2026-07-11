@@ -7,7 +7,7 @@ import { AppError } from "../../utils/app-error.js";
 import { prisma } from "../../utils/prisma.js";
 import { buildInstallationEvidenceUrl, installationEvidenceUploadsDir, } from "../../utils/uploads.js";
 import { getClientDisplayName } from "../clients/clients.service.js";
-import { INSTALLATION_DEFAULT_TASK_TEMPLATES, INSTALLATION_ENTITY_TYPES, INSTALLATION_ORDER_ACTIVE_STATUSES, INSTALLATION_STATUS_TRANSITIONS, } from "./installation.constants.js";
+import { INSTALLATION_DEFAULT_TASK_TEMPLATES, INSTALLATION_ORDER_ACTIVE_STATUSES, INSTALLATION_STATUS_TRANSITIONS, } from "./installation.constants.js";
 const userSummarySelect = {
     email: true,
     id: true,

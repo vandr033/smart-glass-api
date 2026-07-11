@@ -1,9 +1,75 @@
 import { Router } from "express";
 import { asyncHandler } from "../../middleware/async-handler.js";
-import { requirePermission } from "../../middleware/authorization-middleware.js";
+import { requireAnyPermission, requirePermission, } from "../../middleware/authorization-middleware.js";
 import { PRODUCTION_JOBS_API_PATH, PRODUCTION_PERMISSIONS, PRODUCTION_TASKS_API_PATH, } from "./production.constants.js";
 import { productionController } from "./production.controller.js";
+import { productionBoardController } from "./production-board.controller.js";
 export const productionRouter = Router();
+const advancedRead = requireAnyPermission([
+    PRODUCTION_PERMISSIONS.boardRead,
+    PRODUCTION_PERMISSIONS.read,
+]);
+const advancedPlan = requireAnyPermission([
+    PRODUCTION_PERMISSIONS.planningSchedule,
+    PRODUCTION_PERMISSIONS.update,
+]);
+const advancedExecute = requireAnyPermission([
+    PRODUCTION_PERMISSIONS.tasksExecute,
+    PRODUCTION_PERMISSIONS.start,
+]);
+productionRouter.get("/production/tablero", advancedRead, asyncHandler(productionBoardController.getBoard));
+productionRouter.get("/production/resumen", advancedRead, asyncHandler(productionBoardController.getSummary));
+productionRouter.get("/production/centros-trabajo", advancedRead, asyncHandler(productionBoardController.listWorkCenters));
+productionRouter.get("/production/capacidad", advancedRead, asyncHandler(productionBoardController.getCapacity));
+productionRouter.get("/production/calendario", advancedRead, asyncHandler(productionBoardController.getCalendar));
+productionRouter.get("/production/reportes", advancedRead, asyncHandler(productionBoardController.getReports));
+productionRouter.get("/production/bloqueos", advancedRead, asyncHandler(productionBoardController.listBlocks));
+productionRouter.post("/production/bloqueos", requireAnyPermission([
+    PRODUCTION_PERMISSIONS.blocksCreate,
+    PRODUCTION_PERMISSIONS.update,
+]), asyncHandler(productionBoardController.createBlock));
+productionRouter.post("/production/bloqueos/:blockId/resolver", requireAnyPermission([
+    PRODUCTION_PERMISSIONS.blocksResolve,
+    PRODUCTION_PERMISSIONS.update,
+]), asyncHandler(productionBoardController.resolveBlock));
+productionRouter.get("/production/exportar", requireAnyPermission([
+    PRODUCTION_PERMISSIONS.export,
+    PRODUCTION_PERMISSIONS.read,
+]), asyncHandler(productionBoardController.exportBoard));
+productionRouter.post("/production/ordenes/:id/programar", advancedPlan, asyncHandler(productionBoardController.scheduleJob));
+productionRouter.post("/production/ordenes/:id/reprogramar", requireAnyPermission([
+    PRODUCTION_PERMISSIONS.planningReschedule,
+    PRODUCTION_PERMISSIONS.update,
+]), asyncHandler(productionBoardController.scheduleJob));
+productionRouter.post("/production/ordenes/:id/transicion", advancedPlan, asyncHandler(productionBoardController.transitionJob));
+productionRouter.post("/production/tareas/:taskId/asignar", requireAnyPermission([
+    PRODUCTION_PERMISSIONS.tasksAssign,
+    PRODUCTION_PERMISSIONS.update,
+]), asyncHandler(productionBoardController.assignTask));
+productionRouter.post("/production/tareas/:taskId/iniciar", advancedExecute, asyncHandler(productionBoardController.transitionTask));
+productionRouter.post("/production/tareas/:taskId/pausar", advancedExecute, asyncHandler(productionBoardController.transitionTask));
+productionRouter.post("/production/tareas/:taskId/reanudar", advancedExecute, asyncHandler(productionBoardController.transitionTask));
+productionRouter.post("/production/tareas/:taskId/bloquear", requireAnyPermission([
+    PRODUCTION_PERMISSIONS.blocksCreate,
+    PRODUCTION_PERMISSIONS.update,
+]), asyncHandler(productionBoardController.transitionTask));
+productionRouter.post("/production/tareas/:taskId/desbloquear", advancedExecute, asyncHandler(productionBoardController.transitionTask));
+productionRouter.post("/production/tareas/:taskId/enviar-control", requireAnyPermission([
+    PRODUCTION_PERMISSIONS.qualityApprove,
+    PRODUCTION_PERMISSIONS.qualityCheck,
+]), asyncHandler(productionBoardController.transitionTask));
+productionRouter.post("/production/tareas/:taskId/completar", requireAnyPermission([
+    PRODUCTION_PERMISSIONS.tasksComplete,
+    PRODUCTION_PERMISSIONS.complete,
+]), asyncHandler(productionBoardController.transitionTask));
+productionRouter.post("/production/desperdicios", requireAnyPermission([
+    PRODUCTION_PERMISSIONS.wasteCreate,
+    PRODUCTION_PERMISSIONS.reportWaste,
+]), asyncHandler(productionBoardController.createWasteEntry));
+// Spanish aliases for the advanced module; the existing /production/jobs contract remains intact.
+productionRouter.get("/production/ordenes", requirePermission(PRODUCTION_PERMISSIONS.read), asyncHandler(productionController.listProductionJobs));
+productionRouter.post("/production/ordenes", requirePermission(PRODUCTION_PERMISSIONS.create), asyncHandler(productionController.createProductionJob));
+productionRouter.get("/production/ordenes/:id", requirePermission(PRODUCTION_PERMISSIONS.read), asyncHandler(productionController.getProductionJobById));
 productionRouter.get(PRODUCTION_JOBS_API_PATH, requirePermission(PRODUCTION_PERMISSIONS.read), asyncHandler(productionController.listProductionJobs));
 productionRouter.post(PRODUCTION_JOBS_API_PATH, requirePermission(PRODUCTION_PERMISSIONS.create), asyncHandler(productionController.createProductionJob));
 productionRouter.get(`${PRODUCTION_JOBS_API_PATH}/:id`, requirePermission(PRODUCTION_PERMISSIONS.read), asyncHandler(productionController.getProductionJobById));

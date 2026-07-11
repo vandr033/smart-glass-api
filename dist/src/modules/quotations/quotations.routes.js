@@ -24,4 +24,6 @@ quotationsRouter.get(`${QUOTATIONS_API_PATH}/:id/versions`, requirePermission(QU
 quotationsRouter.get(`${QUOTATIONS_API_PATH}/:id/approvals`, requirePermission(QUOTATION_PERMISSIONS.read), asyncHandler(quotationsController.listQuotationApprovals));
 quotationsRouter.get(`${QUOTATION_APPROVALS_API_PATH}/pending`, requirePermission(QUOTATION_PERMISSIONS.approve), asyncHandler(quotationsController.listPendingApprovals));
 quotationsRouter.post(`${QUOTATIONS_API_PATH}/:id/export-pdf`, requirePermission(QUOTATION_PERMISSIONS.exportPdf), asyncHandler(quotationsController.exportQuotationPdf));
+quotationsRouter.get(`${QUOTATIONS_API_PATH}/:id/pdf/commercial`, requirePermission(QUOTATION_PERMISSIONS.exportPdf), asyncHandler(quotationsController.downloadCommercialPdf));
+quotationsRouter.get(`${QUOTATIONS_API_PATH}/:id/pdf/internal`, requirePermission(QUOTATION_PERMISSIONS.exportPdf), asyncHandler(quotationsController.downloadInternalPdf));
 //# sourceMappingURL=quotations.routes.js.map

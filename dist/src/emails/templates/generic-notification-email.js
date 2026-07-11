@@ -37,7 +37,7 @@ export const genericNotificationEmailTemplate = {
         };
     },
     sampleVariables: {
-        actionLabel: "View Details",
+        actionLabel: "Ver detalle",
         actionLink: "https://app.example.com/notifications/demo",
         appName: "SaaS Base Project",
         message: "A new activity requires your attention.\nOpen the application to review the latest update.",

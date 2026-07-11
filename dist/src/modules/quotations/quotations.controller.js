@@ -2,7 +2,8 @@ import { auditLogService } from "../../services/audit-log-service.js";
 import { AppError } from "../../utils/app-error.js";
 import { getRequestLogActorContext } from "../../utils/request-context.js";
 import { sendPaginated, sendSuccess } from "../../utils/response.js";
-import { QUOTATION_ENTITY_TYPES, QUOTATION_PERMISSIONS, QUOTATIONS_API_PATH, QUOTATION_PDF_EXPORT_TODO_MESSAGE, } from "./quotations.constants.js";
+import { QUOTATION_ENTITY_TYPES, QUOTATION_PERMISSIONS, } from "./quotations.constants.js";
+import { quotationPdfService } from "./quotation-pdf-service.js";
 import { quotationsService } from "./quotations.service.js";
 import { addManualMaterialItemSchema, addManualServiceItemSchema, addTemplateQuotationItemSchema, changeQuotationStatusSchema, listQuotationsQuerySchema, quotationDecisionSchema, quotationIdParamSchema, quotationItemIdParamSchema, quotationMutationSchema, submitQuotationApprovalSchema, updateQuotationItemSchema, } from "./quotations.validators.js";
 const getQueryValue = (value) => {
@@ -16,6 +17,17 @@ const getQueryValue = (value) => {
         }
     }
     return undefined;
+};
+const getOptionalVersionNumber = (value) => {
+    const rawValue = getQueryValue(value);
+    if (rawValue === undefined) {
+        return undefined;
+    }
+    const versionNumber = Number(rawValue);
+    if (!Number.isInteger(versionNumber) || versionNumber < 1) {
+        throw new AppError("La versión solicitada no es válida.", 400);
+    }
+    return versionNumber;
 };
 const getRequiredQuotationId = (value) => {
     const quotationId = Array.isArray(value) ? value[0] : value;
@@ -53,6 +65,37 @@ const canViewCosts = (request) => request.authorizationSummary?.permissions.incl
 const canOverrideCosts = (request) => request.authorizationSummary?.permissions.includes(QUOTATION_PERMISSIONS.overrideCost) ?? false;
 const canApprove = (request) => request.authorizationSummary?.permissions.includes(QUOTATION_PERMISSIONS.approve) ?? false;
 const canSend = (request) => request.authorizationSummary?.permissions.includes(QUOTATION_PERMISSIONS.send) ?? false;
+const downloadPdf = async (request, response, variant) => {
+    const quotationId = getRequiredQuotationId(request.params.id);
+    const actorContext = getRequestLogActorContext(request);
+    const versionNumber = getOptionalVersionNumber(request.query.version);
+    const result = await quotationPdfService.generate(quotationId, {
+        generatedBy: request.authSession?.user.name ?? "Usuario autenticado",
+        generatedByUserId: actorContext.userId ?? null,
+        variant,
+        ...(versionNumber !== undefined ? { versionNumber } : {}),
+    });
+    await logAuditEvent(request, {
+        action: "quotation.pdf_exported",
+        after: {
+            fileName: result.fileName,
+            variant,
+            versionNumber: result.versionNumber,
+        },
+        before: null,
+        entityId: quotationId,
+        entityType: QUOTATION_ENTITY_TYPES.pdfExport,
+        metadata: {
+            sensitive: variant === "internal",
+            variant,
+            versionNumber: result.versionNumber,
+        },
+    });
+    response.setHeader("Content-Type", "application/pdf");
+    response.setHeader("Content-Disposition", `attachment; filename="${result.fileName}"`);
+    response.setHeader("Content-Length", String(result.buffer.length));
+    return response.status(200).send(result.buffer);
+};
 export const quotationsController = {
     async listQuotations(request, response) {
         const query = listQuotationsQuerySchema.parse({
@@ -374,27 +417,16 @@ export const quotationsController = {
         sendSuccess(response, approvals);
     },
     async exportQuotationPdf(request, response) {
-        const quotationId = getRequiredQuotationId(request.params.id);
-        const quotation = await quotationsService.getQuotationById(quotationId, {
-            canViewCost: canViewCosts(request),
-        });
-        const exportPayload = {
-            message: QUOTATION_PDF_EXPORT_TODO_MESSAGE,
-            quotationId: quotation.id,
-            route: `${QUOTATIONS_API_PATH}/${quotation.id}`,
-        };
-        await logAuditEvent(request, {
-            action: "quotation.exported",
-            after: exportPayload,
-            before: null,
-            entityId: quotation.id,
-            entityType: QUOTATION_ENTITY_TYPES.quotation,
-            metadata: {
-                code: quotation.code,
-                placeholder: true,
-            },
-        });
-        sendSuccess(response, exportPayload);
+        return downloadPdf(request, response, "commercial");
+    },
+    async downloadCommercialPdf(request, response) {
+        return downloadPdf(request, response, "commercial");
+    },
+    async downloadInternalPdf(request, response) {
+        if (!canViewCosts(request)) {
+            throw new AppError("No tienes permiso para descargar la versión interna.", 403);
+        }
+        return downloadPdf(request, response, "internal");
     },
 };
 //# sourceMappingURL=quotations.controller.js.map

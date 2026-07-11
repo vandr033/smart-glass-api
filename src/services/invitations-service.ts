@@ -168,7 +168,7 @@ const assertRoleExists = async (roleId: string): Promise<void> => {
   });
 
   if (!role) {
-    throw new AppError("The selected role is invalid.", 400);
+    throw new AppError("El rol seleccionado no es válido.", 400);
   }
 };
 
@@ -280,7 +280,7 @@ const sendInvitationEmail = async (invitation: {
   });
 
   if (!result.success) {
-    throw new AppError("The invitation email could not be sent.", 502);
+    throw new AppError("No fue posible enviar el correo de invitación.", 502);
   }
 };
 
@@ -332,7 +332,7 @@ const getValidInvitationForAcceptance = async (token: string) => {
   }
 
   if (invitation.role.deletedAt) {
-    throw new AppError("The assigned role is no longer available.", 400);
+    throw new AppError("El rol asignado ya no está disponible.", 400);
   }
 
   return invitation;
@@ -716,7 +716,7 @@ export const invitationsService = {
     void notificationService
       .create({
         message: `${invitationDetails.email} was invited as ${invitationDetails.role.name}.`,
-        title: "User invited",
+        title: "Usuario invitado",
         type: "success",
         userId: createdById,
       })
@@ -837,7 +837,7 @@ export const invitationsService = {
     }
 
     if (invitation.role.deletedAt) {
-      throw new AppError("The assigned role is no longer available.", 400);
+      throw new AppError("El rol asignado ya no está disponible.", 400);
     }
 
     await assertEmailAvailableForInvitation(invitation.email);

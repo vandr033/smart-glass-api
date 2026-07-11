@@ -19,6 +19,14 @@ export const measurementEvidenceUploadsDir = path.join(
   uploadsRootDir,
   "measurement-evidence",
 );
+export const postventaEvidenceUploadsDir = path.join(
+  uploadsRootDir,
+  "postventa-evidence",
+);
+export const clientPortalUploadsDir = path.join(
+  uploadsRootDir,
+  "client-portal",
+);
 
 export const ensureUploadDirectories = async (): Promise<void> => {
   await mkdir(avatarUploadsDir, {
@@ -37,6 +45,12 @@ export const ensureUploadDirectories = async (): Promise<void> => {
     recursive: true,
   });
   await mkdir(measurementEvidenceUploadsDir, {
+    recursive: true,
+  });
+  await mkdir(postventaEvidenceUploadsDir, {
+    recursive: true,
+  });
+  await mkdir(clientPortalUploadsDir, {
     recursive: true,
   });
 };
@@ -63,4 +77,12 @@ export const buildInstallationEvidenceUrl = (fileName: string): string => {
 
 export const buildMeasurementEvidenceUrl = (fileName: string): string => {
   return `${env.BETTER_AUTH_URL}/uploads/measurement-evidence/${fileName}`;
+};
+
+export const buildPostventaEvidenceUrl = (fileName: string): string => {
+  return `${env.BETTER_AUTH_URL}/uploads/postventa-evidence/${fileName}`;
+};
+
+export const buildClientPortalFileUrl = (fileName: string): string => {
+  return `${env.BETTER_AUTH_URL}/uploads/client-portal/${fileName}`;
 };

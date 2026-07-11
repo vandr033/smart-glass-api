@@ -7,9 +7,8 @@ import { sendPaginated, sendSuccess } from "../../utils/response.js";
 import {
   QUOTATION_ENTITY_TYPES,
   QUOTATION_PERMISSIONS,
-  QUOTATIONS_API_PATH,
-  QUOTATION_PDF_EXPORT_TODO_MESSAGE,
 } from "./quotations.constants.js";
+import { quotationPdfService, type QuotationPdfVariant } from "./quotation-pdf-service.js";
 import { quotationsService } from "./quotations.service.js";
 import {
   addManualMaterialItemSchema,
@@ -39,6 +38,22 @@ const getQueryValue = (value: unknown): string | undefined => {
   }
 
   return undefined;
+};
+
+const getOptionalVersionNumber = (value: unknown): number | undefined => {
+  const rawValue = getQueryValue(value);
+
+  if (rawValue === undefined) {
+    return undefined;
+  }
+
+  const versionNumber = Number(rawValue);
+
+  if (!Number.isInteger(versionNumber) || versionNumber < 1) {
+    throw new AppError("La versión solicitada no es válida.", 400);
+  }
+
+  return versionNumber;
 };
 
 const getRequiredQuotationId = (value: string | string[] | undefined): string => {
@@ -112,6 +127,44 @@ const canSend = (request: Request) =>
   request.authorizationSummary?.permissions.includes(
     QUOTATION_PERMISSIONS.send,
   ) ?? false;
+
+const downloadPdf = async (
+  request: Request,
+  response: Response,
+  variant: QuotationPdfVariant,
+) => {
+  const quotationId = getRequiredQuotationId(request.params.id);
+  const actorContext = getRequestLogActorContext(request);
+  const versionNumber = getOptionalVersionNumber(request.query.version);
+  const result = await quotationPdfService.generate(quotationId, {
+    generatedBy: request.authSession?.user.name ?? "Usuario autenticado",
+    generatedByUserId: actorContext.userId ?? null,
+    variant,
+    ...(versionNumber !== undefined ? { versionNumber } : {}),
+  });
+
+  await logAuditEvent(request, {
+    action: "quotation.pdf_exported",
+    after: {
+      fileName: result.fileName,
+      variant,
+      versionNumber: result.versionNumber,
+    },
+    before: null,
+    entityId: quotationId,
+    entityType: QUOTATION_ENTITY_TYPES.pdfExport,
+    metadata: {
+      sensitive: variant === "internal",
+      variant,
+      versionNumber: result.versionNumber,
+    },
+  });
+
+  response.setHeader("Content-Type", "application/pdf");
+  response.setHeader("Content-Disposition", `attachment; filename="${result.fileName}"`);
+  response.setHeader("Content-Length", String(result.buffer.length));
+  return response.status(200).send(result.buffer);
+};
 
 export const quotationsController = {
   async listQuotations(request: Request, response: Response) {
@@ -524,31 +577,18 @@ export const quotationsController = {
   },
 
   async exportQuotationPdf(request: Request, response: Response) {
-    const quotationId = getRequiredQuotationId(request.params.id);
-    const quotation = await quotationsService.getQuotationById(quotationId, {
-      canViewCost: canViewCosts(request),
-    });
-    const exportPayload = {
-      message: QUOTATION_PDF_EXPORT_TODO_MESSAGE,
-      quotationId: quotation.id,
-      route: `${QUOTATIONS_API_PATH}/${quotation.id}`,
-    };
+    return downloadPdf(request, response, "commercial");
+  },
 
-    await logAuditEvent(request, {
-      action: "quotation.exported",
-      after: exportPayload,
-      before: null,
-      entityId: quotation.id,
-      entityType: QUOTATION_ENTITY_TYPES.quotation,
-      metadata: {
-        code: quotation.code,
-        placeholder: true,
-      },
-    });
+  async downloadCommercialPdf(request: Request, response: Response) {
+    return downloadPdf(request, response, "commercial");
+  },
 
-    sendSuccess(
-      response,
-      exportPayload,
-    );
+  async downloadInternalPdf(request: Request, response: Response) {
+    if (!canViewCosts(request)) {
+      throw new AppError("No tienes permiso para descargar la versión interna.", 403);
+    }
+
+    return downloadPdf(request, response, "internal");
   },
 };

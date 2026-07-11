@@ -32,7 +32,6 @@ import type {
 } from "./installation.types.js";
 import {
   INSTALLATION_DEFAULT_TASK_TEMPLATES,
-  INSTALLATION_ENTITY_TYPES,
   INSTALLATION_ORDER_ACTIVE_STATUSES,
   INSTALLATION_STATUS_TRANSITIONS,
 } from "./installation.constants.js";

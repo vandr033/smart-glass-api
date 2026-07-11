@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { emailPreviewRouter } from "./routes/dev/email-preview-routes.js";
 import { ensureUploadDirectories, uploadsRootDir } from "./utils/uploads.js";
 import { errorMiddleware } from "./middleware/error-middleware.js";
+import { clientPortalPublicRouter } from "./modules/client-portal/client-portal-public.routes.js";
 import { authHandler } from "./modules/auth/auth.js";
 import { sessionValidationMiddleware } from "./modules/auth/middleware/session-validation-middleware.js";
 import { apiRouter } from "./routes/index.js";
@@ -34,6 +35,7 @@ app.get("/", (_request, response) => {
         status: "ok",
     });
 });
+app.use("/api", clientPortalPublicRouter);
 app.use("/api", sessionValidationMiddleware, apiRouter);
 app.use((_request, response) => {
     sendError(response, "Route not found.", 404);

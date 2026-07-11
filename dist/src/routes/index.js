@@ -12,6 +12,7 @@ import { rolesRouter } from "./roles-routes.js";
 import { settingsRouter } from "./settings-routes.js";
 import { usersRouter } from "./users-routes.js";
 import { sendSuccess } from "../utils/response.js";
+import { operationalPortalRouter } from "../modules/operational-portal/operational-portal.routes.js";
 export const apiRouter = Router();
 apiRouter.use(activityLogsRouter);
 apiRouter.use(auditLogsRouter);
@@ -23,6 +24,7 @@ apiRouter.use(rolesRouter);
 apiRouter.use(usersRouter);
 apiRouter.use(invitationsRouter);
 apiRouter.use(settingsRouter);
+apiRouter.use(operationalPortalRouter);
 for (const router of generatedModuleRouters) {
     apiRouter.use(router);
 }

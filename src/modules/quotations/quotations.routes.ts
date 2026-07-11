@@ -131,3 +131,15 @@ quotationsRouter.post(
   requirePermission(QUOTATION_PERMISSIONS.exportPdf),
   asyncHandler(quotationsController.exportQuotationPdf),
 );
+
+quotationsRouter.get(
+  `${QUOTATIONS_API_PATH}/:id/pdf/commercial`,
+  requirePermission(QUOTATION_PERMISSIONS.exportPdf),
+  asyncHandler(quotationsController.downloadCommercialPdf),
+);
+
+quotationsRouter.get(
+  `${QUOTATIONS_API_PATH}/:id/pdf/internal`,
+  requirePermission(QUOTATION_PERMISSIONS.exportPdf),
+  asyncHandler(quotationsController.downloadInternalPdf),
+);

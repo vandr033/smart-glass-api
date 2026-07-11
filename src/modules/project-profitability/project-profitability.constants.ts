@@ -23,6 +23,8 @@ export const COSTO_PROYECTO_CATEGORIAS = [
   "COMPRAS",
   "TRANSPORTE",
   "GARANTIAS",
+  "RECLAMOS",
+  "REPOSICIONES",
   "OTROS",
 ] as const;
 
@@ -34,6 +36,7 @@ export const COSTO_PROYECTO_ORIGENES = [
   "PRODUCCION",
   "INSTALACION",
   "GARANTIA",
+  "POSTVENTA",
   "OPTIMIZACION",
   "DERIVADO",
   "OTRO",
@@ -48,6 +51,7 @@ export const EVENTO_RENTABILIDAD_TIPOS = [
   "INSTALACION",
   "COMPRA",
   "RECEPCION",
+  "POSTVENTA",
 ] as const;
 
 export const ALERTA_RENTABILIDAD_TIPOS = [

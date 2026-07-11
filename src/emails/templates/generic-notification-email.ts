@@ -49,7 +49,7 @@ export const genericNotificationEmailTemplate: EmailTemplateDefinition<"genericN
       };
     },
     sampleVariables: {
-      actionLabel: "View Details",
+      actionLabel: "Ver detalle",
       actionLink: "https://app.example.com/notifications/demo",
       appName: "SaaS Base Project",
       message:

@@ -132,6 +132,11 @@ export const ModelName = {
     ProfileCuttingBar: 'ProfileCuttingBar',
     ProfileCutPiece: 'ProfileCutPiece',
     ProfileRemnantOutput: 'ProfileRemnantOutput',
+    ProductionWorkCenter: 'ProductionWorkCenter',
+    ProductionTaskDependency: 'ProductionTaskDependency',
+    ProductionBlock: 'ProductionBlock',
+    ProductionTimeEntry: 'ProductionTimeEntry',
+    ProductionWasteEntry: 'ProductionWasteEntry',
     ProductionJob: 'ProductionJob',
     ProductionJobItem: 'ProductionJobItem',
     ProductionTask: 'ProductionTask',
@@ -152,6 +157,20 @@ export const ModelName = {
     InstallationEvidence: 'InstallationEvidence',
     InstallationIssue: 'InstallationIssue',
     InstallationStatusHistory: 'InstallationStatusHistory',
+    PostventaCase: 'PostventaCase',
+    ProductWarranty: 'ProductWarranty',
+    ClientPortalUser: 'ClientPortalUser',
+    ClientPortalProjectAccess: 'ClientPortalProjectAccess',
+    ClientPortalDocument: 'ClientPortalDocument',
+    ClientPortalMessage: 'ClientPortalMessage',
+    ClientPortalInvitationToken: 'ClientPortalInvitationToken',
+    ClientPortalPasswordResetToken: 'ClientPortalPasswordResetToken',
+    ClientPortalDocumentDownload: 'ClientPortalDocumentDownload',
+    PostventaActivity: 'PostventaActivity',
+    PostventaEvidence: 'PostventaEvidence',
+    PostventaCost: 'PostventaCost',
+    PostventaStatusHistory: 'PostventaStatusHistory',
+    PostventaInventoryReservation: 'PostventaInventoryReservation',
     PurchaseRequest: 'PurchaseRequest',
     PurchaseRequestItem: 'PurchaseRequestItem',
     SupplierComparison: 'SupplierComparison',
@@ -1103,6 +1122,79 @@ export const ProfileRemnantOutputScalarFieldEnum = {
     status: 'status',
     createdAt: 'createdAt'
 };
+export const ProductionWorkCenterScalarFieldEnum = {
+    id: 'id',
+    code: 'code',
+    name: 'name',
+    description: 'description',
+    type: 'type',
+    capacityDailyMinutes: 'capacityDailyMinutes',
+    scheduleStart: 'scheduleStart',
+    scheduleEnd: 'scheduleEnd',
+    active: 'active',
+    allowsConcurrentTasks: 'allowsConcurrentTasks',
+    workstationCount: 'workstationCount',
+    setupMinutes: 'setupMinutes',
+    status: 'status',
+    unavailableFrom: 'unavailableFrom',
+    unavailableTo: 'unavailableTo',
+    unavailableReason: 'unavailableReason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const ProductionTaskDependencyScalarFieldEnum = {
+    id: 'id',
+    taskId: 'taskId',
+    dependsOnTaskId: 'dependsOnTaskId',
+    type: 'type',
+    createdAt: 'createdAt'
+};
+export const ProductionBlockScalarFieldEnum = {
+    id: 'id',
+    productionJobId: 'productionJobId',
+    productionTaskId: 'productionTaskId',
+    type: 'type',
+    severity: 'severity',
+    description: 'description',
+    status: 'status',
+    createdById: 'createdById',
+    assignedToId: 'assignedToId',
+    resolvedById: 'resolvedById',
+    resolution: 'resolution',
+    estimatedImpactMinutes: 'estimatedImpactMinutes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    resolvedAt: 'resolvedAt'
+};
+export const ProductionTimeEntryScalarFieldEnum = {
+    id: 'id',
+    productionTaskId: 'productionTaskId',
+    userId: 'userId',
+    eventType: 'eventType',
+    eventAt: 'eventAt',
+    reason: 'reason',
+    createdAt: 'createdAt'
+};
+export const ProductionWasteEntryScalarFieldEnum = {
+    id: 'id',
+    productionJobId: 'productionJobId',
+    productionTaskId: 'productionTaskId',
+    materialId: 'materialId',
+    entryType: 'entryType',
+    reason: 'reason',
+    quantity: 'quantity',
+    unit: 'unit',
+    areaM2: 'areaM2',
+    widthMm: 'widthMm',
+    heightMm: 'heightMm',
+    lengthMm: 'lengthMm',
+    recoverable: 'recoverable',
+    notes: 'notes',
+    evidenceJson: 'evidenceJson',
+    reportedById: 'reportedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
 export const ProductionJobScalarFieldEnum = {
     id: 'id',
     code: 'code',
@@ -1111,12 +1203,17 @@ export const ProductionJobScalarFieldEnum = {
     measurementRequestId: 'measurementRequestId',
     cuttingPlanId: 'cuttingPlanId',
     status: 'status',
+    workflowStatus: 'workflowStatus',
     priority: 'priority',
+    version: 'version',
+    estimatedMinutes: 'estimatedMinutes',
     plannedStartDate: 'plannedStartDate',
     plannedEndDate: 'plannedEndDate',
+    requiredInstallationDate: 'requiredInstallationDate',
     actualStartDate: 'actualStartDate',
     actualEndDate: 'actualEndDate',
     assignedToUserId: 'assignedToUserId',
+    currentWorkCenterId: 'currentWorkCenterId',
     createdByUserId: 'createdByUserId',
     notes: 'notes',
     createdAt: 'createdAt',
@@ -1145,6 +1242,12 @@ export const ProductionTaskScalarFieldEnum = {
     description: 'description',
     status: 'status',
     assignedToUserId: 'assignedToUserId',
+    workCenterId: 'workCenterId',
+    estimatedMinutes: 'estimatedMinutes',
+    actualMinutes: 'actualMinutes',
+    scheduledStart: 'scheduledStart',
+    scheduledEnd: 'scheduledEnd',
+    requiresQualityControl: 'requiresQualityControl',
     startedAt: 'startedAt',
     completedAt: 'completedAt',
     sortOrder: 'sortOrder',
@@ -1375,6 +1478,169 @@ export const InstallationStatusHistoryScalarFieldEnum = {
     changedByUserId: 'changedByUserId',
     notes: 'notes',
     metadataJson: 'metadataJson',
+    createdAt: 'createdAt'
+};
+export const PostventaCaseScalarFieldEnum = {
+    id: 'id',
+    code: 'code',
+    clientId: 'clientId',
+    projectId: 'projectId',
+    quotationId: 'quotationId',
+    installationId: 'installationId',
+    warrantyId: 'warrantyId',
+    caseType: 'caseType',
+    status: 'status',
+    priority: 'priority',
+    reportedAt: 'reportedAt',
+    commitmentDate: 'commitmentDate',
+    responsibleUserId: 'responsibleUserId',
+    description: 'description',
+    proposedSolution: 'proposedSolution',
+    internalNotes: 'internalNotes',
+    outsideWarranty: 'outsideWarranty',
+    closedAt: 'closedAt',
+    createdByUserId: 'createdByUserId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const ProductWarrantyScalarFieldEnum = {
+    id: 'id',
+    projectId: 'projectId',
+    clientId: 'clientId',
+    productType: 'productType',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    conditions: 'conditions',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const ClientPortalUserScalarFieldEnum = {
+    id: 'id',
+    clientId: 'clientId',
+    name: 'name',
+    email: 'email',
+    phone: 'phone',
+    passwordHash: 'passwordHash',
+    status: 'status',
+    lastAccessAt: 'lastAccessAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const ClientPortalProjectAccessScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    projectId: 'projectId',
+    permissionsJson: 'permissionsJson',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const ClientPortalDocumentScalarFieldEnum = {
+    id: 'id',
+    clientId: 'clientId',
+    projectId: 'projectId',
+    type: 'type',
+    name: 'name',
+    fileUrl: 'fileUrl',
+    visibleToClient: 'visibleToClient',
+    mimeType: 'mimeType',
+    sizeBytes: 'sizeBytes',
+    uploadedByUserId: 'uploadedByUserId',
+    uploadedAt: 'uploadedAt'
+};
+export const ClientPortalMessageScalarFieldEnum = {
+    id: 'id',
+    clientId: 'clientId',
+    projectId: 'projectId',
+    portalUserId: 'portalUserId',
+    internalUserId: 'internalUserId',
+    sentBy: 'sentBy',
+    message: 'message',
+    fileUrl: 'fileUrl',
+    attachmentName: 'attachmentName',
+    attachmentMimeType: 'attachmentMimeType',
+    attachmentSizeBytes: 'attachmentSizeBytes',
+    readAt: 'readAt',
+    createdAt: 'createdAt'
+};
+export const ClientPortalInvitationTokenScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    tokenHash: 'tokenHash',
+    createdByUserId: 'createdByUserId',
+    expiresAt: 'expiresAt',
+    sentAt: 'sentAt',
+    usedAt: 'usedAt'
+};
+export const ClientPortalPasswordResetTokenScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    tokenHash: 'tokenHash',
+    expiresAt: 'expiresAt',
+    usedAt: 'usedAt',
+    createdAt: 'createdAt'
+};
+export const ClientPortalDocumentDownloadScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    documentId: 'documentId',
+    referenceKey: 'referenceKey',
+    referenceId: 'referenceId',
+    downloadedAt: 'downloadedAt'
+};
+export const PostventaActivityScalarFieldEnum = {
+    id: 'id',
+    postventaCaseId: 'postventaCaseId',
+    activityType: 'activityType',
+    description: 'description',
+    responsibleUserId: 'responsibleUserId',
+    scheduledAt: 'scheduledAt',
+    executedAt: 'executedAt',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const PostventaEvidenceScalarFieldEnum = {
+    id: 'id',
+    postventaCaseId: 'postventaCaseId',
+    postventaActivityId: 'postventaActivityId',
+    evidenceType: 'evidenceType',
+    fileName: 'fileName',
+    fileUrl: 'fileUrl',
+    mimeType: 'mimeType',
+    sizeBytes: 'sizeBytes',
+    description: 'description',
+    uploadedByUserId: 'uploadedByUserId',
+    uploadedAt: 'uploadedAt'
+};
+export const PostventaCostScalarFieldEnum = {
+    id: 'id',
+    postventaCaseId: 'postventaCaseId',
+    category: 'category',
+    description: 'description',
+    amount: 'amount',
+    origin: 'origin',
+    referenceId: 'referenceId',
+    costDate: 'costDate',
+    createdAt: 'createdAt'
+};
+export const PostventaStatusHistoryScalarFieldEnum = {
+    id: 'id',
+    postventaCaseId: 'postventaCaseId',
+    fromStatus: 'fromStatus',
+    toStatus: 'toStatus',
+    changedByUserId: 'changedByUserId',
+    notes: 'notes',
+    metadataJson: 'metadataJson',
+    createdAt: 'createdAt'
+};
+export const PostventaInventoryReservationScalarFieldEnum = {
+    id: 'id',
+    postventaCaseId: 'postventaCaseId',
+    inventoryReservationId: 'inventoryReservationId',
+    notes: 'notes',
+    createdByUserId: 'createdByUserId',
     createdAt: 'createdAt'
 };
 export const PurchaseRequestScalarFieldEnum = {
@@ -2088,6 +2354,44 @@ export const ProfileRemnantOutputOrderByRelevanceFieldEnum = {
     materialId: 'materialId',
     remnantPieceId: 'remnantPieceId'
 };
+export const ProductionWorkCenterOrderByRelevanceFieldEnum = {
+    id: 'id',
+    code: 'code',
+    name: 'name',
+    description: 'description',
+    scheduleStart: 'scheduleStart',
+    scheduleEnd: 'scheduleEnd',
+    unavailableReason: 'unavailableReason'
+};
+export const ProductionTaskDependencyOrderByRelevanceFieldEnum = {
+    id: 'id',
+    taskId: 'taskId',
+    dependsOnTaskId: 'dependsOnTaskId'
+};
+export const ProductionBlockOrderByRelevanceFieldEnum = {
+    id: 'id',
+    productionJobId: 'productionJobId',
+    productionTaskId: 'productionTaskId',
+    description: 'description',
+    createdById: 'createdById',
+    assignedToId: 'assignedToId',
+    resolvedById: 'resolvedById',
+    resolution: 'resolution'
+};
+export const ProductionTimeEntryOrderByRelevanceFieldEnum = {
+    id: 'id',
+    productionTaskId: 'productionTaskId',
+    userId: 'userId',
+    reason: 'reason'
+};
+export const ProductionWasteEntryOrderByRelevanceFieldEnum = {
+    id: 'id',
+    productionJobId: 'productionJobId',
+    productionTaskId: 'productionTaskId',
+    materialId: 'materialId',
+    notes: 'notes',
+    reportedById: 'reportedById'
+};
 export const ProductionJobOrderByRelevanceFieldEnum = {
     id: 'id',
     code: 'code',
@@ -2096,6 +2400,7 @@ export const ProductionJobOrderByRelevanceFieldEnum = {
     measurementRequestId: 'measurementRequestId',
     cuttingPlanId: 'cuttingPlanId',
     assignedToUserId: 'assignedToUserId',
+    currentWorkCenterId: 'currentWorkCenterId',
     createdByUserId: 'createdByUserId',
     notes: 'notes'
 };
@@ -2113,7 +2418,8 @@ export const ProductionTaskOrderByRelevanceFieldEnum = {
     productionJobItemId: 'productionJobItemId',
     title: 'title',
     description: 'description',
-    assignedToUserId: 'assignedToUserId'
+    assignedToUserId: 'assignedToUserId',
+    workCenterId: 'workCenterId'
 };
 export const MaterialConsumptionOrderByRelevanceFieldEnum = {
     id: 'id',
@@ -2249,6 +2555,113 @@ export const InstallationStatusHistoryOrderByRelevanceFieldEnum = {
     installationOrderId: 'installationOrderId',
     changedByUserId: 'changedByUserId',
     notes: 'notes'
+};
+export const PostventaCaseOrderByRelevanceFieldEnum = {
+    id: 'id',
+    code: 'code',
+    clientId: 'clientId',
+    projectId: 'projectId',
+    quotationId: 'quotationId',
+    installationId: 'installationId',
+    warrantyId: 'warrantyId',
+    responsibleUserId: 'responsibleUserId',
+    description: 'description',
+    proposedSolution: 'proposedSolution',
+    internalNotes: 'internalNotes',
+    createdByUserId: 'createdByUserId'
+};
+export const ProductWarrantyOrderByRelevanceFieldEnum = {
+    id: 'id',
+    projectId: 'projectId',
+    clientId: 'clientId',
+    productType: 'productType',
+    conditions: 'conditions'
+};
+export const ClientPortalUserOrderByRelevanceFieldEnum = {
+    id: 'id',
+    clientId: 'clientId',
+    name: 'name',
+    email: 'email',
+    phone: 'phone',
+    passwordHash: 'passwordHash'
+};
+export const ClientPortalProjectAccessOrderByRelevanceFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    projectId: 'projectId'
+};
+export const ClientPortalDocumentOrderByRelevanceFieldEnum = {
+    id: 'id',
+    clientId: 'clientId',
+    projectId: 'projectId',
+    name: 'name',
+    fileUrl: 'fileUrl',
+    mimeType: 'mimeType',
+    uploadedByUserId: 'uploadedByUserId'
+};
+export const ClientPortalMessageOrderByRelevanceFieldEnum = {
+    id: 'id',
+    clientId: 'clientId',
+    projectId: 'projectId',
+    portalUserId: 'portalUserId',
+    internalUserId: 'internalUserId',
+    message: 'message',
+    fileUrl: 'fileUrl',
+    attachmentName: 'attachmentName',
+    attachmentMimeType: 'attachmentMimeType'
+};
+export const ClientPortalInvitationTokenOrderByRelevanceFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    tokenHash: 'tokenHash',
+    createdByUserId: 'createdByUserId'
+};
+export const ClientPortalPasswordResetTokenOrderByRelevanceFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    tokenHash: 'tokenHash'
+};
+export const ClientPortalDocumentDownloadOrderByRelevanceFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    documentId: 'documentId',
+    referenceKey: 'referenceKey',
+    referenceId: 'referenceId'
+};
+export const PostventaActivityOrderByRelevanceFieldEnum = {
+    id: 'id',
+    postventaCaseId: 'postventaCaseId',
+    description: 'description',
+    responsibleUserId: 'responsibleUserId'
+};
+export const PostventaEvidenceOrderByRelevanceFieldEnum = {
+    id: 'id',
+    postventaCaseId: 'postventaCaseId',
+    postventaActivityId: 'postventaActivityId',
+    fileName: 'fileName',
+    fileUrl: 'fileUrl',
+    mimeType: 'mimeType',
+    description: 'description',
+    uploadedByUserId: 'uploadedByUserId'
+};
+export const PostventaCostOrderByRelevanceFieldEnum = {
+    id: 'id',
+    postventaCaseId: 'postventaCaseId',
+    description: 'description',
+    referenceId: 'referenceId'
+};
+export const PostventaStatusHistoryOrderByRelevanceFieldEnum = {
+    id: 'id',
+    postventaCaseId: 'postventaCaseId',
+    changedByUserId: 'changedByUserId',
+    notes: 'notes'
+};
+export const PostventaInventoryReservationOrderByRelevanceFieldEnum = {
+    id: 'id',
+    postventaCaseId: 'postventaCaseId',
+    inventoryReservationId: 'inventoryReservationId',
+    notes: 'notes',
+    createdByUserId: 'createdByUserId'
 };
 export const PurchaseRequestOrderByRelevanceFieldEnum = {
     id: 'id',

@@ -19,6 +19,8 @@ export const COSTO_PROYECTO_CATEGORIAS = [
     "COMPRAS",
     "TRANSPORTE",
     "GARANTIAS",
+    "RECLAMOS",
+    "REPOSICIONES",
     "OTROS",
 ];
 export const COSTO_PROYECTO_ORIGENES = [
@@ -29,6 +31,7 @@ export const COSTO_PROYECTO_ORIGENES = [
     "PRODUCCION",
     "INSTALACION",
     "GARANTIA",
+    "POSTVENTA",
     "OPTIMIZACION",
     "DERIVADO",
     "OTRO",
@@ -42,6 +45,7 @@ export const EVENTO_RENTABILIDAD_TIPOS = [
     "INSTALACION",
     "COMPRA",
     "RECEPCION",
+    "POSTVENTA",
 ];
 export const ALERTA_RENTABILIDAD_TIPOS = [
     "MARGEN_BAJO",

@@ -26,7 +26,6 @@ import type {
   MeasurementEvidenceMetadataInput,
   MeasurementEvidenceRecord,
   MeasurementOpeningRecord,
-  MeasurementProductionJobSummary,
   MeasurementProjectSummary,
   MeasurementRequestDetailRecord,
   MeasurementRequestListItem,
@@ -45,7 +44,6 @@ import type {
 } from "./measurements.types.js";
 import {
   MEASUREMENT_ACTIVE_SCHEDULE_STATUSES,
-  MEASUREMENT_SCHEDULABLE_STATUSES,
 } from "./measurements.constants.js";
 
 type DbClient = typeof prisma | Prisma.TransactionClient;
@@ -1060,7 +1058,7 @@ const syncEditableRequestStatus = async (
     visit.openings.some((opening) => opening.requiresCorrection),
   );
 
-  let nextStatus: MeasurementRequestStatus = request.status;
+  let nextStatus: MeasurementRequestStatus;
 
   if (openObservationCount > 0 || hasCorrections) {
     nextStatus = "WITH_OBSERVATIONS";

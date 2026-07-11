@@ -10,6 +10,29 @@ export type EnabledModule = {
   sortOrder: number;
 };
 
+const normalizeModuleRecord = (moduleRecord: {
+  description: string | null;
+  icon: string | null;
+  key: string;
+  label: string;
+  requiredPermission: string | null;
+  route: string;
+  sortOrder: number;
+}) => {
+  if (moduleRecord.key === "reports" || moduleRecord.route === "/admin/reports") {
+    return {
+      ...moduleRecord,
+      description:
+        "Panel ejecutivo, analisis comercial, indicadores operativos y exportaciones gerenciales.",
+      key: "tableros",
+      label: "Tableros ejecutivos",
+      route: "/admin/tableros",
+    };
+  }
+
+  return moduleRecord;
+};
+
 const mapModule = (moduleRecord: {
   description: string | null;
   icon: string | null;
@@ -19,14 +42,16 @@ const mapModule = (moduleRecord: {
   route: string;
   sortOrder: number;
 }): EnabledModule => {
+  const normalizedRecord = normalizeModuleRecord(moduleRecord);
+
   return {
-    description: moduleRecord.description,
-    icon: moduleRecord.icon,
-    key: moduleRecord.key,
-    label: moduleRecord.label,
-    requiredPermission: moduleRecord.requiredPermission,
-    route: moduleRecord.route,
-    sortOrder: moduleRecord.sortOrder,
+    description: normalizedRecord.description,
+    icon: normalizedRecord.icon,
+    key: normalizedRecord.key,
+    label: normalizedRecord.label,
+    requiredPermission: normalizedRecord.requiredPermission,
+    route: normalizedRecord.route,
+    sortOrder: normalizedRecord.sortOrder,
   };
 };
 

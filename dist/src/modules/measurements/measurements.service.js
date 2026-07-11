@@ -7,7 +7,7 @@ import { AppError } from "../../utils/app-error.js";
 import { prisma } from "../../utils/prisma.js";
 import { buildMeasurementEvidenceUrl, measurementEvidenceUploadsDir, } from "../../utils/uploads.js";
 import { buildDateRangeFilter } from "../../services/logging-utils.js";
-import { MEASUREMENT_ACTIVE_SCHEDULE_STATUSES, MEASUREMENT_SCHEDULABLE_STATUSES, } from "./measurements.constants.js";
+import { MEASUREMENT_ACTIVE_SCHEDULE_STATUSES, } from "./measurements.constants.js";
 const userSummarySelect = {
     email: true,
     id: true,
@@ -718,7 +718,7 @@ const syncEditableRequestStatus = async (requestId, userId, db) => {
         visit.observations.filter((entry) => entry.status === "OPEN" || entry.status === "IN_PROGRESS").length, 0);
     const openingCount = request.technicalVisits.reduce((sum, visit) => sum + visit.openings.length, 0);
     const hasCorrections = request.technicalVisits.some((visit) => visit.openings.some((opening) => opening.requiresCorrection));
-    let nextStatus = request.status;
+    let nextStatus;
     if (openObservationCount > 0 || hasCorrections) {
         nextStatus = "WITH_OBSERVATIONS";
     }

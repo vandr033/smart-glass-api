@@ -86,6 +86,3 @@ export const QUOTATION_ENTITY_TYPES = {
   statusHistory: "QuotationStatusHistory",
   version: "QuotationVersion",
 } as const;
-
-export const QUOTATION_PDF_EXPORT_TODO_MESSAGE =
-  "PDF export is not available yet. Use the quotation preview page until PDF generation infrastructure is added.";

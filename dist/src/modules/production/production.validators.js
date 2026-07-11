@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { integerQueryParamSchema } from "../../utils/query-schemas.js";
 import { materialUnitSchema } from "../materials/materials.validators.js";
-import { MATERIAL_CONSUMPTION_SOURCE_TYPES, MATERIAL_CONSUMPTION_TYPES, PRODUCTION_JOB_ITEM_STATUSES, PRODUCTION_JOB_PRIORITIES, PRODUCTION_JOB_STATUSES, PRODUCTION_TASK_STATUSES, PRODUCTION_TASK_TYPES, QUALITY_CHECK_STATUSES, } from "./production.constants.js";
+import { MATERIAL_CONSUMPTION_SOURCE_TYPES, MATERIAL_CONSUMPTION_TYPES, PRODUCTION_JOB_ITEM_STATUSES, PRODUCTION_JOB_PRIORITIES, PRODUCTION_JOB_STATUSES, PRODUCTION_TASK_STATUSES, PRODUCTION_TASK_TYPES, QUALITY_CHECK_STATUSES, PRODUCTION_WORKFLOW_STATUSES, PRODUCTION_WORK_CENTER_TYPES, PRODUCTION_WORK_CENTER_STATUSES, PRODUCTION_BLOCK_TYPES, PRODUCTION_BLOCK_SEVERITIES, PRODUCTION_BLOCK_STATUSES, PRODUCTION_TASK_DEPENDENCY_TYPES, PRODUCTION_WASTE_ENTRY_TYPES, PRODUCTION_WASTE_REASONS, } from "./production.constants.js";
 const trimOrNull = (value) => {
     if (typeof value !== "string") {
         return null;
@@ -106,6 +106,15 @@ export const productionTaskStatusSchema = z.enum(PRODUCTION_TASK_STATUSES);
 export const materialConsumptionTypeSchema = z.enum(MATERIAL_CONSUMPTION_TYPES);
 export const materialConsumptionSourceTypeSchema = z.enum(MATERIAL_CONSUMPTION_SOURCE_TYPES);
 export const qualityCheckStatusSchema = z.enum(QUALITY_CHECK_STATUSES);
+export const productionWorkflowStatusSchema = z.enum(PRODUCTION_WORKFLOW_STATUSES);
+export const productionWorkCenterTypeSchema = z.enum(PRODUCTION_WORK_CENTER_TYPES);
+export const productionWorkCenterStatusSchema = z.enum(PRODUCTION_WORK_CENTER_STATUSES);
+export const productionBlockTypeSchema = z.enum(PRODUCTION_BLOCK_TYPES);
+export const productionBlockSeveritySchema = z.enum(PRODUCTION_BLOCK_SEVERITIES);
+export const productionBlockStatusSchema = z.enum(PRODUCTION_BLOCK_STATUSES);
+export const productionTaskDependencyTypeSchema = z.enum(PRODUCTION_TASK_DEPENDENCY_TYPES);
+export const productionWasteEntryTypeSchema = z.enum(PRODUCTION_WASTE_ENTRY_TYPES);
+export const productionWasteReasonSchema = z.enum(PRODUCTION_WASTE_REASONS);
 export const productionJobIdParamSchema = z.object({
     id: z.uuid(),
 });
@@ -258,5 +267,58 @@ export const qualityCheckMutationSchema = z.object({
     notes: nullableStringSchema(4000, "Quality notes"),
     productionTaskId: nullableUuidSchema,
     status: qualityCheckStatusSchema.default("PENDING"),
+});
+export const productionBoardQuerySchema = z.object({
+    dateFrom: dateFilterSchema,
+    dateTo: dateFilterSchema,
+    priority: productionJobPrioritySchema.optional(),
+    search: z.string().trim().default(""),
+});
+export const productionTransitionSchema = z.object({
+    expectedVersion: z.coerce.number().int().min(1).optional(),
+    reason: nullableStringSchema(4000, "Motivo"),
+    toStatus: productionWorkflowStatusSchema,
+});
+export const productionTaskTransitionSchema = z.object({
+    reason: nullableStringSchema(4000, "Motivo"),
+    toStatus: z.enum(["IN_PROGRESS", "PAUSED", "BLOCKED", "COMPLETED", "PENDING"]),
+});
+export const productionScheduleSchema = z.object({
+    currentWorkCenterId: nullableUuidSchema,
+    expectedVersion: z.coerce.number().int().min(1).optional(),
+    plannedEndDate: nullableDateSchema("Fecha requerida"),
+    plannedStartDate: nullableDateSchema("Fecha de inicio"),
+    reason: nullableStringSchema(4000, "Motivo"),
+});
+export const productionTaskAssignmentSchema = z.object({
+    assignedToUserId: nullableUuidSchema,
+    currentWorkCenterId: nullableUuidSchema,
+    expectedVersion: z.coerce.number().int().min(1).optional(),
+});
+export const productionBlockCreateSchema = z.object({
+    description: z.string().trim().min(1).max(4000),
+    estimatedImpactMinutes: nullableNumberSchema({ label: "Impacto estimado", min: 0, integer: true }),
+    productionJobId: nullableUuidSchema,
+    productionTaskId: nullableUuidSchema,
+    severity: productionBlockSeveritySchema.default("MEDIUM"),
+    type: productionBlockTypeSchema,
+});
+export const productionBlockResolveSchema = z.object({
+    resolution: z.string().trim().min(1).max(4000),
+});
+export const productionWasteEntrySchema = z.object({
+    areaM2: nullableNumberSchema({ label: "Área", min: 0 }),
+    entryType: productionWasteEntryTypeSchema,
+    heightMm: nullableNumberSchema({ label: "Alto", min: 0 }),
+    lengthMm: nullableNumberSchema({ label: "Largo", min: 0 }),
+    materialId: nullableUuidSchema,
+    notes: nullableStringSchema(4000, "Notas"),
+    productionJobId: z.uuid(),
+    productionTaskId: nullableUuidSchema,
+    quantity: positiveNumberSchema("Cantidad"),
+    reason: productionWasteReasonSchema,
+    recoverable: z.boolean().default(false),
+    unit: materialUnitSchema,
+    widthMm: nullableNumberSchema({ label: "Ancho", min: 0 }),
 });
 //# sourceMappingURL=production.validators.js.map
