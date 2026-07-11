@@ -6,36 +6,46 @@ import { logger } from "../utils/logger.js";
 import { sendError } from "../utils/response.js";
 
 const localizeErrorMessage = (message: string, statusCode: number): string => {
-  if (statusCode >= 500 || /prisma|sql|database|stack|node_modules/i.test(message)) {
+  if (
+    statusCode >= 500 ||
+    /prisma|sql|database|stack|node_modules/i.test(message)
+  ) {
     return "Ocurrió un error interno.";
   }
 
   const exactTranslations: Record<string, string> = {
-    "Unauthorized": "No has iniciado sesión.",
-    "Forbidden": "No tienes permiso para realizar esta acción.",
+    Unauthorized: "No has iniciado sesión.",
+    Forbidden: "No tienes permiso para realizar esta acción.",
     "Access denied": "Acceso denegado.",
     "Invalid credentials": "Las credenciales no son correctas.",
     "Invalid request": "La solicitud no es válida.",
+    "Invalid input: expected nonoptional, received undefined":
+      "Falta información requerida para actualizar el estado del proyecto.",
     "Validation failed": "La información enviada no es válida.",
     "Internal server error": "Ocurrió un error interno.",
     "Resource already exists": "El registro ya existe.",
-    "Conflict": "El registro fue modificado por otro usuario.",
+    Conflict: "El registro fue modificado por otro usuario.",
     "File too large": "El archivo supera el tamaño permitido.",
     "Unsupported file type": "El tipo de archivo no está permitido.",
     "Route not found.": "No se encontró la ruta solicitada.",
     "Email template not found.": "No se encontró la plantilla de correo.",
     "A role with this name already exists.": "Ya existe un rol con ese nombre.",
-    "A user with this email already exists.": "Ya existe un usuario con ese correo electrónico.",
+    "A user with this email already exists.":
+      "Ya existe un usuario con ese correo electrónico.",
     "An active invitation already exists for this email address.":
       "Ya existe una invitación activa para este correo electrónico.",
     "This invitation is invalid or no longer available.":
       "Esta invitación no es válida o ya no está disponible.",
     "This invitation has been revoked.": "Esta invitación fue revocada.",
-    "This invitation has already been accepted.": "Esta invitación ya fue aceptada.",
+    "This invitation has already been accepted.":
+      "Esta invitación ya fue aceptada.",
     "This invitation has expired.": "Esta invitación venció.",
-    "Accepted invitations cannot be revoked.": "Las invitaciones aceptadas no se pueden revocar.",
+    "Accepted invitations cannot be revoked.":
+      "Las invitaciones aceptadas no se pueden revocar.",
     "Only SUPER_ADMIN users can modify SUPER_ADMIN permissions.":
       "Solo los usuarios SUPER_ADMIN pueden modificar permisos SUPER_ADMIN.",
+    "Reason is required when moving a project to cancelled or on hold.":
+      "Indica un motivo para poner el proyecto en espera o cancelarlo.",
   };
 
   const exactTranslation = exactTranslations[message];
@@ -60,7 +70,8 @@ const localizeErrorMessage = (message: string, statusCode: number): string => {
       .toLowerCase();
     const labels: Record<string, string> = {
       "address id": "el identificador de la dirección",
-      "client and address ids": "los identificadores del cliente y la dirección",
+      "client and address ids":
+        "los identificadores del cliente y la dirección",
       "client and contact ids": "los identificadores del cliente y el contacto",
       "client id": "el identificador del cliente",
       client: "cliente",
@@ -110,10 +121,15 @@ const localizeErrorMessage = (message: string, statusCode: number): string => {
       user: "usuario",
       warehouse: "almacén",
     };
-    return normalized.split(" ").map((word) => words[word] ?? word).join(" ");
+    return normalized
+      .split(" ")
+      .map((word) => words[word] ?? word)
+      .join(" ");
   }
 
-  const lengthMatch = message.match(/^(.+?) must be (\d+) characters or fewer\.?$/i);
+  const lengthMatch = message.match(
+    /^(.+?) must be (\d+) characters or fewer\.?$/i,
+  );
   if (lengthMatch) {
     return `${fieldName(lengthMatch[1] ?? "El campo")} debe tener como máximo ${lengthMatch[2] ?? ""} caracteres.`;
   }
@@ -193,28 +209,40 @@ export const errorMiddleware: ErrorRequestHandler = (
     }));
     const validationMessage =
       issues.length === 1
-        ? issues[0]?.message ?? error.message
+        ? (issues[0]?.message ?? error.message)
         : issues.length > 1
           ? issues
               .map((issue) =>
-                issue.path.length > 0 ? `${issue.path}: ${issue.message}` : issue.message,
+                issue.path.length > 0
+                  ? `${issue.path}: ${issue.message}`
+                  : issue.message,
               )
               .join("; ")
           : error.message;
 
     logger.warn("Request validation failed.", { issues });
 
-    sendError(response, localizeErrorMessage(validationMessage, 400), 400, issues);
+    sendError(
+      response,
+      localizeErrorMessage(validationMessage, 400),
+      400,
+      issues,
+    );
     return;
   }
 
   if (error instanceof AppError) {
     logger.warn(error.message);
-    sendError(response, localizeErrorMessage(error.message, error.statusCode), error.statusCode);
+    sendError(
+      response,
+      localizeErrorMessage(error.message, error.statusCode),
+      error.statusCode,
+    );
     return;
   }
 
-  const errorMessage = error instanceof Error ? error.message : "Ocurrió un error interno.";
+  const errorMessage =
+    error instanceof Error ? error.message : "Ocurrió un error interno.";
 
   logger.error("Unhandled application error.", {
     message: errorMessage,

@@ -138,10 +138,9 @@ const nullableDateSchema = (label: string) =>
         return null;
       }
 
-      const normalizedValue =
-        /^\d{4}-\d{2}-\d{2}$/.test(trimmedValue)
-          ? `${trimmedValue}T00:00:00.000Z`
-          : trimmedValue;
+      const normalizedValue = /^\d{4}-\d{2}-\d{2}$/.test(trimmedValue)
+        ? `${trimmedValue}T00:00:00.000Z`
+        : trimmedValue;
       const parsedDate = new Date(normalizedValue);
 
       return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
@@ -193,8 +192,12 @@ export const projectMutationSchema = z.object({
   notes: nullableStringSchema(4000, "Notes"),
   priority: projectPrioritySchema.default("NORMAL"),
   projectType: projectTypeSchema,
-  responsibleUserId: z.union([z.uuid(), z.null(), z.undefined()]).transform((value) => value ?? null),
-  salesUserId: z.union([z.uuid(), z.null(), z.undefined()]).transform((value) => value ?? null),
+  responsibleUserId: z
+    .union([z.uuid(), z.null(), z.undefined()])
+    .transform((value) => value ?? null),
+  salesUserId: z
+    .union([z.uuid(), z.null(), z.undefined()])
+    .transform((value) => value ?? null),
   siteAddress: nullableStringSchema(255, "Site address"),
   status: projectStatusSchema.default("LEAD"),
   title: z.string().trim().min(1, "Project title is required.").max(191),
@@ -220,7 +223,7 @@ export const listProjectsQuerySchema = z.object({
 
 export const projectTransitionSchema = z
   .object({
-    metadata: nullableJsonObjectSchema,
+    metadata: nullableJsonObjectSchema.optional(),
     reason: nullableStringSchema(4000, "Reason"),
     toStatus: projectStatusSchema,
   })
@@ -231,7 +234,8 @@ export const projectTransitionSchema = z
     ) {
       context.addIssue({
         code: "custom",
-        message: "Reason is required when moving a project to cancelled or on hold.",
+        message:
+          "Reason is required when moving a project to cancelled or on hold.",
         path: ["reason"],
       });
     }
@@ -270,5 +274,9 @@ export const projectFileUploadSchema = z.object({
     .trim()
     .min(1, "A file name is required.")
     .max(255, "File name must be 255 characters or fewer."),
-  size: z.coerce.number().int().positive().max(25 * 1024 * 1024),
+  size: z.coerce
+    .number()
+    .int()
+    .positive()
+    .max(25 * 1024 * 1024),
 });
