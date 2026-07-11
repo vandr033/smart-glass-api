@@ -117,7 +117,7 @@ CREATE TABLE `production_waste_entries` (
 
 CREATE INDEX `production_jobs_workflow_status_deleted_at_idx` ON `production_jobs`(`workflow_status`,`deleted_at`);
 CREATE INDEX `production_jobs_current_work_center_id_deleted_at_idx` ON `production_jobs`(`current_work_center_id`,`deleted_at`);
-CREATE INDEX `production_tasks_work_center_id_scheduled_start_scheduled_end_idx` ON `production_tasks`(`work_center_id`,`scheduled_start`,`scheduled_end`);
+CREATE INDEX `production_tasks_work_center_schedule_idx` ON `production_tasks`(`work_center_id`,`scheduled_start`,`scheduled_end`);
 
 ALTER TABLE `production_jobs`
   ADD CONSTRAINT `production_jobs_current_work_center_id_fkey` FOREIGN KEY (`current_work_center_id`) REFERENCES `production_work_centers`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

@@ -2774,7 +2774,7 @@ model ProductionTask {
   @@index([productionJobId, sortOrder])
   @@index([productionJobItemId])
   @@index([assignedToUserId, status])
-  @@index([workCenterId, scheduledStart, scheduledEnd])
+  @@index([workCenterId, scheduledStart, scheduledEnd], map: "production_tasks_work_center_schedule_idx")
   @@index([taskType, status])
   @@map("production_tasks")
 }
